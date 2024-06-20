@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: utapCattle
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        web-allow-others: true
+  datasource:
+    initialization-mode: always
+    data:
+      - classpath:data.sql
