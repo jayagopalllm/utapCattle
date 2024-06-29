@@ -1,11 +1,11 @@
-package com.example.utapCattle.Service.Impl;
+package com.example.utapCattle.service.impl;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.utapCattle.Service.OwnerRepository;
+import com.example.utapCattle.service.repository.OwnerRepository;
 import com.example.utapCattle.model.Owner;
 
 @Service
