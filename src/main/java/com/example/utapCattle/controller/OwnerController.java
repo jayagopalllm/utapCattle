@@ -20,13 +20,12 @@ public class OwnerController {
     @GetMapping("/owners/{id}")
     public ResponseEntity<Owner> getOwnerById(@PathVariable Long id) {
         Owner owner = ownerService.getOwnerById(id);
-        if (owner == null) {
+        if (owner != null) {
             return ResponseEntity.ok(owner);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
-
 
     @GetMapping("/owners") // Endpoint for fetching all owners
     public List<Owner> getAllOwners() {
