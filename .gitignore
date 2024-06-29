@@ -18,6 +18,7 @@ build/
 
 # Ignore test results
 **/target/**
+target/**
 
 # Ignore specific files
 .DS_Store
