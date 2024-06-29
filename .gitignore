@@ -17,8 +17,7 @@ build/
 *.log
 
 # Ignore test results
-**/target/test-classes/
-**/target/surefire-reports/
+**/target/**
 
 # Ignore specific files
 .DS_Store
