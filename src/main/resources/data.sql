@@ -1,2 +1,2 @@
-INSERT INTO cattleco.OWNER (id, name, age) VALUES (1, 'John Doe', 30);
-INSERT INTO cattleco.OWNER (id, name, age) VALUES (2, 'Jane Smith', 25);
+INSERT INTO CATTLECO.OWNER (name, age) VALUES ('John Doe', 30);
+INSERT INTO CATTLECO.OWNER (name, age) VALUES ('Jane Smith', 25);

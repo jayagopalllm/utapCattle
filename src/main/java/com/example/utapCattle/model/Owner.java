@@ -6,9 +6,13 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "OWNER", schema = "cattleco")
 public class Owner {
@@ -22,7 +26,7 @@ public class Owner {
     private String name;
 
     @Column(name = "age", nullable = false)
-    private Long age;
+    private int age;
 
     public String toString() {
         return "Owner{" +

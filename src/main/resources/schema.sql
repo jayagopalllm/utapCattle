@@ -1,6 +1,7 @@
-CREATE SCHEMA cattleco;
+CREATE SCHEMA CATTLECO;
+USE CATTLECO;
 
-CREATE TABLE cattleco.OWNER (
-                            id INT AUTO_INCREMENT PRIMARY KEY,
-                            name VARCHAR(255) NOT NULL,
-                            age INT NOT NULL);
+CREATE TABLE CATTLECO.OWNER (
+id BIGINT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(255) NOT NULL,
+age INT NOT NULL);
