@@ -13,9 +13,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.example.utapCattle.controller.OwnerController;
 import com.example.utapCattle.model.Owner;
-import com.example.utapCattle.service.impl.OwnerService;
+import com.example.utapCattle.service.impl.OwnerServiceImpl;
 
 @WebMvcTest(OwnerController.class)
 public class OwnerControllerTest {
@@ -24,7 +23,7 @@ public class OwnerControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private OwnerService ownerService;
+    private OwnerServiceImpl ownerService;
 
     @Test
     public void testGetOwnerById_ExistingOwner() throws Exception {

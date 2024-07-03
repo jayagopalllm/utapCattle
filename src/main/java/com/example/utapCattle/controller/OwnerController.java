@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.utapCattle.service.impl.OwnerService;
 import com.example.utapCattle.model.Owner;
+import com.example.utapCattle.service.OwnerService;
 
 @RestController
 public class OwnerController {
