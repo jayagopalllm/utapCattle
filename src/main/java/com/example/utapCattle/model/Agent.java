@@ -14,26 +14,22 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "OWNER", schema = "cattleco")
-public class Owner {
+@Table(name = "agent", schema = "public")
+public class Agent {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO) // Or GenerationType.IDENTITY if desired
+    @Column(name = "agentid")
+    private long agentId;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "agentname", nullable = false)
+    private String agentName;
 
-    @Column(name = "age", nullable = false)
-    private int age;
-
+    @Override
     public String toString() {
-        return "Owner{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", age=" + age +
+        return "Agent{" +
+                "agentId=" + agentId +
+                ", agentName='" + agentName + '\'' +
                 '}';
     }
-
 }
