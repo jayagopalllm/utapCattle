@@ -13,7 +13,7 @@ import com.example.utapCattle.model.Agent;
 import com.example.utapCattle.service.AgentService;
 
 @RestController
-@RequestMapping("/agents")  // Base path for agent endpoints
+@RequestMapping("/agent")  // Base path for agent endpoints
 public class AgentController {
 
     @Autowired
