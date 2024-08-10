@@ -1,4 +1,4 @@
-package com.example.utapCattle.model;
+package com.example.utapCattle.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 public class Customer {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) 
     @Column(name = "customerid")
     private Integer customerId;
 

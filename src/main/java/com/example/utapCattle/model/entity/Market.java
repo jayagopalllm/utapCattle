@@ -1,4 +1,4 @@
-package com.example.utapCattle.model;
+package com.example.utapCattle.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 public class Market {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) 
     @Column(name = "marketid")
     private Integer marketId;
 
@@ -26,7 +25,4 @@ public class Market {
     @Column(name = "current")
     private String current; // Consider using a boolean or enum if appropriate
 
-
-    // Add getters and setters for all the fields here
-    // ...
 }

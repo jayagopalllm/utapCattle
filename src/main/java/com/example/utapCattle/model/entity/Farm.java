@@ -1,4 +1,4 @@
-package com.example.utapCattle.model;
+package com.example.utapCattle.model.entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 public class Farm {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Assuming auto-increment for 'farmid'
     @Column(name = "farmid")
     private Integer farmId;
 

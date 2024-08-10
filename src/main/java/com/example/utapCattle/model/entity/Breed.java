@@ -1,4 +1,4 @@
-package com.example.utapCattle.model;
+package com.example.utapCattle.model.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,8 +17,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "breed", schema = "public")
 public class Breed {
 
-    @Id // This designates 'breedid' as the primary key
-    @GeneratedValue(strategy = GenerationType.IDENTITY) 
+    @Id // This designates 'breedid' as the primary key 
     @Column(name = "breedid")
     private Long breedid;
 

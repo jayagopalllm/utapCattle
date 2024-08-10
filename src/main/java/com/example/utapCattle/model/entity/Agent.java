@@ -1,4 +1,4 @@
-package com.example.utapCattle.model;
+package com.example.utapCattle.model.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,7 +18,6 @@ import lombok.NoArgsConstructor;
 public class Agent {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO) // Or GenerationType.IDENTITY if desired
     @Column(name = "agentid")
     private long agentId;
 
