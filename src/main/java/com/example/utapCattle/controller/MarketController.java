@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.utapCattle.model.Market;
+import com.example.utapCattle.model.dto.MarketDto;
 import com.example.utapCattle.service.MarketService;
 
 @RestController
@@ -20,13 +20,13 @@ public class MarketController {
     private MarketService marketService;
 
     @GetMapping("/{id}") // Get market by ID
-    public ResponseEntity<Market> getMarketById(@PathVariable Long id) {
-        Market market = marketService.getMarketById(id);
-        return (market != null) ? ResponseEntity.ok(market) : ResponseEntity.notFound().build();
+    public ResponseEntity<MarketDto> getMarketById(@PathVariable Long id) {
+        MarketDto marketDto = marketService.getMarketById(id);
+        return (marketDto != null) ? ResponseEntity.ok(marketDto) : ResponseEntity.notFound().build();
     }
 
     @GetMapping // Get all markets
-    public List<Market> getAllMarkets() {
+    public List<MarketDto> getAllMarkets() {
         return marketService.getAllMarkets();
     }
 }

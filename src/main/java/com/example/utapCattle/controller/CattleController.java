@@ -1,16 +1,14 @@
 package com.example.utapCattle.controller;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.example.utapCattle.model.Cattle;
+import com.example.utapCattle.model.dto.CattleDto;
+import com.example.utapCattle.model.entity.Cattle;
 import com.example.utapCattle.service.CattleService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/cattle")  // Base path for cattle endpoints
@@ -20,13 +18,19 @@ public class CattleController {
     private CattleService cattleService;
 
     @GetMapping("/{id}")  // Get cattle by ID
-    public ResponseEntity<Cattle> getCattleById(@PathVariable Long id) {
-        Cattle cattle = cattleService.getCattleById(id);
-        return (cattle != null) ? ResponseEntity.ok(cattle) : ResponseEntity.notFound().build();
+    public ResponseEntity<CattleDto> getCattleById(@PathVariable Long id) {
+        CattleDto cattleDto = cattleService.getCattleById(id);
+        return (cattleDto != null) ? ResponseEntity.ok(cattleDto) : ResponseEntity.notFound().build();
     }
 
     @GetMapping  // Get all cattle
-    public List<Cattle> getAllCattle() {
+    public List<CattleDto> getAllCattle() {
         return cattleService.getAllCattle();
+    }
+
+    @PostMapping("/save") // Save a new cattle
+    public ResponseEntity<CattleDto> saveCattle(@RequestBody Cattle cattle) {
+        CattleDto savedCattleDto = cattleService.saveCattle(cattle);
+        return new ResponseEntity<>(savedCattleDto, HttpStatus.CREATED);
     }
 }

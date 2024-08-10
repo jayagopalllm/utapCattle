@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.utapCattle.model.Farm;
+import com.example.utapCattle.model.dto.FarmDto;
 import com.example.utapCattle.service.FarmService;
 
 @RestController
@@ -20,13 +20,13 @@ public class FarmController {
     private FarmService farmService;
 
     @GetMapping("/{id}")  // Get farm by ID
-    public ResponseEntity<Farm> getFarmById(@PathVariable Long id) {
-        Farm farm = farmService.getFarmById(id);
-        return (farm != null) ? ResponseEntity.ok(farm) : ResponseEntity.notFound().build();
+    public ResponseEntity<FarmDto> getFarmById(@PathVariable Long id) {
+        FarmDto farmDto = farmService.getFarmById(id);
+        return (farmDto != null) ? ResponseEntity.ok(farmDto) : ResponseEntity.notFound().build();
     }
 
     @GetMapping  // Get all farms
-    public List<Farm> getAllFarms() {
+    public List<FarmDto> getAllFarms() {
         return farmService.getAllFarms();
     }
 }

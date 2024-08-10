@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.utapCattle.model.Category;
+import com.example.utapCattle.model.dto.CategoryDto;
 import com.example.utapCattle.service.CategoryService;
 
 @RestController
@@ -20,13 +20,13 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @GetMapping("/{id}")  // Get category by ID
-    public ResponseEntity<Category> getCategoryById(@PathVariable Long id) {
-        Category category = categoryService.getCategoryById(id);
-        return (category != null) ? ResponseEntity.ok(category) : ResponseEntity.notFound().build();
+    public ResponseEntity<CategoryDto> getCategoryById(@PathVariable Long id) {
+        CategoryDto categoryDto = categoryService.getCategoryById(id);
+        return (categoryDto != null) ? ResponseEntity.ok(categoryDto) : ResponseEntity.notFound().build();
     }
 
     @GetMapping  // Get all categories
-    public List<Category> getAllCategories() {
+    public List<CategoryDto> getAllCategories() {
         return categoryService.getAllCategories();
     }
 
