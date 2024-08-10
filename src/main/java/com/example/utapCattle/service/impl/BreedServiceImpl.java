@@ -1,11 +1,14 @@
 package com.example.utapCattle.service.impl;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.utapCattle.model.Breed;
+import com.example.utapCattle.model.dto.BreedDto;
+import com.example.utapCattle.model.entity.Breed;
 import com.example.utapCattle.service.BreedService;
 import com.example.utapCattle.service.repository.BreedRepository;
 
@@ -15,17 +18,32 @@ public class BreedServiceImpl implements BreedService{
 
 
     @Autowired
-    private BreedRepository breedRepository; // Inject the AgentRepository
+    private BreedRepository breedRepository; 
 
 
     @Override
-    public List<Breed> getAllBreeds() {
-        return breedRepository.findAll();
+    public List<BreedDto> getAllBreeds() {
+        return breedRepository.findAll().stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Breed getBreedById(Long id) {
-        return breedRepository.findById(id).orElse(null);
+    public BreedDto getBreedById(Long id) {
+        Optional<Breed> breed = breedRepository.findById(id);
+        return breed.map(this::mapToDto).orElse(null);
+    }
+
+    // Helper method to map Breed to BreedDto
+    private BreedDto mapToDto(Breed breed) {
+        return new BreedDto(
+                breed.getBreedid(),
+                breed.getBreeddesc(),
+                breed.getBreedabbr(),
+                breed.getBreedfull(),
+                breed.getBreedcatego(),
+                breed.getBeefdairy()
+        );
     }
 
 }

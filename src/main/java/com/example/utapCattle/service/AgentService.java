@@ -2,11 +2,14 @@ package com.example.utapCattle.service;
 
 import java.util.List;
 
-import com.example.utapCattle.model.Agent; // Import your Agent entity
+import com.example.utapCattle.model.dto.AgentDto;
+import com.example.utapCattle.model.entity.Agent;
 
 public interface AgentService {
     
-    List<Agent> getAllAgents();
+    List<AgentDto> getAllAgents();
 
-    Agent getAgentById(Long id);
+    AgentDto getAgentById(Long id);
+
+    AgentDto saveAgent(Agent agent);
 }

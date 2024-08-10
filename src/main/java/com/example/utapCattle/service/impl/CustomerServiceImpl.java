@@ -5,7 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.utapCattle.model.Customer;
+import com.example.utapCattle.model.dto.CustomerDto;
+import com.example.utapCattle.model.entity.Customer;
 import com.example.utapCattle.service.CustomerService;
 import com.example.utapCattle.service.repository.CustomerRepository;
 
@@ -23,5 +24,19 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Customer getCustomerById(Long id) {
         return customerRepository.findById(id).orElse(null);
+    }
+
+        @Override
+    public CustomerDto saveCustomer(Customer customer) {
+        Customer savedCustomer = customerRepository.save(customer);
+        return mapToDto(savedCustomer);
+    }
+
+    // Helper method to map Customer to CustomerDto
+    private CustomerDto mapToDto(Customer customer) {
+        return new CustomerDto(
+                customer.getCustomerId(),
+                customer.getCustomerName()
+        );
     }
 }

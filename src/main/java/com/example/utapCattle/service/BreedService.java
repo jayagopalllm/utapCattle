@@ -2,12 +2,12 @@ package com.example.utapCattle.service;
 
 import java.util.List;
 
-import com.example.utapCattle.model.Breed;
+import com.example.utapCattle.model.dto.BreedDto;
 
 public interface BreedService {
 
-        List<Breed> getAllBreeds();
+        List<BreedDto> getAllBreeds();
 
-        Breed getBreedById(Long id);
+        BreedDto getBreedById(Long id);
 }
 

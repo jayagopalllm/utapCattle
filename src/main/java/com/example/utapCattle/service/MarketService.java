@@ -2,11 +2,11 @@ package com.example.utapCattle.service;
 
 import java.util.List;
 
-import com.example.utapCattle.model.Market;
+import com.example.utapCattle.model.dto.MarketDto;
 
 public interface MarketService {
 
-    List<Market> getAllMarkets();
+    List<MarketDto> getAllMarkets();
 
-    Market getMarketById(Long id);
+    MarketDto getMarketById(Long id);
 }

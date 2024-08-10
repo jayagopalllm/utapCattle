@@ -1,12 +1,15 @@
 package com.example.utapCattle.service;
 
-import java.util.List;
+import com.example.utapCattle.model.dto.CattleDto;
+import com.example.utapCattle.model.entity.Cattle;
 
-import com.example.utapCattle.model.Cattle; // Import the Cattle model
+import java.util.List;
 
 public interface CattleService {
 
-    List<Cattle> getAllCattle();
+    List<CattleDto> getAllCattle();
 
-    Cattle getCattleById(Long id); // Use Long as the ID type
+    CattleDto getCattleById(Long id); // Use Long as the ID type
+
+    CattleDto saveCattle(Cattle cattle);
 }

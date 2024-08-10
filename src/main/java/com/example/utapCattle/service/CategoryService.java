@@ -3,13 +3,13 @@ package com.example.utapCattle.service;
 
 import java.util.List;
 
-import com.example.utapCattle.model.Category;
+import com.example.utapCattle.model.dto.CategoryDto;
 
 public interface CategoryService {
 
-    Category getCategoryById(Long id);
+    CategoryDto getCategoryById(Long id);
 
-    List<Category> getAllCategories();
+    List<CategoryDto> getAllCategories();
 
     // Add more methods for creating, updating, and deleting categories if needed
 }
