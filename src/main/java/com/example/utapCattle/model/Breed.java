@@ -31,7 +31,7 @@ public class Breed {
     @Column(name = "breedfull")
     private String breedfull;
 
-    @Column(name = "breedcatego")
+    @Column(name = "breedcategory")
     private String breedcatego;
 
     @Column(name = "beefdairy")

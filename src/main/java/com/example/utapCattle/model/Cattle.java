@@ -22,6 +22,8 @@ public class Cattle {
     private String eartag;
 
     @Column(name = "tagid")
+
+    
     private Integer tagid;
 
     @Column(name = "newtagreq")
