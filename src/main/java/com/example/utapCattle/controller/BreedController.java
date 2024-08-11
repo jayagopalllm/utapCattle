@@ -3,13 +3,17 @@ package com.example.utapCattle.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.utapCattle.model.dto.BreedDto;
+import com.example.utapCattle.model.entity.Breed;
 import com.example.utapCattle.service.BreedService;
 
 @RestController
@@ -30,4 +34,9 @@ public class BreedController {
         return breedService.getAllBreeds();
     }
     
+    @PostMapping("/save") // Save a new breed
+    public ResponseEntity<BreedDto> saveBreed(@RequestBody Breed breed) {
+        BreedDto savedBreedDto = breedService.saveBreed(breed);
+        return new ResponseEntity<>(savedBreedDto, HttpStatus.CREATED);
+    }
 }

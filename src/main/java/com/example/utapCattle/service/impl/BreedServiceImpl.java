@@ -34,6 +34,12 @@ public class BreedServiceImpl implements BreedService{
         return breed.map(this::mapToDto).orElse(null);
     }
 
+    @Override
+    public BreedDto saveBreed(Breed breed) {
+        Breed savedBreed = breedRepository.save(breed);
+        return mapToDto(savedBreed);
+    }
+
     // Helper method to map Breed to BreedDto
     private BreedDto mapToDto(Breed breed) {
         return new BreedDto(

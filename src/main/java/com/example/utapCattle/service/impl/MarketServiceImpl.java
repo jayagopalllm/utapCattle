@@ -31,6 +31,13 @@ public class MarketServiceImpl implements MarketService {
         return market.map(this::mapToDto).orElse(null);
     }
 
+    @Override
+    public MarketDto saveMarket(Market market) {
+        Market savedMarket = marketRepository.save(market);
+        return mapToDto(savedMarket);
+    }
+
+
     // Helper method to map Market to MarketDto
     private MarketDto mapToDto(Market market) {
         return new MarketDto(

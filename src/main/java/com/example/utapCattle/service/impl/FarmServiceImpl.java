@@ -31,6 +31,12 @@ public class FarmServiceImpl implements FarmService {
         return farm.map(this::mapToDto).orElse(null);
     }
 
+    @Override
+    public FarmDto saveFarm(Farm farm) {
+        Farm savedFarm = farmRepository.save(farm);
+        return mapToDto(savedFarm);
+    }
+
     // Helper method to map Farm to FarmDto
     private FarmDto mapToDto(Farm farm) {
         return new FarmDto(
