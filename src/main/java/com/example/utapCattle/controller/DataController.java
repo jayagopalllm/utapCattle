@@ -9,7 +9,7 @@ import com.example.utapCattle.model.dto.AllDataDto;
 import com.example.utapCattle.service.DataService;
 
 @RestController
-@RequestMapping("/data")
+@RequestMapping("/sample")
 public class DataController {
     
     @Autowired
