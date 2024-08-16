@@ -8,13 +8,11 @@ spring:
       settings:
         web-allow-others: true
   datasource:
-    url: jdbc:h2:mem:testdb
-    driverClassName: org.h2.Driver
-    username: sa
-    password:
+    url: jdbc:postgresql://35.178.210.158:5432/qrcode
+    driverClassName: org.postgresql.Driver
+    username: postgres
+    password: postgres
     initialization-mode: always
-    data:
-      - classpath:data.sql
   jpa:
       hibernate:
         ddl-auto: update
