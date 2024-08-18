@@ -17,28 +17,39 @@ import com.example.utapCattle.model.entity.Agent;
 import com.example.utapCattle.service.AgentService;
 
 @RestController
-@RequestMapping("/agent")  // Base path for agent endpoints
-public class AgentController {
+@RequestMapping("/agent")
+public class AgentController extends BaseController{
 
     @Autowired
     private AgentService agentService;
 
-    @GetMapping("/{id}")  // Get agent by ID
+    @GetMapping("/{id}")
     public ResponseEntity<AgentDto> getAgentById(@PathVariable Long id) {
+        logger.info("Incoming request: Retrieving agent with ID: {}", id);
         AgentDto agent = agentService.getAgentById(id);
-        return (agent != null) ? ResponseEntity.ok(agent) : ResponseEntity.notFound().build();
+        if (agent != null) {
+            logger.info("Request successful: Retrieved agent with ID: {}", id);
+            return ResponseEntity.ok(agent);
+        } else {
+            logger.warn("Request failed: Agent not found for ID: {}", id);
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    @GetMapping  // Get all agents
+    @GetMapping
     public List<AgentDto> getAllAgents() {
-        return agentService.getAllAgents();
+        logger.info("Incoming request: Retrieving all agents");
+        List<AgentDto> agents = agentService.getAllAgents();
+        logger.info("Request successful: Retrieved {} agents", agents.size());
+        return agents;
     }
 
-     @PostMapping("/save") // Save a new agent
+     @PostMapping("/save") 
     public ResponseEntity<AgentDto> saveAgent(@RequestBody Agent agent) {
+        logger.info("Incoming request: Saving new agent: {}", agent);
         AgentDto savedAgentDto = agentService.saveAgent(agent);
+        logger.info("Request successful: Saved agent with ID: {}", savedAgentDto.getAgentId());
         return new ResponseEntity<>(savedAgentDto, HttpStatus.CREATED);
     }
 
-    // Add more methods for creating, updating, and deleting agents if needed
 }

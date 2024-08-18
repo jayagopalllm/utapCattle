@@ -9,14 +9,17 @@ import com.example.utapCattle.model.dto.AllDataDto;
 import com.example.utapCattle.service.DataService;
 
 @RestController
-@RequestMapping("/sample")
-public class DataController {
+@RequestMapping("/data")
+public class DataController extends BaseController{
     
     @Autowired
     private DataService dataService;
 
     @GetMapping()
     public AllDataDto getAllData() {
-        return dataService.getAllData();
+        logger.info("Incoming request: Retrieving all data");
+        AllDataDto allData = dataService.getAllData();
+        logger.info("Request successful: Retrieved all data"); 
+        return allData;
     }
 }

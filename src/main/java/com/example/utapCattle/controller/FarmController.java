@@ -17,26 +17,38 @@ import com.example.utapCattle.model.entity.Farm;
 import com.example.utapCattle.service.FarmService;
 
 @RestController
-@RequestMapping("/farm")  // Base path for farm endpoints
-public class FarmController {
+@RequestMapping("/farm")
+public class FarmController extends BaseController {
 
     @Autowired
     private FarmService farmService;
 
-    @GetMapping("/{id}")  // Get farm by ID
+    @GetMapping("/{id}")
     public ResponseEntity<FarmDto> getFarmById(@PathVariable Long id) {
+        logger.info("Incoming request: Retrieving farm with ID: {}", id);
         FarmDto farmDto = farmService.getFarmById(id);
-        return (farmDto != null) ? ResponseEntity.ok(farmDto) : ResponseEntity.notFound().build();
+        if (farmDto != null) {
+            logger.info("Request successful: Retrieved farm with ID: {}", id);
+            return ResponseEntity.ok(farmDto);
+        } else {
+            logger.warn("Request failed: Farm not found for ID: {}", id);
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping  // Get all farms
     public List<FarmDto> getAllFarms() {
-        return farmService.getAllFarms();
+        logger.info("Incoming request: Retrieving all farms");
+        List<FarmDto> farms = farmService.getAllFarms();
+        logger.info("Request successful: Retrieved {} farms", farms.size());
+        return farms;
     }
 
     @PostMapping("/save") // Save a new farm
     public ResponseEntity<FarmDto> saveFarm(@RequestBody Farm farm) {
+        logger.info("Incoming request: Saving new farm: {}", farm);
         FarmDto savedFarmDto = farmService.saveFarm(farm);
+        logger.info("Request successful: Saved farm with ID: {}", savedFarmDto.getFarmId());
         return new ResponseEntity<>(savedFarmDto, HttpStatus.CREATED);
     }
 }

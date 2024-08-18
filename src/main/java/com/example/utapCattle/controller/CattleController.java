@@ -11,26 +11,38 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/cattle")  // Base path for cattle endpoints
-public class CattleController {
+@RequestMapping("/cattle")
+public class CattleController extends BaseController {
 
     @Autowired
     private CattleService cattleService;
 
-    @GetMapping("/{id}")  // Get cattle by ID
+    @GetMapping("/{id}")
     public ResponseEntity<CattleDto> getCattleById(@PathVariable Long id) {
+        logger.info("Incoming request: Retrieving cattle with ID: {}", id);
         CattleDto cattleDto = cattleService.getCattleById(id);
-        return (cattleDto != null) ? ResponseEntity.ok(cattleDto) : ResponseEntity.notFound().build();
+        if (cattleDto != null) {
+            logger.info("Request successful: Retrieved cattle with ID: {}", id);
+            return ResponseEntity.ok(cattleDto);
+        } else {
+            logger.warn("Request failed: Cattle not found for ID: {}", id);
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    @GetMapping  // Get all cattle
+    @GetMapping
     public List<CattleDto> getAllCattle() {
-        return cattleService.getAllCattle();
+        logger.info("Incoming request: Retrieving all cattle");
+        List<CattleDto> cattleList = cattleService.getAllCattle();
+        logger.info("Request successful: Retrieved {} cattle", cattleList.size());
+        return cattleList;
     }
 
-    @PostMapping("/save") // Save a new cattle
+    @PostMapping("/save")
     public ResponseEntity<CattleDto> saveCattle(@RequestBody Cattle cattle) {
+        logger.info("Incoming request: Saving new cattle: {}", cattle);
         CattleDto savedCattleDto = cattleService.saveCattle(cattle);
+        logger.info("Request successful: Saved cattle with ID: {}", savedCattleDto.getCattleId()); // Assuming CattleDto has getCattleId()
         return new ResponseEntity<>(savedCattleDto, HttpStatus.CREATED);
     }
 }
