@@ -17,26 +17,38 @@ import com.example.utapCattle.model.entity.Breed;
 import com.example.utapCattle.service.BreedService;
 
 @RestController
-@RequestMapping("/breed")  // Base path for agent endpoints
-public class BreedController {
+@RequestMapping("/breed")
+public class BreedController extends BaseController {
 
      @Autowired
     private BreedService breedService;
 
-    @GetMapping("/{id}")  // Get agent by ID
+    @GetMapping("/{id}")
     public ResponseEntity<BreedDto> getBreedById(@PathVariable Long id) {
+        logger.info("Incoming request: Retrieving breed with ID: {}", id);
         BreedDto breed = breedService.getBreedById(id);
-        return (breed != null) ? ResponseEntity.ok(breed) : ResponseEntity.notFound().build();
+        if (breed != null) {
+            logger.info("Request successful: Retrieved breed with ID: {}", id);
+            return ResponseEntity.ok(breed);
+        } else {
+            logger.warn("Request failed: Breed not found for ID: {}", id);
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    @GetMapping  // Get all agents
+    @GetMapping
     public List<BreedDto> getAllBreeds() {
-        return breedService.getAllBreeds();
+        logger.info("Incoming request: Retrieving all breeds");
+        List<BreedDto> breeds = breedService.getAllBreeds();
+        logger.info("Request successful: Retrieved {} breeds", breeds.size());
+        return breeds;
     }
     
-    @PostMapping("/save") // Save a new breed
+    @PostMapping("/save")
     public ResponseEntity<BreedDto> saveBreed(@RequestBody Breed breed) {
+        logger.info("Incoming request: Saving new breed: {}", breed);
         BreedDto savedBreedDto = breedService.saveBreed(breed);
+        logger.info("Request successful: Saved breed with ID: {}", savedBreedDto.getBreedid());
         return new ResponseEntity<>(savedBreedDto, HttpStatus.CREATED);
     }
 }

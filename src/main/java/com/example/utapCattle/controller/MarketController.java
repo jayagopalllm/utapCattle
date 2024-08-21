@@ -17,26 +17,38 @@ import com.example.utapCattle.model.entity.Market;
 import com.example.utapCattle.service.MarketService;
 
 @RestController
-@RequestMapping("/market") // Base path for market endpoints
-public class MarketController {
+@RequestMapping("/market")
+public class MarketController extends BaseController {
 
     @Autowired
     private MarketService marketService;
 
-    @GetMapping("/{id}") // Get market by ID
+    @GetMapping("/{id}")
     public ResponseEntity<MarketDto> getMarketById(@PathVariable Long id) {
+        logger.info("Incoming request: Retrieving market with ID: {}", id);
         MarketDto marketDto = marketService.getMarketById(id);
-        return (marketDto != null) ? ResponseEntity.ok(marketDto) : ResponseEntity.notFound().build();
+        if (marketDto != null) {
+            logger.info("Request successful: Retrieved market with ID: {}", id);
+            return ResponseEntity.ok(marketDto);
+        } else {
+            logger.warn("Request failed: Market not found for ID: {}", id);
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    @GetMapping // Get all markets
+    @GetMapping
     public List<MarketDto> getAllMarkets() {
-        return marketService.getAllMarkets();
+        logger.info("Incoming request: Retrieving all markets");
+        List<MarketDto> markets = marketService.getAllMarkets();
+        logger.info("Request successful: Retrieved {} markets", markets.size());
+        return markets;
     }
 
-    @PostMapping("/save") // Save a new market
+    @PostMapping("/save")
     public ResponseEntity<MarketDto> saveMarket(@RequestBody Market market) {
+        logger.info("Incoming request: Saving new market: {}", market);
         MarketDto savedMarketDto = marketService.saveMarket(market);
+        logger.info("Request successful: Saved market with ID: {}", savedMarketDto.getMarketId());
         return new ResponseEntity<>(savedMarketDto, HttpStatus.CREATED);
     }
 }

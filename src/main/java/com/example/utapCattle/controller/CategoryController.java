@@ -17,28 +17,39 @@ import com.example.utapCattle.model.entity.Category;
 import com.example.utapCattle.service.CategoryService;
 
 @RestController
-@RequestMapping("/category")  // Base path for category endpoints
-public class CategoryController {
+@RequestMapping("/category")
+public class CategoryController extends BaseController {
 
     @Autowired
     private CategoryService categoryService;
 
-    @GetMapping("/{id}")  // Get category by ID
+    @GetMapping("/{id}")
     public ResponseEntity<CategoryDto> getCategoryById(@PathVariable Long id) {
+        logger.info("Incoming request: Retrieving category with ID: {}", id);
         CategoryDto categoryDto = categoryService.getCategoryById(id);
-        return (categoryDto != null) ? ResponseEntity.ok(categoryDto) : ResponseEntity.notFound().build();
+        if (categoryDto != null) {
+            logger.info("Request successful: Retrieved category with ID: {}", id);
+            return ResponseEntity.ok(categoryDto);
+        } else {
+            logger.warn("Request failed: Category not found for ID: {}", id);
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    @GetMapping  // Get all categories
+    @GetMapping
     public List<CategoryDto> getAllCategories() {
-        return categoryService.getAllCategories();
+        logger.info("Incoming request: Retrieving all categories");
+        List<CategoryDto> categories = categoryService.getAllCategories();
+        logger.info("Request successful: Retrieved {} categories", categories.size());
+        return categories;
     }
 
-    @PostMapping("/save") // Save a new category
+    @PostMapping("/save")
     public ResponseEntity<CategoryDto> saveCategory(@RequestBody Category category) {
+        logger.info("Incoming request: Saving new category: {}", category);
         CategoryDto savedCategoryDto = categoryService.saveCategory(category);
+        logger.info("Request successful: Saved category with ID: {}", savedCategoryDto.getCategoryId()); // Assuming CategoryDto has getCategoryId()
         return new ResponseEntity<>(savedCategoryDto, HttpStatus.CREATED);
     }
 
-    // Add more methods for creating, updating, and deleting categories if needed
 }

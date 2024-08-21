@@ -19,38 +19,53 @@ import com.example.utapCattle.model.entity.Cattle;
 import com.example.utapCattle.service.CattleService;
 
 @RestController
+@RequestMapping("/cattle")
 @CrossOrigin
-@RequestMapping("/cattle") // Base path for cattle endpoints
-public class CattleController {
+public class CattleController extends BaseController {
 
 	@Autowired
 	private CattleService cattleService;
 
-	@GetMapping("/{id}") // Get cattle by ID
+	@GetMapping("/{id}")
 	public ResponseEntity<CattleDto> getCattleById(@PathVariable Long id) {
+		logger.info("Incoming request: Retrieving cattle with ID: {}", id);
 		final CattleDto cattleDto = cattleService.getCattleById(id);
-		return (cattleDto != null) ? ResponseEntity.ok(cattleDto) : ResponseEntity.noContent().build();
+		if (cattleDto != null) {
+			logger.info("Request successful: Retrieved cattle with ID: {}", id);
+			return ResponseEntity.ok(cattleDto);
+		} else {
+			logger.warn("Request failed: Cattle not found for ID: {}", id);
+			return ResponseEntity.notFound().build();
+		}
 	}
 
-	@GetMapping // Get all cattle
+	@GetMapping
 	public List<CattleDto> getAllCattle() {
-		return cattleService.getAllCattle();
+		logger.info("Incoming request: Retrieving all cattle");
+		final List<CattleDto> cattleList = cattleService.getAllCattle();
+		logger.info("Request successful: Retrieved {} cattle", cattleList.size());
+		return cattleList;
 	}
 
 	@GetMapping("/eartag") // Get cattle by ID
 	public ResponseEntity<List<String>> getEartags() {
+		logger.info("Incoming request: Retrieving all cattle's eartags that has not completed the induction");
 		final List<String> earTagList = cattleService.getEartags();
+		logger.info("Request successful: Retrieved all cattle's eartag");
 		return (CollectionUtils.isEmpty(earTagList)) ? ResponseEntity.noContent().build()
 				: ResponseEntity.ok(earTagList);
 	}
 
-	@PostMapping("/save") // Save a new cattle
+	@PostMapping("/save")
 	public ResponseEntity<?> saveCattle(@RequestBody Cattle cattle) {
+		logger.info("Incoming request: Saving new cattle: {}", cattle);
 		try {
 			final CattleDto savedCattleDto = cattleService.saveCattle(cattle);
+			logger.info("Request successful: Saved cattle with ID: {}", savedCattleDto.getId());
 			return new ResponseEntity<>(savedCattleDto, HttpStatus.CREATED);
 		} catch (final Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 	}
+
 }
