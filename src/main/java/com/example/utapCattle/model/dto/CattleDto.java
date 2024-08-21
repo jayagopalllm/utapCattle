@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CattleDto {
+	private Long id;
 	private Long cattleId;
 	private String prefix;
 	private String earTag;

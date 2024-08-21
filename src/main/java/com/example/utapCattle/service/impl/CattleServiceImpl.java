@@ -47,17 +47,17 @@ public class CattleServiceImpl implements CattleService {
 	}
 
 	private CattleDto mapToDto(Cattle cattle) {
-		return new CattleDto(cattle.getCattleId(), cattle.getPrefix(), cattle.getEarTag(), cattle.getDateOfBirth(),
-				cattle.getMotherEarTag(), cattle.getBreedId(), cattle.getCategoryId(), cattle.getFarmId(),
-				cattle.getSourceMarketId(), cattle.getDatePurchased(), cattle.getPurchasePrice(), cattle.getSaleId(),
-				cattle.getSalePrice(), cattle.getComments(), cattle.getVersion(), cattle.getPreviousHolding(),
-				cattle.getFlatteningFor(), cattle.getAgentId(), cattle.getConditionScore(), cattle.getHealthScore(),
-				cattle.getWeightAtSale(), cattle.getBodyWeight(), cattle.getExpenses(), cattle.getSireEarTag(),
-				cattle.getSireName(), cattle.getPoundPerKgGain(), cattle.getHdDayFeeders(), cattle.getTagOrdered(),
-				cattle.getTagHere(), cattle.getCoopOpening(), cattle.getCoopClosing(), cattle.getResidencies(),
-				cattle.getNewtagreq(), cattle.getTagId(), cattle.getNewTagReqd(), cattle.getCattleGroupId(),
-				cattle.getConformationId(), cattle.getFatCoverId(), cattle.getWeightAtPurchase(),
-				cattle.getNumPrevMovements());
+		return new CattleDto(cattle.getId(), cattle.getCattleId(), cattle.getPrefix(), cattle.getEarTag(),
+				cattle.getDateOfBirth(), cattle.getMotherEarTag(), cattle.getBreedId(), cattle.getCategoryId(),
+				cattle.getFarmId(), cattle.getSourceMarketId(), cattle.getDatePurchased(), cattle.getPurchasePrice(),
+				cattle.getSaleId(), cattle.getSalePrice(), cattle.getComments(), cattle.getVersion(),
+				cattle.getPreviousHolding(), cattle.getFlatteningFor(), cattle.getAgentId(), cattle.getConditionScore(),
+				cattle.getHealthScore(), cattle.getWeightAtSale(), cattle.getBodyWeight(), cattle.getExpenses(),
+				cattle.getSireEarTag(), cattle.getSireName(), cattle.getPoundPerKgGain(), cattle.getHdDayFeeders(),
+				cattle.getTagOrdered(), cattle.getTagHere(), cattle.getCoopOpening(), cattle.getCoopClosing(),
+				cattle.getResidencies(), cattle.getNewtagreq(), cattle.getTagId(), cattle.getNewTagReqd(),
+				cattle.getCattleGroupId(), cattle.getConformationId(), cattle.getFatCoverId(),
+				cattle.getWeightAtPurchase(), cattle.getNumPrevMovements());
 	}
 
 	private boolean validateCattleInformation(final Cattle cattle) throws Exception {
