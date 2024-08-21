@@ -27,7 +27,7 @@ public class CattleController extends BaseController {
 	private CattleService cattleService;
 
 	@GetMapping("/{id}")
-	public ResponseEntity<CattleDto> getCattleById(@PathVariable Long id) {
+	public ResponseEntity<CattleDto> getCattleById(@PathVariable final Long id) {
 		logger.info("Incoming request: Retrieving cattle with ID: {}", id);
 		final CattleDto cattleDto = cattleService.getCattleById(id);
 		if (cattleDto != null) {
@@ -56,8 +56,17 @@ public class CattleController extends BaseController {
 				: ResponseEntity.ok(earTagList);
 	}
 
+	@GetMapping("/eartag/{earTag}")
+	public ResponseEntity<CattleDto> getCattleByEarTag(@PathVariable String earTag) {
+		final CattleDto cattle = cattleService.getCattleByEarTag(earTag);
+		if (cattle != null) {
+			return ResponseEntity.ok(cattle);
+		}
+		return ResponseEntity.noContent().build();
+	}
+
 	@PostMapping("/save")
-	public ResponseEntity<?> saveCattle(@RequestBody Cattle cattle) {
+	public ResponseEntity<?> saveCattle(@RequestBody final Cattle cattle) {
 		logger.info("Incoming request: Saving new cattle: {}", cattle);
 		try {
 			final CattleDto savedCattleDto = cattleService.saveCattle(cattle);

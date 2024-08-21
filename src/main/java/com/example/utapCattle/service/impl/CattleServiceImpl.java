@@ -26,13 +26,19 @@ public class CattleServiceImpl implements CattleService {
 	}
 
 	@Override
-	public CattleDto getCattleById(Long id) { // Return CattleDto
+	public CattleDto getCattleById(final Long id) { // Return CattleDto
 		final Optional<Cattle> cattle = cattleRepository.findById(id);
 		return cattle.map(this::mapToDto).orElse(null); // Map to DTO if found
 	}
 
 	@Override
-	public CattleDto saveCattle(Cattle cattle) throws Exception { // Return CattleDto
+	public CattleDto getCattleByEarTag(String earTag) {
+		final Optional<Cattle> cattle = cattleRepository.findByEarTag(earTag);
+		return cattle.map(this::mapToDto).orElse(null);
+	}
+
+	@Override
+	public CattleDto saveCattle(final Cattle cattle) throws Exception { // Return CattleDto
 		validateCattleInformation(cattle);
 		final long nextInductionId = cattleRepository.getNextSequenceValue();
 		cattle.setId(nextInductionId);
@@ -46,7 +52,7 @@ public class CattleServiceImpl implements CattleService {
 		return earTagList;
 	}
 
-	private CattleDto mapToDto(Cattle cattle) {
+	private CattleDto mapToDto(final Cattle cattle) {
 		return new CattleDto(cattle.getId(), cattle.getCattleId(), cattle.getPrefix(), cattle.getEarTag(),
 				cattle.getDateOfBirth(), cattle.getMotherEarTag(), cattle.getBreedId(), cattle.getCategoryId(),
 				cattle.getFarmId(), cattle.getSourceMarketId(), cattle.getDatePurchased(), cattle.getPurchasePrice(),
