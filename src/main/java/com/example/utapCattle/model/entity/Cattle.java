@@ -18,164 +18,149 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "cattle", schema = "public")
 public class Cattle {
-    
-    @Id
-    @Column(name = "cattleid")
-    private Long cattleId;
 
-    @Column(name = "eartag")
-    private String earTag;
+	@Id
+	@Column(name = "id")
+	private Long id;
 
-    @Column(name = "tagid")
-    private Integer tagId; // Consider making this a foreign key if applicable
+	@Column(name = "cattleid")
+	private Long cattleId;
 
-    @Column(name = "newtagreqd")
-    private String newTagReqd; // Consider using a boolean or enum
+	@Column(name = "prefix")
+	private String prefix;
 
-    @Column(name = "dateofbirth")
-    private String dateOfBirth; // Consider using a proper Date type if needed
+	@Column(name = "eartag")
+	private String earTag;
 
-    @Column(name = "mothereartag")
-    private String motherEarTag;
+	@Column(name = "dateofbirth")
+	private String dateOfBirth; // Consider using a proper Date type if needed
 
-    @Column(name = "breedid")
-    private Integer breedId; // Consider making this a foreign key
+	@Column(name = "mothereartag")
+	private String motherEarTag;
 
-    @Column(name = "categoryid")
-    private Integer categoryId; // Consider making this a foreign key
+	@Column(name = "breedid")
+	private Integer breedId; // Consider making this a foreign key
 
-    @Column(name = "farmid")
-    private Integer farmId; // Consider making this a foreign key
+	@Column(name = "categoryid")
+	private Integer categoryId; // Consider making this a foreign key
 
-    @Column(name = "sourcemarketid")
-    private Integer sourceMarketId; // Consider making this a foreign key
+	@Column(name = "farmid")
+	private Integer farmId; // Consider making this a foreign key
 
-    @Column(name = "cattlegroupid")
-    private String cattleGroupId;
+	@Column(name = "sourcemarketid")
+	private Integer sourceMarketId; // Consider making this a foreign key
 
-    @Column(name = "conformationid")
-    private String conformationId;
+	@Column(name = "datepurchased")
+	private String datePurchased; // Consider using a proper Date type
 
-    @Column(name = "fatcoverid")
-    private String fatCoverId;
+	@Column(name = "purchaseprice")
+	private BigDecimal purchasePrice;
 
-    @Column(name = "conditionscore")
-    private String conditionScore;
+	@Column(name = "saleid")
+	private Integer saleId; // Consider making this a foreign key
 
-    @Column(name = "healthscore")
-    private String healthScore;
+	@Column(name = "saleprice")
+	private String salePrice; // Consider using BigDecimal if it's a price
 
-    @Column(name = "datepurchased")
-    private String datePurchased; // Consider using a proper Date type
+	@Column(name = "comments")
+	private String comments;
 
-    @Column(name = "weightatpurchase")
-    private String weightAtPurchase;
+	@Column(name = "version")
+	private String version;
 
-    @Column(name = "purchaseprice")
-    private BigDecimal purchasePrice;
+	@Column(name = "previousholding")
+	private String previousHolding;
 
-    @Column(name = "numprevmovements")
-    private String numPrevMovements;
+	@Column(name = "flatteningfor")
+	private Integer flatteningFor; // Consider making this a foreign key
 
-    @Column(name = "saleid")
-    private Integer saleId; // Consider making this a foreign key
+	@Column(name = "agentid")
+	private Integer agentId; // Consider making this a foreign key
 
-    @Column(name = "weightatsale")
-    private String weightAtSale;
+	@Column(name = "conditionscore")
+	private String conditionScore;
 
-    @Column(name = "bodyweight")
-    private String bodyWeight;
+	@Column(name = "healthscore")
+	private String healthScore;
 
-    @Column(name = "saleprice")
-    private String salePrice; // Consider using BigDecimal if it's a price
+	@Column(name = "weightatsale")
+	private String weightAtSale;
 
-    @Column(name = "expenses")
-    private BigDecimal expenses;
+	@Column(name = "bodyweight")
+	private String bodyWeight;
 
-    @Column(name = "comments")
-    private String comments;
+	@Column(name = "expenses")
+	private BigDecimal expenses;
 
-    @Column(name = "sireeartag")
-    private String sireEarTag;
+	@Column(name = "sireeartag")
+	private String sireEarTag;
 
-    @Column(name = "previousholding")
-    private String previousHolding;
+	@Column(name = "sirename")
+	private String sireName;
 
-    @Column(name = "fatteningfor")
-    private Integer fatteningFor; // Consider making this a foreign key
+	@Column(name = "poundperkggain")
+	private String poundPerKgGain;
 
-    @Column(name = "agentid")
-    private Integer agentId; // Consider making this a foreign key
+	@Column(name = "hddayfeeders")
+	private String hdDayFeeders;
 
-    @Column(name = "sirename")
-    private String sireName;
+	@Column(name = "tagordered")
+	private String tagOrdered; // Consider using a boolean or enum
 
-    @Column(name = "poundperkggain")
-    private String poundPerKgGain;
+	@Column(name = "taghere")
+	private String tagHere; // Consider using a boolean or enum
 
-    @Column(name = "hddayfeeders")
-    private String hdDayFeeders;
+	@Column(name = "coopopening")
+	private String coopOpening;
 
-    @Column(name = "tagordered")
-    private String tagOrdered; // Consider using a boolean or enum
+	@Column(name = "coopclosing")
+	private String coopClosing;
 
-    @Column(name = "taghere")
-    private String tagHere; // Consider using a boolean or enum
+	@Column(name = "residencies")
+	private String residencies;
 
-    @Column(name = "coopopening")
-    private String coopOpening;
+	@Column(name = "newtagreq")
+	private Boolean newtagreq;
 
-    @Column(name = "coopclosing")
-    private String coopClosing;
+	@Column(name = "tagid")
+	private Integer tagId; // Consider making this a foreign key if applicable
 
-    @Column(name = "residencies")
-    private String residencies;
+	@Column(name = "newtagreqd")
+	private String newTagReqd; // Consider using a boolean or enum
 
-    @Column(name = "newtagreq") 
-    private Boolean newtagreq;
+	@Column(name = "cattlegroupid")
+	private String cattleGroupId;
 
-@Override
-    public String toString() {
-        return "Cattle{" +
-                "cattleId=" + cattleId +
-                ", earTag='" + earTag + '\'' +
-                ", tagId=" + tagId +
-                ", newTagReqd='" + newTagReqd + '\'' +
-                ", dateOfBirth='" + dateOfBirth + '\'' +
-                ", motherEarTag='" + motherEarTag + '\'' +
-                ", breedId=" + breedId +
-                ", categoryId=" + categoryId +
-                ", farmId=" + farmId +
-                ", sourceMarketId=" + sourceMarketId +
-                ", cattleGroupId='" + cattleGroupId + '\'' +
-                ", conformationId='" + conformationId + '\'' +
-                ", fatCoverId='" + fatCoverId + '\'' +
-                ", conditionScore='" + conditionScore + '\'' +
-                ", healthScore='" + healthScore + '\'' +
-                ", datePurchased='" + datePurchased + '\'' +
-                ", weightAtPurchase='" + weightAtPurchase + '\'' +
-                ", purchasePrice=" + purchasePrice +
-                ", numPrevMovements='" + numPrevMovements + '\'' +
-                ", saleId=" + saleId +
-                ", weightAtSale='" + weightAtSale + '\'' +
-                ", bodyWeight='" + bodyWeight + '\'' +
-                ", salePrice='" + salePrice + '\'' +
-                ", expenses=" + expenses +
-                ", comments='" + comments + '\'' +
-                ", sireEarTag='" + sireEarTag + '\'' +
-                ", previousHolding='" + previousHolding + '\'' +
-                ", fatteningFor=" + fatteningFor +
-                ", agentId=" + agentId +
-                ", sireName='" + sireName + '\'' +
-                ", poundPerKgGain='" + poundPerKgGain + '\'' +
-                ", hdDayFeeders='" + hdDayFeeders + '\'' +
-                ", tagOrdered='" + tagOrdered + '\'' +
-                ", tagHere='" + tagHere + '\'' +
-                ", coopOpening='" + coopOpening + '\'' +
-                ", coopClosing='" + coopClosing + '\'' +
-                ", residencies='" + residencies + '\'' +
-                ", newtagreq=" + newtagreq +
-                '}';
-    }
+	@Column(name = "conformationid")
+	private String conformationId;
+
+	@Column(name = "fatcoverid")
+	private String fatCoverId;
+
+	@Column(name = "weightatpurchase")
+	private String weightAtPurchase;
+
+	@Column(name = "numprevmovements")
+	private String numPrevMovements;
+
+	@Override
+	public String toString() {
+		return "Cattle{" + "cattleId=" + cattleId + ", prefix=" + prefix + ", earTag='" + earTag + '\''
+				+ ", dateOfBirth='" + dateOfBirth + '\'' + ", motherEarTag='" + motherEarTag + '\'' + ", breedId="
+				+ breedId + ", categoryId=" + categoryId + ", farmId=" + farmId + ", sourceMarketId=" + sourceMarketId
+				+ ", datePurchased='" + datePurchased + '\'' + ", purchasePrice=" + purchasePrice + ", saleId=" + saleId
+				+ ", salePrice='" + salePrice + '\'' + ", comments='" + comments + '\'' + ", version='" + version + '\''
+				+ ", previousHolding='" + previousHolding + '\'' + ", flatteningFor=" + flatteningFor + ", agentId="
+				+ agentId + ", conditionScore='" + conditionScore + '\'' + ", healthScore='" + healthScore + '\''
+				+ ", weightAtSale='" + weightAtSale + '\'' + ", bodyWeight='" + bodyWeight + '\'' + ", expenses="
+				+ expenses + ", sireEarTag='" + sireEarTag + '\'' + ", sireName='" + sireName + '\''
+				+ ", poundPerKgGain='" + poundPerKgGain + '\'' + ", hdDayFeeders='" + hdDayFeeders + '\''
+				+ ", tagOrdered='" + tagOrdered + '\'' + ", tagHere='" + tagHere + '\'' + ", coopOpening='"
+				+ coopOpening + '\'' + ", coopClosing='" + coopClosing + '\'' + ", residencies='" + residencies + '\''
+				+ ", newtagreq=" + newtagreq + ", tagId=" + tagId + ", newTagReqd='" + newTagReqd + '\''
+				+ ", cattleGroupId='" + cattleGroupId + '\'' + ", conformationId='" + conformationId + '\''
+				+ ", fatCoverId='" + fatCoverId + '\'' + ", weightAtPurchase='" + weightAtPurchase + '\''
+				+ ", numPrevMovements='" + numPrevMovements + '\'' + '}';
+	}
 
 }
