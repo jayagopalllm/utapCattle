@@ -27,7 +27,7 @@ public class CattleController extends BaseController {
 	private CattleService cattleService;
 
 	@GetMapping("/{id}")
-	public ResponseEntity<CattleDto> getCattleById(@PathVariable Long id) {
+	public ResponseEntity<CattleDto> getCattleById(@PathVariable final Long id) {
 		logger.info("Incoming request: Retrieving cattle with ID: {}", id);
 		final CattleDto cattleDto = cattleService.getCattleById(id);
 		if (cattleDto != null) {
@@ -48,16 +48,25 @@ public class CattleController extends BaseController {
 	}
 
 	@GetMapping("/eartag") // Get cattle by ID
-	public ResponseEntity<List<String>> getEartags() {
+	public ResponseEntity<List<String>> findEarTagsWithIncompleteInduction() {
 		logger.info("Incoming request: Retrieving all cattle's eartags that has not completed the induction");
-		final List<String> earTagList = cattleService.getEartags();
+		final List<String> earTagList = cattleService.findEarTagsWithIncompleteInduction();
 		logger.info("Request successful: Retrieved all cattle's eartag");
 		return (CollectionUtils.isEmpty(earTagList)) ? ResponseEntity.noContent().build()
 				: ResponseEntity.ok(earTagList);
 	}
 
+	@GetMapping("/eartag/{earTag}")
+	public ResponseEntity<CattleDto> getCattleByEarTag(@PathVariable String earTag) {
+		final CattleDto cattle = cattleService.getCattleByEarTag(earTag);
+		if (cattle != null) {
+			return ResponseEntity.ok(cattle);
+		}
+		return ResponseEntity.noContent().build();
+	}
+
 	@PostMapping("/save")
-	public ResponseEntity<?> saveCattle(@RequestBody Cattle cattle) {
+	public ResponseEntity<?> saveCattle(@RequestBody final Cattle cattle) {
 		logger.info("Incoming request: Saving new cattle: {}", cattle);
 		try {
 			final CattleDto savedCattleDto = cattleService.saveCattle(cattle);
