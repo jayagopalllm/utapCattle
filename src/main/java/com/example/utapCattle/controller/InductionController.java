@@ -20,20 +20,24 @@ import com.example.utapCattle.service.InductionService;
 @RestController
 @CrossOrigin
 @RequestMapping("/induction")
-public class InductionController {
+public class InductionController extends BaseController {
 
 	@Autowired
 	private InductionService inductionService;
 
 	@PostMapping("/save")
-	public ResponseEntity<InductionDto> saveCattle(@RequestBody final Induction induction) {
+	public ResponseEntity<InductionDto> saveInduction(@RequestBody final Induction induction) {
+		logger.info("Incoming request: Saving induction information");
 		final InductionDto savedCattleDto = inductionService.saveInduction(induction);
+		logger.info("Request successful: saved induction - {}", induction.getId());
 		return new ResponseEntity<>(savedCattleDto, HttpStatus.CREATED);
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<InductionDto> getInductionById(@PathVariable final Long id) {
+		logger.info("Incoming request: Get Induction information by Id");
 		final InductionDto inductionDto = inductionService.getInductionById(id);
+		logger.info("Request successful: Retreived induction information");
 		return (inductionDto != null) ? ResponseEntity.ok(inductionDto) : ResponseEntity.noContent().build();
 	}
 

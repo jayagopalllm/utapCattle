@@ -48,9 +48,9 @@ public class CattleController extends BaseController {
 	}
 
 	@GetMapping("/eartag") // Get cattle by ID
-	public ResponseEntity<List<String>> getEartags() {
+	public ResponseEntity<List<String>> findEarTagsWithIncompleteInduction() {
 		logger.info("Incoming request: Retrieving all cattle's eartags that has not completed the induction");
-		final List<String> earTagList = cattleService.getEartags();
+		final List<String> earTagList = cattleService.findEarTagsWithIncompleteInduction();
 		logger.info("Request successful: Retrieved all cattle's eartag");
 		return (CollectionUtils.isEmpty(earTagList)) ? ResponseEntity.noContent().build()
 				: ResponseEntity.ok(earTagList);

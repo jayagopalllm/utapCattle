@@ -47,8 +47,8 @@ public class CattleServiceImpl implements CattleService {
 	}
 
 	@Override
-	public List<String> getEartags() {
-		final List<String> earTagList = cattleRepository.getEarTagList();
+	public List<String> findEarTagsWithIncompleteInduction() {
+		final List<String> earTagList = cattleRepository.findEarTagsWithIncompleteInduction();
 		return earTagList;
 	}
 

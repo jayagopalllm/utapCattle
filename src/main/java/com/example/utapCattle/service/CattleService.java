@@ -15,5 +15,5 @@ public interface CattleService {
 
 	CattleDto saveCattle(final Cattle cattle) throws Exception;
 
-	List<String> getEartags();
+	List<String> findEarTagsWithIncompleteInduction();
 }
