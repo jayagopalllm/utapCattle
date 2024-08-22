@@ -10,6 +10,7 @@ import com.example.utapCattle.model.entity.Farm;
 import com.example.utapCattle.model.entity.Market;
 import com.example.utapCattle.model.entity.MedicalCondition;
 import com.example.utapCattle.model.entity.Medication;
+import com.example.utapCattle.model.entity.Pen;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.Data;
@@ -26,6 +27,8 @@ public class AllDataDto {
 	private List<Customer> fatteningFor;
 	private List<MedicalCondition> medicalCondition;
 	private List<Medication> medication;
+	private List<String> earTagList;
+	private List<Pen> pens;
 
 	public AllDataDto(final List<Farm> sourceFarm, final List<Breed> breed, final List<Market> market,
 			final List<Category> category, final List<Agent> agent, final List<Customer> fatteningFor) {
@@ -37,8 +40,11 @@ public class AllDataDto {
 		this.fatteningFor = fatteningFor;
 	}
 
-	public AllDataDto(final List<MedicalCondition> medicalCondition, final List<Medication> medication) {
+	public AllDataDto(final List<MedicalCondition> medicalCondition, final List<Medication> medication,
+			final List<Pen> pens, final List<String> earTagList) {
 		this.medicalCondition = medicalCondition;
 		this.medication = medication;
+		this.pens = pens;
+		this.earTagList = earTagList;
 	}
 }

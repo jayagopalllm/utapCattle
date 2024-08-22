@@ -14,15 +14,18 @@ import com.example.utapCattle.model.entity.Farm;
 import com.example.utapCattle.model.entity.Market;
 import com.example.utapCattle.model.entity.MedicalCondition;
 import com.example.utapCattle.model.entity.Medication;
+import com.example.utapCattle.model.entity.Pen;
 import com.example.utapCattle.service.DataService;
 import com.example.utapCattle.service.repository.AgentRepository;
 import com.example.utapCattle.service.repository.BreedRepository;
 import com.example.utapCattle.service.repository.CategoryRepository;
+import com.example.utapCattle.service.repository.CattleRepository;
 import com.example.utapCattle.service.repository.CustomerRepository;
 import com.example.utapCattle.service.repository.FarmRepository;
 import com.example.utapCattle.service.repository.MarketRepository;
 import com.example.utapCattle.service.repository.MedicalConditionRepository;
 import com.example.utapCattle.service.repository.MedicationRepository;
+import com.example.utapCattle.service.repository.PenRepository;
 
 @Service
 public class DataServiceImpl implements DataService {
@@ -51,6 +54,12 @@ public class DataServiceImpl implements DataService {
 	@Autowired
 	private MedicationRepository medicationRepository;
 
+	@Autowired
+	private CattleRepository cattleRepository;
+
+	@Autowired
+	private PenRepository penRepository;
+
 	@Override
 	public AllDataDto getAllData() {
 		final List<Farm> farms = farmRepository.findAll();
@@ -67,8 +76,10 @@ public class DataServiceImpl implements DataService {
 	public AllDataDto getMedicalConditionData() {
 		final List<MedicalCondition> medicalConditions = medicalConditionRepository.findAll();
 		final List<Medication> medications = medicationRepository.findAll();
+		final List<Pen> pens = penRepository.findAll();
+		final List<String> earTagList = cattleRepository.findEarTagsWithIncompleteInduction();
 
-		return new AllDataDto(medicalConditions, medications);
+		return new AllDataDto(medicalConditions, medications, pens, earTagList);
 	}
 
 }
