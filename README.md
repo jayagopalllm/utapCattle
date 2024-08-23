@@ -41,3 +41,6 @@ This README provides instructions on how to set up and test the application.
 *   The application uses an in-memory H2 database, which means the data will be lost when the application is stopped. For persistent data storage, you can configure the application to use a different database like MySQL or PostgreSQL.
 
 Enjoy using the application!
+
+mvn clean install
+java -jar utapCattle-0.0.1-SNAPSHOT.jar 
