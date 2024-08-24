@@ -63,7 +63,7 @@ public class CattleServiceImpl implements CattleService {
 				cattle.getTagOrdered(), cattle.getTagHere(), cattle.getCoopOpening(), cattle.getCoopClosing(),
 				cattle.getResidencies(), cattle.getNewtagreq(), cattle.getTagId(), cattle.getNewTagReqd(),
 				cattle.getCattleGroupId(), cattle.getConformationId(), cattle.getFatCoverId(),
-				cattle.getWeightAtPurchase(), cattle.getNumPrevMovements());
+				cattle.getWeightAtPurchase(), cattle.getNumPrevMovements(), cattle.getIsInductionCompleted());
 	}
 
 	private boolean validateCattleInformation(final Cattle cattle) throws Exception {

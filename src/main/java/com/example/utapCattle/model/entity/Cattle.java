@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -143,6 +141,9 @@ public class Cattle {
 	@Column(name = "numprevmovements")
 	private String numPrevMovements;
 
+	@Column(name = "isinductioncompleted")
+	private Boolean isInductionCompleted;
+
 	@Override
 	public String toString() {
 		return "Cattle{" + "cattleId=" + cattleId + ", prefix=" + prefix + ", earTag='" + earTag + '\''
@@ -160,7 +161,8 @@ public class Cattle {
 				+ ", newtagreq=" + newtagreq + ", tagId=" + tagId + ", newTagReqd='" + newTagReqd + '\''
 				+ ", cattleGroupId='" + cattleGroupId + '\'' + ", conformationId='" + conformationId + '\''
 				+ ", fatCoverId='" + fatCoverId + '\'' + ", weightAtPurchase='" + weightAtPurchase + '\''
-				+ ", numPrevMovements='" + numPrevMovements + '\'' + '}';
+				+ ", isInductionCompleted='" + isInductionCompleted + ", numPrevMovements='" + numPrevMovements + '\''
+				+ '}';
 	}
 
 }

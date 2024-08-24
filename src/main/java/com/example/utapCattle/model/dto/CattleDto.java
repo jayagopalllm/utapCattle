@@ -51,4 +51,5 @@ public class CattleDto {
 	private String fatCoverId;
 	private String weightAtPurchase;
 	private String numPrevMovements;
+	private Boolean isInductionCompleted;
 }

@@ -28,6 +28,7 @@ public class AllDataDto {
 	private List<MedicalCondition> medicalCondition;
 	private List<Medication> medication;
 	private List<String> earTagList;
+	private List<String> eIdList;
 	private List<Pen> pens;
 
 	public AllDataDto(final List<Farm> sourceFarm, final List<Breed> breed, final List<Market> market,
@@ -41,10 +42,11 @@ public class AllDataDto {
 	}
 
 	public AllDataDto(final List<MedicalCondition> medicalCondition, final List<Medication> medication,
-			final List<Pen> pens, final List<String> earTagList) {
+			final List<Pen> pens, List<String> eIdList, final List<String> earTagList) {
 		this.medicalCondition = medicalCondition;
 		this.medication = medication;
 		this.pens = pens;
+		this.eIdList = eIdList;
 		this.earTagList = earTagList;
 	}
 }

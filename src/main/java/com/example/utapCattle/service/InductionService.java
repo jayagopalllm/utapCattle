@@ -1,15 +1,11 @@
 package com.example.utapCattle.service;
 
-import com.example.utapCattle.model.dto.InductionDto;
-import com.example.utapCattle.model.entity.Induction;
-
 import java.util.List;
+
+import com.example.utapCattle.model.dto.TreatmentHistoryDto;
+import com.example.utapCattle.model.entity.TreatmentHistoryMetadata;
 
 public interface InductionService {
 
-	List<InductionDto> getAllInductions();
-
-	InductionDto getInductionById(Long id);
-
-	InductionDto saveInduction(Induction induction);
+	public List<TreatmentHistoryDto> saveInduction(final TreatmentHistoryMetadata treatmentHistoryMetadata);
 }
