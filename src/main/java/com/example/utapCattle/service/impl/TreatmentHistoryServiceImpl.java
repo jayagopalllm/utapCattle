@@ -3,20 +3,29 @@ package com.example.utapCattle.service.impl;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.annotations.Comments;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.utapCattle.model.dto.MovementDto;
 import com.example.utapCattle.model.dto.TreatmentHistoryDto;
+import com.example.utapCattle.model.dto.WeightHistoryDto;
+import com.example.utapCattle.model.entity.Comment;
+import com.example.utapCattle.model.entity.Movement;
 import com.example.utapCattle.model.entity.TreatmentHistory;
 import com.example.utapCattle.model.entity.TreatmentHistoryMetadata;
+import com.example.utapCattle.model.entity.WeightHistory;
+import com.example.utapCattle.service.CommentService;
+import com.example.utapCattle.service.MovementService;
 import com.example.utapCattle.service.TreatmentHistoryService;
+import com.example.utapCattle.service.WeightHistoryService;
 import com.example.utapCattle.service.repository.TreatmentHistoryRepository;
 
 @Service
@@ -24,6 +33,15 @@ public class TreatmentHistoryServiceImpl implements TreatmentHistoryService {
 
 	@Autowired
 	private TreatmentHistoryRepository treatmentHistoryRepository;
+
+	@Autowired
+	private CommentService commentService;
+
+	@Autowired
+	private WeightHistoryService weightHistoryService;
+
+	@Autowired
+	private MovementService movementService;
 
 	@Override
 	public List<TreatmentHistoryDto> getAllTreatmentHistory() {
@@ -37,83 +55,163 @@ public class TreatmentHistoryServiceImpl implements TreatmentHistoryService {
 	}
 
 	@Override
-	public List<TreatmentHistoryDto> saveTreatmentHistory(final TreatmentHistoryMetadata treatmentHistoryMetadata) {
+	public Map<String, Object> saveTreatmentHistory(final TreatmentHistoryMetadata treatmentHistoryMetadata) {
 		// Extract the list of treatment histories from the metadata
 		final List<TreatmentHistory> treatmentHistories = treatmentHistoryMetadata.getTreatmentHistories();
 
 		// Validate that all mandatory fields are present.
 		validateInductionVO(treatmentHistories);
 
-		final List<Comments> commentList = new ArrayList<>();
-		Long commentId = null;
-		if (StringUtils.isNotEmpty(treatmentHistoryMetadata.getComment())) {
-			commentId = 1L;
-//			commentList.add()
-		}
+		// Get the current date in the required format
+		final String formattedDate = getCurrentFormattedDate();
 
-		final Date currentDate = new Date();
-		// Specify the date format
-		final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-		// Format the date as a string
-		final String formattedDate = formatter.format(currentDate);
+		final Long cattleId = treatmentHistoryMetadata.getCattleId();
+		final Long processId = treatmentHistoryMetadata.getProcessId();
 
-		// Set the formatted date string to treatmentDate field
+		final List<Comment> commentList = new ArrayList<>();
+		final Long commentId = createTreatmentComment(treatmentHistoryMetadata.getComment(), cattleId, processId, null,
+				formattedDate, commentList);
 
-		for (final TreatmentHistory treatmentHistory : treatmentHistories) {
-			final Long id = treatmentHistoryRepository.getNextSequenceValue();
-			treatmentHistory.setTreatmentHistoryId(id);
-			treatmentHistory.setTreatmentDate(formattedDate);
-			treatmentHistory.setCattleId(treatmentHistoryMetadata.getCattleId());
-			treatmentHistory.setCommentId(commentId);
+		// Update treatment histories with additional information
+		updateTreatmentHistories(treatmentHistories, formattedDate, cattleId, processId, commentId, commentList);
 
-			Long conditionCommentId = null;
-			if (StringUtils.isNotEmpty(treatmentHistory.getConditionComment())) {
-				conditionCommentId = 1L;
-//				commentList.add()
-			}
-			treatmentHistory.setConditionCommentId(conditionCommentId);
-		}
 		// Store all the Treatment History information
 		final List<TreatmentHistory> savedTreatmentHistory = treatmentHistoryRepository.saveAll(treatmentHistories);
 
+		final Map<String, Object> outputMap = new HashMap<>();
+
 		// Convert to DTO and add to the list of DTOs
 		final List<TreatmentHistoryDto> savedTreatmentHistoryDtos = mapToDto(savedTreatmentHistory);
+		outputMap.put("treatmentHistories", savedTreatmentHistoryDtos);
 
 		if (CollectionUtils.isNotEmpty(commentList)) {
-			/*
-			 * final Comment comment = new Comment();
-			 * comment.setTreatmentHistoryId(savedTreatmentHistory.getTreatmentHistoryId());
-			 * comment.setCommentText(treatmentHistoryMetadata.getComment());
-			 * commentRepository.save(comment);
-			 */
+			commentService.saveComments(commentList);
+			outputMap.put("comments", commentList);
 		}
 
 		// Store Weight History information if Record Weight flag is true
 		if (Boolean.TRUE.equals(treatmentHistoryMetadata.getRecordWeight())) {
-			// Logic to save the weight history
-			/*
-			 * final WeightHistory weightHistory = new WeightHistory();
-			 * weightHistory.setTreatmentHistoryId(savedTreatmentHistory.
-			 * getTreatmentHistoryId());
-			 * weightHistory.setWeight(treatmentHistory.getWeight());
-			 * weightHistoryRepository.save(weightHistory);
-			 */
+			final WeightHistoryDto weightHistoryDto = saveWeightHistory(cattleId, formattedDate,
+					treatmentHistoryMetadata.getWeight());
+			outputMap.put("weightHistories", weightHistoryDto);
 		}
 
 		// Store Movement information if Record Movement flag is true
 		if (Boolean.TRUE.equals(treatmentHistoryMetadata.getRecordMovement())) {
-			// Logic to save the movement information
-			/*
-			 * final Movement movement = new Movement();
-			 * movement.setTreatmentHistoryId(savedTreatmentHistory.getTreatmentHistoryId())
-			 * ; movement.setMovementDetails(treatmentHistory.getMovementDetails());
-			 * movementRepository.save(movement);
-			 */
+			final MovementDto movementDto = saveMovement(cattleId, treatmentHistoryMetadata.getPen(), formattedDate);
+			outputMap.put("movements", movementDto);
 		}
-		return savedTreatmentHistoryDtos;
+
+		return outputMap;
 	}
 
-	public void validateInductionVO(List<TreatmentHistory> treatmentHistories) {
+	/**
+	 * Returns the current date formatted as a string in the format "yyyy-MM-dd".
+	 *
+	 * @return The formatted current date.
+	 */
+	private String getCurrentFormattedDate() {
+		final Date currentDate = new Date();
+		final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		return formatter.format(currentDate);
+	}
+
+	/**
+	 * Updates the treatment histories with additional information such as IDs and
+	 * comments.
+	 *
+	 * @param treatmentHistories The list of treatment histories to update.
+	 * @param formattedDate      The formatted current date.
+	 * @param cattleId           The ID of the cattle.
+	 * @param processId          The process ID.
+	 * @param commentId          The comment ID.
+	 */
+	private void updateTreatmentHistories(final List<TreatmentHistory> treatmentHistories, final String formattedDate,
+			final Long cattleId, final Long processId, final Long commentId, final List<Comment> commentList) {
+		for (final TreatmentHistory treatmentHistory : treatmentHistories) {
+			final Long id = treatmentHistoryRepository.getNextSequenceValue();
+			treatmentHistory.setTreatmentHistoryId(id);
+			treatmentHistory.setTreatmentDate(formattedDate);
+			treatmentHistory.setCattleId(cattleId);
+			treatmentHistory.setProcessId(processId);
+			treatmentHistory.setCommentId(commentId);
+
+			final Long conditionCommentId = createTreatmentComment(treatmentHistory.getConditionComment(), cattleId,
+					processId, id, formattedDate, commentList);
+			treatmentHistory.setConditionCommentId(conditionCommentId);
+		}
+	}
+
+	/**
+	 * Creates a treatment comment if the provided comment text is not empty and
+	 * adds it to the provided list of comments.
+	 * 
+	 * This method generates a new comment ID, creates a {@link Comment} object with
+	 * the provided details, and adds it to the list of comments. The comment ID is
+	 * retrieved using the {@link CommentService#getNextSequenceValue()} method.
+	 * 
+	 * @param comment       The text of the comment to create. If this is null or
+	 *                      empty, no comment will be created.
+	 * @param cattleId      The ID of the cattle associated with the comment.
+	 * @param processId     The process ID associated with the comment.
+	 * @param entityId      The ID of the entity (e.g., treatment history) related
+	 *                      to the comment. This can be null if not applicable.
+	 * @param formattedDate The date when the comment is created, formatted as a
+	 *                      string.
+	 * @param commentList   The list to which the created comment will be added.
+	 *                      This list is modified by the method.
+	 * @return The ID of the created comment, or null if no comment is created
+	 *         (i.e., if the provided comment text is empty).
+	 */
+	private Long createTreatmentComment(final String comment, final Long cattleId, final Long processId,
+			final Long entityId, final String formattedDate, final List<Comment> commentList) {
+		if (StringUtils.isEmpty(comment)) {
+			return null;
+		}
+		final Long commentId = commentService.getNextSequenceValue();
+
+		final Comment treatmentComment = new Comment(commentId, comment, processId, cattleId, null, entityId,
+				formattedDate);
+
+		commentList.add(treatmentComment);
+		return commentId;
+	}
+
+	/**
+	 * Saves the weight history information if the Record Weight flag is true.
+	 *
+	 * @param cattleId      The ID of the cattle.
+	 * @param formattedDate The formatted current date.
+	 * @param weight        The weight to save.
+	 * @return {@link WeightHistoryDto}
+	 */
+	private WeightHistoryDto saveWeightHistory(final Long cattleId, final String formattedDate, final Double weight) {
+		final WeightHistory weightHistory = new WeightHistory();
+		weightHistory.setCattleId(cattleId);
+		weightHistory.setWeightDateTime(formattedDate);
+		weightHistory.setWeight(weight);
+
+		return weightHistoryService.saveWeightHistory(weightHistory);
+	}
+
+	/**
+	 * Saves the movement information if the Record Movement flag is true.
+	 *
+	 * @param cattleId      The ID of the cattle.
+	 * @param penId         The ID of the pen.
+	 * @param formattedDate The formatted current date.
+	 * @return {@link MovementDto}
+	 */
+	private MovementDto saveMovement(final Long cattleId, final Integer penId, final String formattedDate) {
+		final Movement movement = new Movement();
+		movement.setCattleId(cattleId);
+		movement.setPenId(penId);
+		movement.setMovementDate(formattedDate);
+
+		return movementService.saveMovement(movement);
+	}
+
+	private void validateInductionVO(List<TreatmentHistory> treatmentHistories) {
 		for (final TreatmentHistory treatmentHistory : treatmentHistories) {
 			// Validate that all mandatory fields are present.
 			if (StringUtils.isEmpty(treatmentHistory.getMedicalConditionId())) {

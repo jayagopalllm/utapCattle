@@ -1,6 +1,6 @@
 package com.example.utapCattle.controller;
 
-import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.utapCattle.model.dto.TreatmentHistoryDto;
 import com.example.utapCattle.model.entity.TreatmentHistoryMetadata;
 import com.example.utapCattle.service.InductionService;
 
@@ -26,8 +25,7 @@ public class InductionController extends BaseController {
 	@PostMapping("/save")
 	public ResponseEntity<?> saveInduction(@RequestBody final TreatmentHistoryMetadata treatmentHistoryMetadata) {
 		logger.info("Incoming request: Saving induction information");
-		final List<TreatmentHistoryDto> savedTreatmentHistoryDto = inductionService
-				.saveInduction(treatmentHistoryMetadata);
+		final Map<String, Object> savedTreatmentHistoryDto = inductionService.saveInduction(treatmentHistoryMetadata);
 		logger.info("Request successful: saved induction");
 		return new ResponseEntity<>(savedTreatmentHistoryDto, HttpStatus.CREATED);
 	}

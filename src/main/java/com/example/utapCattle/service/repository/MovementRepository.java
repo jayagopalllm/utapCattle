@@ -1,0 +1,14 @@
+package com.example.utapCattle.service.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import com.example.utapCattle.model.entity.Movement;
+
+@Repository
+public interface MovementRepository extends JpaRepository<Movement, Long> {
+
+	@Query(value = "SELECT nextval('movement_seq')", nativeQuery = true)
+	Long getNextSequenceValue();
+}

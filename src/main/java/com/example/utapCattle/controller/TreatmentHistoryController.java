@@ -1,7 +1,9 @@
 package com.example.utapCattle.controller;
 
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.collections4.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,19 +31,22 @@ public class TreatmentHistoryController extends BaseController {
 	public ResponseEntity<?> saveTreatmentHistory(
 			@RequestBody final TreatmentHistoryMetadata treatmentHistoryMetadata) {
 
-		logger.info("Incoming request: Saving induction information");
-		final List<TreatmentHistoryDto> savedCattleDto = treatmentHistoryService
+		logger.info("Incoming request: Saving treatment history information");
+		final Map<String, Object> savedTreatmentHistoryDto = treatmentHistoryService
 				.saveTreatmentHistory(treatmentHistoryMetadata);
-		logger.info("Request successful: saved induction");
-		return new ResponseEntity<>(savedCattleDto, HttpStatus.CREATED);
+		logger.info("Request successful: saved treatment history");
+		return MapUtils.isNotEmpty(savedTreatmentHistoryDto)
+				? new ResponseEntity<>(savedTreatmentHistoryDto, HttpStatus.CREATED)
+				: ResponseEntity.badRequest().build();
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<TreatmentHistoryDto> getTreatmentHistoryById(@PathVariable final Long id) {
-		logger.info("Incoming request: Get Induction information by Id");
-		final TreatmentHistoryDto inductionDto = treatmentHistoryService.getTreatmentHistoryById(id);
-		logger.info("Request successful: Retreived induction information");
-		return (inductionDto != null) ? ResponseEntity.ok(inductionDto) : ResponseEntity.noContent().build();
+		logger.info("Incoming request: Get treatment history information by Id");
+		final TreatmentHistoryDto treatmentHistoryDto = treatmentHistoryService.getTreatmentHistoryById(id);
+		logger.info("Request successful: Retreived treatment history information");
+		return (treatmentHistoryDto != null) ? ResponseEntity.ok(treatmentHistoryDto)
+				: ResponseEntity.noContent().build();
 	}
 
 	@GetMapping

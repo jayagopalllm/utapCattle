@@ -1,14 +1,12 @@
 package com.example.utapCattle.service.impl;
 
-import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.utapCattle.model.dto.TreatmentHistoryDto;
 import com.example.utapCattle.model.entity.Cattle;
-import com.example.utapCattle.model.entity.TreatmentHistory;
 import com.example.utapCattle.model.entity.TreatmentHistoryMetadata;
 import com.example.utapCattle.service.InductionService;
 import com.example.utapCattle.service.TreatmentHistoryService;
@@ -23,42 +21,21 @@ public class InductionServiceImpl implements InductionService {
 	@Autowired
 	private TreatmentHistoryService treatmentHistoryService;
 
-	/**
-	 * Saves the treatment history information after performing necessary
-	 * validations, and updates the corresponding cattle record to mark induction as
-	 * completed.
-	 *
-	 * <ul>
-	 * <li>Validates the mandatory fields: EId and EarTag.</li>
-	 * <li>Uses the {@link TreatmentHistoryServiceImpl#saveTreatmentHistory} method
-	 * to save each treatment history record.</li>
-	 * <li>Links the Cattle EId and EarTag, ensuring consistency in the Cattle
-	 * entity.</li>
-	 * <li>Marks the cattle record as having completed induction by setting the
-	 * 'isInductionCompleted' flag to true.</li>
-	 * </ul>
-	 *
-	 * @param treatmentHistoryList A list of {@link TreatmentHistory} entities
-	 *                             representing the treatment history details to be
-	 *                             saved.
-	 * @return A {@link TreatmentHistoryDto} object representing the saved treatment
-	 *         history data.
-	 * @throws IllegalArgumentException if EId or EarTag is missing or invalid.
+	/*
+	 * {@inheritDoc}
 	 */
 	@Override
-	public final List<TreatmentHistoryDto> saveInduction(final TreatmentHistoryMetadata treatmentHistoryMetadata) {
+	public final Map<String, Object> saveInduction(final TreatmentHistoryMetadata treatmentHistoryMetadata) {
 		// Step 1: Validate that EId and EarTag are present in the input treatment
 		// history records.
-		if (treatmentHistoryMetadata.getCattleId() == null) {
-			throw new IllegalArgumentException("EId is a mandatory field and cannot be null or empty.");
-		}
-		if (treatmentHistoryMetadata.getEarTag() == null || treatmentHistoryMetadata.getEarTag().isEmpty()) {
-			throw new IllegalArgumentException("EarTag is a mandatory field and cannot be null or empty.");
-		}
+		validateInductionVO(treatmentHistoryMetadata);
+
+		// add process id
+		treatmentHistoryMetadata.setProcessId(1L);
 
 		// Step 2: Store each treatment history record using the
 		// TreatmentHistoryServiceImpl
-		final List<TreatmentHistoryDto> savedTreatmentHistoryDtos = treatmentHistoryService
+		final Map<String, Object> savedTreatmentHistoryDtos = treatmentHistoryService
 				.saveTreatmentHistory(treatmentHistoryMetadata);
 
 		// Step 3: Link the Cattle EId and EarTag, and update the 'isInductionCompleted'
@@ -67,6 +44,15 @@ public class InductionServiceImpl implements InductionService {
 
 		// Step 4: Convert the saved treatment history to DTO and return.
 		return savedTreatmentHistoryDtos; // Assuming you want to return the first saved record as DTO
+	}
+
+	private void validateInductionVO(final TreatmentHistoryMetadata treatmentHistoryMetadata) {
+		if (treatmentHistoryMetadata.getCattleId() == null) {
+			throw new IllegalArgumentException("EId is a mandatory field and cannot be null or empty.");
+		}
+		if (treatmentHistoryMetadata.getEarTag() == null || treatmentHistoryMetadata.getEarTag().isEmpty()) {
+			throw new IllegalArgumentException("EarTag is a mandatory field and cannot be null or empty.");
+		}
 	}
 
 	private void updateCattleId(final TreatmentHistoryMetadata treatmentHistoryMetadata) {

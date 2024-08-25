@@ -46,6 +46,9 @@ public class TreatmentHistory {
 	@Column(name = "commentid")
 	private Long commentId;
 
+	@Column(name = "processid")
+	private Long processId;
+
 	@Transient
 	private String conditionComment;
 

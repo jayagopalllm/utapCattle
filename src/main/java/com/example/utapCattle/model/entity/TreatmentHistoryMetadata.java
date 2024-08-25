@@ -15,12 +15,18 @@ public class TreatmentHistoryMetadata {
 
 	private Long cattleId;
 
+	private Long processId;
+
 	private String earTag;
 
 	private String comment;
 
 	private Boolean recordWeight;
 
+	private Double weight;
+
 	private Boolean recordMovement;
+
+	private Integer pen;
 
 }
