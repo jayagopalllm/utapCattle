@@ -27,6 +27,11 @@ public interface CattleRepository extends JpaRepository<Cattle, Long> { // Use L
 	 * nativeQuery = true) Cattle findByEartag(@Param("tagId") Integer tagId);
 	 */
 
-	@Query("SELECT c FROM Cattle c WHERE c.earTag = :earTag")
-	Optional<Cattle> findByEarTag(@Param("earTag") String earTag);
+//	@Query("SELECT c FROM Cattle c WHERE c.earTag = :earTagOrEid OR c.cattleId = :earTagOrEid")
+	@Query(value = "SELECT * FROM cattle WHERE eartag = :earTagOrEid OR cattleid = CAST(:earTagOrEid AS BIGINT) LIMIT 1", nativeQuery = true)
+	Optional<Cattle> findByEarTag(@Param("earTagOrEid") String earTagOrEid);
+
+	@Query("SELECT c FROM Cattle c WHERE c.cattleId IS NOT NULL")
+	Optional<List<Cattle>> getEIdEartagMap();
+
 }

@@ -6,14 +6,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.utapCattle.model.dto.CattleDto;
 import com.example.utapCattle.model.dto.MovementDto;
 import com.example.utapCattle.model.dto.TreatmentHistoryDto;
 import com.example.utapCattle.model.dto.WeightHistoryDto;
@@ -22,6 +23,7 @@ import com.example.utapCattle.model.entity.Movement;
 import com.example.utapCattle.model.entity.TreatmentHistory;
 import com.example.utapCattle.model.entity.TreatmentHistoryMetadata;
 import com.example.utapCattle.model.entity.WeightHistory;
+import com.example.utapCattle.service.CattleService;
 import com.example.utapCattle.service.CommentService;
 import com.example.utapCattle.service.MovementService;
 import com.example.utapCattle.service.TreatmentHistoryService;
@@ -43,15 +45,18 @@ public class TreatmentHistoryServiceImpl implements TreatmentHistoryService {
 	@Autowired
 	private MovementService movementService;
 
+	@Autowired
+	private CattleService cattleService;
+
 	@Override
 	public List<TreatmentHistoryDto> getAllTreatmentHistory() {
 		return treatmentHistoryRepository.findAll().stream().map(this::mapToDto).collect(Collectors.toList());
 	}
 
 	@Override
-	public TreatmentHistoryDto getTreatmentHistoryById(Long id) {
-		final Optional<TreatmentHistory> induction = treatmentHistoryRepository.findById(id);
-		return induction.map(this::mapToDto).orElse(null);
+	public List<TreatmentHistoryDto> getTreatmentHistoriesByEId(Long eId) {
+		final List<TreatmentHistory> treatmentHistories = treatmentHistoryRepository.findByCattleId(eId);
+		return mapToDto(treatmentHistories);
 	}
 
 	@Override
@@ -101,6 +106,26 @@ public class TreatmentHistoryServiceImpl implements TreatmentHistoryService {
 			final MovementDto movementDto = saveMovement(cattleId, treatmentHistoryMetadata.getPen(), formattedDate);
 			outputMap.put("movements", movementDto);
 		}
+
+		return outputMap;
+	}
+
+	@Override
+	public Map<String, Object> getCattleDetailsAndAverageConditionScore(String earTagOrEId) throws Exception {
+		// Fetch the cattle details using cattleId or earTag
+		final CattleDto cattleDto = cattleService.getCattleByEarTag(earTagOrEId);
+		if (cattleDto == null) {
+			throw new BadRequestException("Cattle not found - " + earTagOrEId);
+		}
+		if (cattleDto.getCattleId() == null) {
+			throw new BadRequestException("Induction not yet completed for cattle - " + earTagOrEId);
+		}
+		final Map<String, Object> outputMap = new HashMap<>();
+		outputMap.put("cattle", cattleDto);
+		// Calculate the average conditionScore from treatmentHistory table
+		final Double averageConditionScore = treatmentHistoryRepository
+				.findAverageConditionScoreByCattleId(cattleDto.getCattleId());
+		outputMap.put("avgConditionScore", averageConditionScore);
 
 		return outputMap;
 	}

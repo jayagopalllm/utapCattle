@@ -1,6 +1,7 @@
 package com.example.utapCattle.model.dto;
 
 import java.util.List;
+import java.util.Map;
 
 import com.example.utapCattle.model.entity.Agent;
 import com.example.utapCattle.model.entity.Breed;
@@ -34,6 +35,7 @@ public class AllDataDto {
 	private List<String> eIdList;
 	private List<Pen> pens;
 	private List<DefaultTreatment> defaultTreatments;
+	private Map<Long, String> eIdEarTagMap;
 
 	public AllDataDto(final List<Farm> sourceFarm, final List<Breed> breed, final List<Market> market,
 			final List<Category> category, final List<Agent> agent, final List<Customer> fatteningFor) {

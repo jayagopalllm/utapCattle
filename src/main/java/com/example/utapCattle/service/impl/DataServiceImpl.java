@@ -1,6 +1,9 @@
 package com.example.utapCattle.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,6 +12,7 @@ import com.example.utapCattle.model.dto.AllDataDto;
 import com.example.utapCattle.model.entity.Agent;
 import com.example.utapCattle.model.entity.Breed;
 import com.example.utapCattle.model.entity.Category;
+import com.example.utapCattle.model.entity.Cattle;
 import com.example.utapCattle.model.entity.Customer;
 import com.example.utapCattle.model.entity.DefaultTreatment;
 import com.example.utapCattle.model.entity.Farm;
@@ -95,6 +99,22 @@ public class DataServiceImpl implements DataService {
 		conditionData.setDefaultTreatments(defaultTreatments);
 
 		return conditionData;
+	}
+
+	@Override
+	public AllDataDto getTreatmentData() {
+		final Optional<List<Cattle>> cattleList = cattleRepository.getEIdEartagMap();
+		final Map<Long, String> eIdEarTagMap = new HashMap<>();
+		if (cattleList.isPresent()) {
+			cattleList.get().forEach(cattle -> {
+				eIdEarTagMap.put(cattle.getCattleId(), cattle.getEarTag());
+			});
+		}
+
+		final AllDataDto treatmentData = new AllDataDto();
+		treatmentData.setEIdEarTagMap(eIdEarTagMap);
+
+		return treatmentData;
 	}
 
 }

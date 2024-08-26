@@ -33,8 +33,12 @@ public class CattleServiceImpl implements CattleService {
 
 	@Override
 	public CattleDto getCattleByEarTag(String earTag) {
-		final Optional<Cattle> cattle = cattleRepository.findByEarTag(earTag);
-		return cattle.map(this::mapToDto).orElse(null);
+		try {
+			final Optional<Cattle> cattle = cattleRepository.findByEarTag(earTag);
+			return cattle.map(this::mapToDto).orElse(null);
+		} catch (final Exception e) {
+			return null;
+		}
 	}
 
 	@Override

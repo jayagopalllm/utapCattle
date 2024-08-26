@@ -30,4 +30,10 @@ public class DataController extends BaseController {
 		final AllDataDto allData = dataService.getMedicalConditionData();
 		return allData;
 	}
+
+	@GetMapping(value = "/treatment")
+	public AllDataDto getTreatmentData() {
+		final AllDataDto allData = dataService.getTreatmentData();
+		return allData;
+	}
 }

@@ -57,18 +57,24 @@ public class InductionServiceImpl implements InductionService {
 
 	private void updateCattleId(final TreatmentHistoryMetadata treatmentHistoryMetadata) {
 		// Find the Cattle record by earTag
-		final Optional<Cattle> existingCattle = cattleRepository.findByEarTag(treatmentHistoryMetadata.getEarTag());
-
-		if (existingCattle.isPresent()) {
-			// Update the cattleId with eid
-			final Cattle cattle = existingCattle.get();
-			cattle.setCattleId(Long.valueOf(treatmentHistoryMetadata.getCattleId()));
-			cattle.setIsInductionCompleted(true);
-			cattleRepository.save(cattle);
-		} else {
-			// Handle case where Cattle with the given earTag does not exist
+		try {
+			final Optional<Cattle> existingCattle = cattleRepository.findByEarTag(treatmentHistoryMetadata.getEarTag());
+			if (existingCattle.isPresent()) {
+				// Update the cattleId with eid
+				final Cattle cattle = existingCattle.get();
+				cattle.setCattleId(Long.valueOf(treatmentHistoryMetadata.getCattleId()));
+				cattle.setIsInductionCompleted(true);
+				cattleRepository.save(cattle);
+			} else {
+				// Handle case where Cattle with the given earTag does not exist
+				throw new IllegalArgumentException(
+						"No Cattle record found with the given EarTag: " + treatmentHistoryMetadata.getEarTag());
+			}
+		} catch (final NumberFormatException e) {
 			throw new IllegalArgumentException(
 					"No Cattle record found with the given EarTag: " + treatmentHistoryMetadata.getEarTag());
+		} catch (final Exception e) {
+			throw e;
 		}
 
 	}
