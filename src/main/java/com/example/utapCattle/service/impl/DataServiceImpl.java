@@ -83,26 +83,15 @@ public class DataServiceImpl implements DataService {
 
 	@Override
 	public AllDataDto getMedicalConditionData() {
-		final List<MedicalCondition> medicalConditions = medicalConditionRepository.findAll();
-		final List<Medication> medications = medicationRepository.findAll();
-		final List<Pen> pens = penRepository.findAll();
-		final List<String> earTagList = cattleRepository.findEarTagsWithIncompleteInduction();
-		final List<String> eIdList = cattleRepository.findEIdsWithIncompleteInduction();
+		final AllDataDto conditionData = getInductionAndTreatmentData();
 		final List<DefaultTreatment> defaultTreatments = defaultTreatmentRepository.findAll();
-
-		final AllDataDto conditionData = new AllDataDto();
-		conditionData.setMedicalCondition(medicalConditions);
-		conditionData.setMedication(medications);
-		conditionData.setPens(pens);
-		conditionData.setEIdList(eIdList);
-		conditionData.setEarTagList(earTagList);
 		conditionData.setDefaultTreatments(defaultTreatments);
-
 		return conditionData;
 	}
 
 	@Override
 	public AllDataDto getTreatmentData() {
+		final AllDataDto treatmentData = getInductionAndTreatmentData();
 		final Optional<List<Cattle>> cattleList = cattleRepository.getEIdEartagMap();
 		final Map<Long, String> eIdEarTagMap = new HashMap<>();
 		if (cattleList.isPresent()) {
@@ -110,11 +99,25 @@ public class DataServiceImpl implements DataService {
 				eIdEarTagMap.put(cattle.getCattleId(), cattle.getEarTag());
 			});
 		}
-
-		final AllDataDto treatmentData = new AllDataDto();
 		treatmentData.setEIdEarTagMap(eIdEarTagMap);
-
 		return treatmentData;
+	}
+
+	private AllDataDto getInductionAndTreatmentData() {
+		final List<MedicalCondition> medicalConditions = medicalConditionRepository.findAll();
+		final List<Medication> medications = medicationRepository.findAll();
+		final List<Pen> pens = penRepository.findAll();
+		final List<String> earTagList = cattleRepository.findEarTagsWithIncompleteInduction();
+		final List<String> eIdList = cattleRepository.findEIdsWithIncompleteInduction();
+
+		final AllDataDto conditionData = new AllDataDto();
+		conditionData.setMedicalCondition(medicalConditions);
+		conditionData.setMedication(medications);
+		conditionData.setPens(pens);
+		conditionData.setEIdList(eIdList);
+		conditionData.setEarTagList(earTagList);
+
+		return conditionData;
 	}
 
 }
