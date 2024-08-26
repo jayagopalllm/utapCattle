@@ -4,11 +4,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import com.example.utapCattle.model.entity.Induction;
+import com.example.utapCattle.model.entity.Movement;
 
 @Repository
-public interface InductionRepository extends JpaRepository<Induction, Long> {
+public interface MovementRepository extends JpaRepository<Movement, Long> {
 
-	@Query(value = "SELECT nextval('induction_id_seq')", nativeQuery = true)
+	@Query(value = "SELECT nextval('movement_seq')", nativeQuery = true)
 	Long getNextSequenceValue();
 }

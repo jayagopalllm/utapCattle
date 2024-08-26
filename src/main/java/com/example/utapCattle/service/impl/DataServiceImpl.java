@@ -78,8 +78,9 @@ public class DataServiceImpl implements DataService {
 		final List<Medication> medications = medicationRepository.findAll();
 		final List<Pen> pens = penRepository.findAll();
 		final List<String> earTagList = cattleRepository.findEarTagsWithIncompleteInduction();
+		final List<String> eIdList = cattleRepository.findEIdsWithIncompleteInduction();
 
-		return new AllDataDto(medicalConditions, medications, pens, earTagList);
+		return new AllDataDto(medicalConditions, medications, pens, eIdList, earTagList);
 	}
 
 }
