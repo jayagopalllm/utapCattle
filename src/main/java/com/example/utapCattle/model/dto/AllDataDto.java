@@ -6,6 +6,7 @@ import com.example.utapCattle.model.entity.Agent;
 import com.example.utapCattle.model.entity.Breed;
 import com.example.utapCattle.model.entity.Category;
 import com.example.utapCattle.model.entity.Customer;
+import com.example.utapCattle.model.entity.DefaultTreatment;
 import com.example.utapCattle.model.entity.Farm;
 import com.example.utapCattle.model.entity.Market;
 import com.example.utapCattle.model.entity.MedicalCondition;
@@ -14,9 +15,11 @@ import com.example.utapCattle.model.entity.Pen;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@NoArgsConstructor
 public class AllDataDto {
 
 	private List<Farm> sourceFarm;
@@ -30,6 +33,7 @@ public class AllDataDto {
 	private List<String> earTagList;
 	private List<String> eIdList;
 	private List<Pen> pens;
+	private List<DefaultTreatment> defaultTreatments;
 
 	public AllDataDto(final List<Farm> sourceFarm, final List<Breed> breed, final List<Market> market,
 			final List<Category> category, final List<Agent> agent, final List<Customer> fatteningFor) {

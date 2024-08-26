@@ -10,6 +10,7 @@ import com.example.utapCattle.model.entity.Agent;
 import com.example.utapCattle.model.entity.Breed;
 import com.example.utapCattle.model.entity.Category;
 import com.example.utapCattle.model.entity.Customer;
+import com.example.utapCattle.model.entity.DefaultTreatment;
 import com.example.utapCattle.model.entity.Farm;
 import com.example.utapCattle.model.entity.Market;
 import com.example.utapCattle.model.entity.MedicalCondition;
@@ -21,6 +22,7 @@ import com.example.utapCattle.service.repository.BreedRepository;
 import com.example.utapCattle.service.repository.CategoryRepository;
 import com.example.utapCattle.service.repository.CattleRepository;
 import com.example.utapCattle.service.repository.CustomerRepository;
+import com.example.utapCattle.service.repository.DefaultTreatmentRepository;
 import com.example.utapCattle.service.repository.FarmRepository;
 import com.example.utapCattle.service.repository.MarketRepository;
 import com.example.utapCattle.service.repository.MedicalConditionRepository;
@@ -60,6 +62,9 @@ public class DataServiceImpl implements DataService {
 	@Autowired
 	private PenRepository penRepository;
 
+	@Autowired
+	private DefaultTreatmentRepository defaultTreatmentRepository;
+
 	@Override
 	public AllDataDto getAllData() {
 		final List<Farm> farms = farmRepository.findAll();
@@ -79,8 +84,17 @@ public class DataServiceImpl implements DataService {
 		final List<Pen> pens = penRepository.findAll();
 		final List<String> earTagList = cattleRepository.findEarTagsWithIncompleteInduction();
 		final List<String> eIdList = cattleRepository.findEIdsWithIncompleteInduction();
+		final List<DefaultTreatment> defaultTreatments = defaultTreatmentRepository.findAll();
 
-		return new AllDataDto(medicalConditions, medications, pens, eIdList, earTagList);
+		final AllDataDto conditionData = new AllDataDto();
+		conditionData.setMedicalCondition(medicalConditions);
+		conditionData.setMedication(medications);
+		conditionData.setPens(pens);
+		conditionData.setEIdList(eIdList);
+		conditionData.setEarTagList(earTagList);
+		conditionData.setDefaultTreatments(defaultTreatments);
+
+		return conditionData;
 	}
 
 }
