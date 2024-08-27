@@ -1,6 +1,9 @@
 package com.example.utapCattle.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,7 +12,9 @@ import com.example.utapCattle.model.dto.AllDataDto;
 import com.example.utapCattle.model.entity.Agent;
 import com.example.utapCattle.model.entity.Breed;
 import com.example.utapCattle.model.entity.Category;
+import com.example.utapCattle.model.entity.Cattle;
 import com.example.utapCattle.model.entity.Customer;
+import com.example.utapCattle.model.entity.DefaultTreatment;
 import com.example.utapCattle.model.entity.Farm;
 import com.example.utapCattle.model.entity.Market;
 import com.example.utapCattle.model.entity.MedicalCondition;
@@ -21,6 +26,7 @@ import com.example.utapCattle.service.repository.BreedRepository;
 import com.example.utapCattle.service.repository.CategoryRepository;
 import com.example.utapCattle.service.repository.CattleRepository;
 import com.example.utapCattle.service.repository.CustomerRepository;
+import com.example.utapCattle.service.repository.DefaultTreatmentRepository;
 import com.example.utapCattle.service.repository.FarmRepository;
 import com.example.utapCattle.service.repository.MarketRepository;
 import com.example.utapCattle.service.repository.MedicalConditionRepository;
@@ -60,6 +66,9 @@ public class DataServiceImpl implements DataService {
 	@Autowired
 	private PenRepository penRepository;
 
+	@Autowired
+	private DefaultTreatmentRepository defaultTreatmentRepository;
+
 	@Override
 	public AllDataDto getAllData() {
 		final List<Farm> farms = farmRepository.findAll();
@@ -74,13 +83,41 @@ public class DataServiceImpl implements DataService {
 
 	@Override
 	public AllDataDto getMedicalConditionData() {
+		final AllDataDto conditionData = getInductionAndTreatmentData();
+		final List<DefaultTreatment> defaultTreatments = defaultTreatmentRepository.findAll();
+		conditionData.setDefaultTreatments(defaultTreatments);
+		return conditionData;
+	}
+
+	@Override
+	public AllDataDto getTreatmentData() {
+		final AllDataDto treatmentData = getInductionAndTreatmentData();
+		final Optional<List<Cattle>> cattleList = cattleRepository.getEIdEartagMap();
+		final Map<Long, String> eIdEarTagMap = new HashMap<>();
+		if (cattleList.isPresent()) {
+			cattleList.get().forEach(cattle -> {
+				eIdEarTagMap.put(cattle.getCattleId(), cattle.getEarTag());
+			});
+		}
+		treatmentData.setEIdEarTagMap(eIdEarTagMap);
+		return treatmentData;
+	}
+
+	private AllDataDto getInductionAndTreatmentData() {
 		final List<MedicalCondition> medicalConditions = medicalConditionRepository.findAll();
 		final List<Medication> medications = medicationRepository.findAll();
 		final List<Pen> pens = penRepository.findAll();
 		final List<String> earTagList = cattleRepository.findEarTagsWithIncompleteInduction();
 		final List<String> eIdList = cattleRepository.findEIdsWithIncompleteInduction();
 
-		return new AllDataDto(medicalConditions, medications, pens, eIdList, earTagList);
+		final AllDataDto conditionData = new AllDataDto();
+		conditionData.setMedicalCondition(medicalConditions);
+		conditionData.setMedication(medications);
+		conditionData.setPens(pens);
+		conditionData.setEIdList(eIdList);
+		conditionData.setEarTagList(earTagList);
+
+		return conditionData;
 	}
 
 }

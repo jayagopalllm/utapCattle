@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,13 +41,30 @@ public class TreatmentHistoryController extends BaseController {
 				: ResponseEntity.badRequest().build();
 	}
 
-	@GetMapping("/{id}")
-	public ResponseEntity<TreatmentHistoryDto> getTreatmentHistoryById(@PathVariable final Long id) {
+	@GetMapping("/{eId}")
+	public ResponseEntity<List<TreatmentHistoryDto>> getTreatmentHistoryById(@PathVariable("eId") final Long eId) {
 		logger.info("Incoming request: Get treatment history information by Id");
-		final TreatmentHistoryDto treatmentHistoryDto = treatmentHistoryService.getTreatmentHistoryById(id);
+		final List<TreatmentHistoryDto> treatmentHistoryDto = treatmentHistoryService.getTreatmentHistoriesByEId(eId);
 		logger.info("Request successful: Retreived treatment history information");
 		return (treatmentHistoryDto != null) ? ResponseEntity.ok(treatmentHistoryDto)
 				: ResponseEntity.noContent().build();
+	}
+
+	@GetMapping("/cattle-info/{earTagOrEId}")
+	public ResponseEntity<Map<String, Object>> getCattleDetailsAndAverageConditionScore(
+			@PathVariable("earTagOrEId") final String earTagOrEId) {
+		if (StringUtils.isEmpty(earTagOrEId)) {
+			throw new IllegalArgumentException("earTagOrEId cannot by empty");
+		}
+		logger.info("Incoming request: Get Cattle info and avg condition score by cattle Id Or Ear tag");
+		try {
+			final Map<String, Object> outputMap = treatmentHistoryService
+					.getCattleDetailsAndAverageConditionScore(earTagOrEId);
+			logger.info("Request successful: Retreived Cattle info and avg condition score");
+			return (MapUtils.isNotEmpty(outputMap)) ? ResponseEntity.ok(outputMap) : ResponseEntity.noContent().build();
+		} catch (final Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
+		}
 	}
 
 	@GetMapping

@@ -13,7 +13,7 @@ public interface TreatmentHistoryService {
 
 	List<TreatmentHistoryDto> getAllTreatmentHistory();
 
-	TreatmentHistoryDto getTreatmentHistoryById(Long id);
+	List<TreatmentHistoryDto> getTreatmentHistoriesByEId(final Long id);
 
 	/**
 	 * Saves the treatment history records and related information.
@@ -27,4 +27,6 @@ public interface TreatmentHistoryService {
 	 *                                  treatment history records.
 	 */
 	public Map<String, Object> saveTreatmentHistory(final TreatmentHistoryMetadata treatmentHistoryMetadata);
+
+	public Map<String, Object> getCattleDetailsAndAverageConditionScore(final String earTagOrEId) throws Exception;
 }

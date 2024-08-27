@@ -8,4 +8,6 @@ public interface DataService {
 
 	public AllDataDto getMedicalConditionData();
 
+	public AllDataDto getTreatmentData();
+
 }
