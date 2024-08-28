@@ -33,6 +33,8 @@ public class TreatmentHistoryController extends BaseController {
 			@RequestBody final TreatmentHistoryMetadata treatmentHistoryMetadata) {
 
 		logger.info("Incoming request: Saving treatment history information");
+		// add process id
+		treatmentHistoryMetadata.setProcessId(2L);
 		final Map<String, Object> savedTreatmentHistoryDto = treatmentHistoryService
 				.saveTreatmentHistory(treatmentHistoryMetadata);
 		logger.info("Request successful: saved treatment history");
