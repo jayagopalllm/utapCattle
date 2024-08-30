@@ -103,6 +103,20 @@ public class DataServiceImpl implements DataService {
 		return treatmentData;
 	}
 
+	@Override
+	public AllDataDto getWeightAndTBTestData() {
+		final AllDataDto tbTestData = new AllDataDto();
+		final Optional<List<Cattle>> cattleList = cattleRepository.getEIdEartagMap();
+		final Map<Long, String> eIdEarTagMap = new HashMap<>();
+		if (cattleList.isPresent()) {
+			cattleList.get().forEach(cattle -> {
+				eIdEarTagMap.put(cattle.getCattleId(), cattle.getEarTag());
+			});
+		}
+		tbTestData.setEIdEarTagMap(eIdEarTagMap);
+		return tbTestData;
+	}
+
 	private AllDataDto getInductionAndTreatmentData() {
 		final List<MedicalCondition> medicalConditions = medicalConditionRepository.findAll();
 		final List<Medication> medications = medicationRepository.findAll();
