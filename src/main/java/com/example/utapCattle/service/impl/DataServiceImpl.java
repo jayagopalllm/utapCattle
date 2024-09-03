@@ -114,6 +114,9 @@ public class DataServiceImpl implements DataService {
 			});
 		}
 		tbTestData.setEIdEarTagMap(eIdEarTagMap);
+
+		final List<Pen> pens = penRepository.findAll();
+		tbTestData.setPens(pens);
 		return tbTestData;
 	}
 
