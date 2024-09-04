@@ -10,6 +10,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.utapCattle.model.dto.WeightHistoryDto;
+import com.example.utapCattle.model.dto.WeightHistoryInfo;
 import com.example.utapCattle.model.dto.WeightHistoryProgressDto;
 import com.example.utapCattle.model.entity.Cattle;
 import com.example.utapCattle.model.entity.Movement;
@@ -106,8 +108,7 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 
 	@Override
 	public List<WeightHistoryProgressDto> deriveWeightHistoryInfoByCattleId(final Long cattleId) {
-		final List<WeightHistory> weightHistories = weightHistoryRepository
-				.findByCattleIdOrderByWeightDateTime(cattleId);
+		final List<WeightHistory> weightHistories = weightHistoryRepository.findByCattleIdOrderByWeightId(cattleId);
 		sortWeightHistoryByDate(weightHistories);
 		return deriveWeightHistoryInfo(weightHistories);
 	}
@@ -157,6 +158,74 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 		}
 
 		return weightHistoryInfos;
+	}
+
+	@Override
+	public List<WeightHistoryInfo> getWeightHistoryByPen(Long penId) {
+		// Step 1: Get all cattle IDs associated with the given penId from the Movement
+		// table
+		final List<Long> cattleIds = movementService.findCattleIdsByPenId(penId);
+
+		// Step 2: For each cattle ID, retrieve weight history and process it
+		return cattleIds.stream().map(this::processWeightHistory).collect(Collectors.toList());
+	}
+
+	private WeightHistoryInfo processWeightHistory(final Long cattleId) {
+		// Retrieve the weight history for the given cattle ID, ordered by weight date
+		final List<WeightHistory> weightHistories = weightHistoryRepository.findByCattleIdOrderByWeightId(cattleId);
+
+		if (weightHistories.isEmpty()) {
+			throw new IllegalArgumentException("No weight history found for the given cattle ID.");
+		}
+
+		sortWeightHistoryByDate(weightHistories);
+
+		// Step 3: Calculate Last Weight and Last DLWG
+		final WeightHistory lastWeightHistory = weightHistories.get(0);
+		final WeightHistory previousWeightHistory = weightHistories.size() > 1 ? weightHistories.get(1) : null;
+
+		Double lastWeight = lastWeightHistory.getWeight().doubleValue();
+		Double lastDLWG = 0.0;
+
+		if (previousWeightHistory != null) {
+			// Calculate the number of days between current and previous dates
+			final long daysBetween = calculateDaysBetween(previousWeightHistory.getWeightDateTime(),
+					lastWeightHistory.getWeightDateTime());
+
+			if (daysBetween > 0) {
+				// Calculate weight difference using Double
+				final double weightDifference = lastWeightHistory.getWeight() - previousWeightHistory.getWeight();
+
+				// Calculate DLWG using Double
+				lastDLWG = weightDifference / daysBetween;
+			}
+		}
+
+		// Step 4: Calculate Overall DLWG
+		Double overallDLWG = 0.0;
+		if (weightHistories.size() > 1) {
+			final WeightHistory firstWeightHistory = weightHistories.get(weightHistories.size() - 1);
+			// Calculate the number of days between current and previous dates
+			final long totalDays = calculateDaysBetween(firstWeightHistory.getWeightDateTime(),
+					lastWeightHistory.getWeightDateTime());
+
+			if (totalDays > 0) {
+				// Calculate total weight difference using Double
+				final double totalWeightDifference = lastWeightHistory.getWeight() - firstWeightHistory.getWeight();
+
+				// Calculate overall DLWG using Double
+				overallDLWG = totalWeightDifference / totalDays;
+			}
+		}
+
+		// Step 5: Create WeightHistoryInfo object and return
+		final WeightHistoryInfo weightHistoryInfo = new WeightHistoryInfo();
+		weightHistoryInfo.setEid(cattleId);
+		weightHistoryInfo.setLastWeight(lastWeight);
+		weightHistoryInfo.setLastDLWG(lastDLWG);
+		weightHistoryInfo.setOverallDLWG(overallDLWG);
+
+		return weightHistoryInfo;
 	}
 
 	// Find the Cattle record by earTag

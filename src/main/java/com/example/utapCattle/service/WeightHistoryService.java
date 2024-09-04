@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.dao.DataAccessException;
 
 import com.example.utapCattle.model.dto.WeightHistoryDto;
+import com.example.utapCattle.model.dto.WeightHistoryInfo;
 import com.example.utapCattle.model.dto.WeightHistoryProgressDto;
 import com.example.utapCattle.model.entity.TreatmentHistoryMetadata;
 import com.example.utapCattle.model.entity.WeightHistory;
@@ -62,5 +63,13 @@ public interface WeightHistoryService {
 	 * @throws DataAccessException      if there is an error accessing the database
 	 */
 	List<WeightHistoryProgressDto> deriveWeightHistoryInfoByCattleId(final Long cattleId);
+
+	/**
+	 * Retrieves the latest weight, last DLWG, and overall DLWG for a given EID.
+	 *
+	 * @param penId the Pen ID of the cattle
+	 * @return List<WeightHistoryInfo> containing the required information
+	 */
+	List<WeightHistoryInfo> getWeightHistoryByPen(final Long penId);
 
 }

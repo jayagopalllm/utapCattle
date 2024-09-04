@@ -15,7 +15,7 @@ public interface WeightHistoryRepository extends JpaRepository<WeightHistory, Lo
 	@Query(value = "SELECT nextval('weight_seq')", nativeQuery = true)
 	Long getNextSequenceValue();
 
-	@Query("SELECT w FROM WeightHistory w WHERE w.cattleId = :cattleId ORDER BY w.weightDateTime DESC")
-	List<WeightHistory> findByCattleIdOrderByWeightDateTime(@Param("cattleId") Long cattleId);
+	@Query("SELECT w FROM WeightHistory w WHERE w.cattleId = :cattleId ORDER BY w.weightHistoryId DESC")
+	List<WeightHistory> findByCattleIdOrderByWeightId(@Param("cattleId") Long cattleId);
 
 }
