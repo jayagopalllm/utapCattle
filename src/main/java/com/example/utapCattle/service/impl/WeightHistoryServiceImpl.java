@@ -181,8 +181,10 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 		sortWeightHistoryByDate(weightHistories);
 
 		// Step 3: Calculate Last Weight and Last DLWG
-		final WeightHistory lastWeightHistory = weightHistories.get(0);
-		final WeightHistory previousWeightHistory = weightHistories.size() > 1 ? weightHistories.get(1) : null;
+		final WeightHistory lastWeightHistory = weightHistories.get(weightHistories.size() - 1);
+		final WeightHistory previousWeightHistory = weightHistories.size() > 1
+				? weightHistories.get(weightHistories.size() - 2)
+				: null;
 
 		Double lastWeight = lastWeightHistory.getWeight().doubleValue();
 		Double lastDLWG = 0.0;
@@ -204,7 +206,7 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 		// Step 4: Calculate Overall DLWG
 		Double overallDLWG = 0.0;
 		if (weightHistories.size() > 1) {
-			final WeightHistory firstWeightHistory = weightHistories.get(weightHistories.size() - 1);
+			final WeightHistory firstWeightHistory = weightHistories.get(0);
 			// Calculate the number of days between current and previous dates
 			final long totalDays = calculateDaysBetween(firstWeightHistory.getWeightDateTime(),
 					lastWeightHistory.getWeightDateTime());
