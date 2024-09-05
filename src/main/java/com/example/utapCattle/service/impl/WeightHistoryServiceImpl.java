@@ -37,6 +37,7 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 	private final WeightHistoryRepository weightHistoryRepository;
 
 	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+	private static final DateTimeFormatter DATE_FORMATTER_1 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 	@Autowired
 	public WeightHistoryServiceImpl(WeightHistoryRepository weightHistoryRepository) {
@@ -211,10 +212,12 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 			final long totalDays = calculateDaysBetween(firstWeightHistory.getWeightDateTime(),
 					lastWeightHistory.getWeightDateTime());
 
+			LOGGER.debug("totalDays = {}", totalDays);
+
 			if (totalDays > 0) {
 				// Calculate total weight difference using Double
 				final double totalWeightDifference = lastWeightHistory.getWeight() - firstWeightHistory.getWeight();
-
+				LOGGER.debug("totalWeightDifference = {}", totalWeightDifference);
 				// Calculate overall DLWG using Double
 				overallDLWG = totalWeightDifference / totalDays;
 			}
@@ -273,7 +276,8 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 
 	private LocalDate parseDate(String dateStr) {
 		try {
-			return LocalDate.parse(dateStr, DATE_FORMATTER);
+			final DateTimeFormatter dateTimeFormatter = dateStr.indexOf('-') >= 0 ? DATE_FORMATTER_1 : DATE_FORMATTER;
+			return LocalDate.parse(dateStr, dateTimeFormatter);
 		} catch (final Exception e) {
 			throw new IllegalArgumentException("Invalid date format: " + dateStr, e);
 		}
