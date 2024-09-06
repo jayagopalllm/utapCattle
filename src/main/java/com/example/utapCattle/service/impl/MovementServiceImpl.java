@@ -1,5 +1,7 @@
 package com.example.utapCattle.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +34,11 @@ public class MovementServiceImpl implements MovementService {
 	private MovementDto mapToDto(final Movement savedMovement) {
 		return new MovementDto(savedMovement.getMovementId(), savedMovement.getCattleId(), savedMovement.getPenId(),
 				savedMovement.getMovementDate(), savedMovement.getUserId(), savedMovement.getComment());
+	}
+
+	@Override
+	public List<Long> findCattleIdsByPenId(final Long penId) {
+		return movementRepository.findCattleIdsByPenId(penId);
 	}
 
 }

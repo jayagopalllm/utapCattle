@@ -36,4 +36,12 @@ public class DataController extends BaseController {
 		final AllDataDto allData = dataService.getTreatmentData();
 		return allData;
 	}
+
+	@GetMapping(value = "/weight-tb")
+	public AllDataDto getTBTestData() {
+		logger.info("Incoming request: Retrieving Weigtht and TB Test pre-data");
+		final AllDataDto allData = dataService.getWeightAndTBTestData();
+		logger.info("Request successful: Retrieved Weigtht and TB Test pre-data");
+		return allData;
+	}
 }

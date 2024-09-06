@@ -13,6 +13,8 @@ public class TreatmentHistoryMetadata {
 
 	private List<TreatmentHistory> treatmentHistories;
 
+	private TbTestHistory tbTestHistory;
+
 	private Long cattleId;
 
 	private Long processId;

@@ -10,4 +10,6 @@ public interface DataService {
 
 	public AllDataDto getTreatmentData();
 
+	public AllDataDto getWeightAndTBTestData();
+
 }
