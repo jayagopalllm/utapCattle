@@ -25,30 +25,43 @@ public class MarketController extends BaseController {
 
     @GetMapping("/{id}")
     public ResponseEntity<MarketDto> getMarketById(@PathVariable Long id) {
-        logger.info("Incoming request: Retrieving market with ID: {}", id);
         MarketDto marketDto = marketService.getMarketById(id);
-        if (marketDto != null) {
-            logger.info("Request successful: Retrieved market with ID: {}", id);
-            return ResponseEntity.ok(marketDto);
-        } else {
-            logger.warn("Request failed: Market not found for ID: {}", id);
-            return ResponseEntity.notFound().build();
+        try {
+            if (marketDto != null) {
+                logger.info("Retrieved market with ID: {}", id);
+                return ResponseEntity.ok(marketDto);
+            } else {
+                logger.warn("No Market found with ID: {}", id);
+                return ResponseEntity.notFound().build();
+            }
+        }catch (final Exception e) {
+                logger.error("Exception occurred: Unable to retrieve market", e);
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     @GetMapping
-    public List<MarketDto> getAllMarkets() {
-        logger.info("Incoming request: Retrieving all markets");
-        List<MarketDto> markets = marketService.getAllMarkets();
-        logger.info("Request successful: Retrieved {} markets", markets.size());
-        return markets;
+    public ResponseEntity<List<MarketDto>> getAllMarkets() {
+        try {
+            List<MarketDto> markets = marketService.getAllMarkets();
+            logger.info("Retrieved {} markets", markets.size());
+            return ResponseEntity.ok(markets);
+        } catch (final Exception e) {
+            logger.error("Exception occurred: Unable to retrieve markets", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @PostMapping("/save")
     public ResponseEntity<MarketDto> saveMarket(@RequestBody Market market) {
-        logger.info("Incoming request: Saving new market: {}", market);
-        MarketDto savedMarketDto = marketService.saveMarket(market);
-        logger.info("Request successful: Saved market with ID: {}", savedMarketDto.getMarketId());
-        return new ResponseEntity<>(savedMarketDto, HttpStatus.CREATED);
+        logger.info("Saving new market: {}", market);
+        try {
+            MarketDto savedMarketDto = marketService.saveMarket(market);
+            logger.info("Saved market with ID: {}", savedMarketDto.getMarketId());
+            return new ResponseEntity<>(savedMarketDto, HttpStatus.CREATED);
+        } catch (final Exception e) {
+            logger.error("Exception occurred: Unable to save market", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

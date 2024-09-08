@@ -20,35 +20,48 @@ import com.example.utapCattle.service.BreedService;
 @RequestMapping("/breed")
 public class BreedController extends BaseController {
 
-     @Autowired
+    @Autowired
     private BreedService breedService;
 
     @GetMapping("/{id}")
     public ResponseEntity<BreedDto> getBreedById(@PathVariable Long id) {
-        logger.info("Incoming request: Retrieving breed with ID: {}", id);
-        BreedDto breed = breedService.getBreedById(id);
-        if (breed != null) {
-            logger.info("Request successful: Retrieved breed with ID: {}", id);
-            return ResponseEntity.ok(breed);
-        } else {
-            logger.warn("Request failed: Breed not found for ID: {}", id);
-            return ResponseEntity.notFound().build();
+        try {
+            BreedDto breed = breedService.getBreedById(id);
+            if (breed != null) {
+                logger.info("Retrieved breed with ID: {}", id);
+                return ResponseEntity.ok(breed);
+            } else {
+                logger.info("No breed found with ID: {}", id);
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            logger.error("Exception occurred: Unable to retrieve breed with ID: {}", id, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     @GetMapping
-    public List<BreedDto> getAllBreeds() {
-        logger.info("Incoming request: Retrieving all breeds");
-        List<BreedDto> breeds = breedService.getAllBreeds();
-        logger.info("Request successful: Retrieved {} breeds", breeds.size());
-        return breeds;
+    public ResponseEntity<List<BreedDto>> getAllBreeds() {    
+        try {
+            List<BreedDto> breeds = breedService.getAllBreeds();
+            logger.info("Retrieved {} breeds", breeds.size());
+            return ResponseEntity.ok(breeds);
+        } catch (Exception e) {
+            logger.error("Exception occurred: Unable to retrieve all breeds", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
     
     @PostMapping("/save")
-    public ResponseEntity<BreedDto> saveBreed(@RequestBody Breed breed) {
-        logger.info("Incoming request: Saving new breed: {}", breed);
-        BreedDto savedBreedDto = breedService.saveBreed(breed);
-        logger.info("Request successful: Saved breed with ID: {}", savedBreedDto.getBreedid());
-        return new ResponseEntity<>(savedBreedDto, HttpStatus.CREATED);
+    public ResponseEntity<Long> saveBreed(@RequestBody Breed breed) {
+        logger.info("Saving new breed: {}", breed);
+        try {
+            BreedDto savedBreedDto = breedService.saveBreed(breed);
+            logger.info("Saved breed with ID: {}", savedBreedDto.getBreedid());
+            return new ResponseEntity<>(savedBreedDto.getBreedid(), HttpStatus.CREATED);
+        } catch (Exception e) {
+            logger.error("Exception occurred: Unable to save breed", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

@@ -21,9 +21,13 @@ public class WeighScaleController extends BaseController {
     @PostMapping("/weights")
     public ResponseEntity<ScaleWeightDto> saveWeight(@RequestBody ScaleWeightDto weightDto) {
         logger.info("Saving weight: {}", weightDto.getWeight());
-        ScaleWeightDto savedWeightDto = weightService.saveWeight(weightDto);
-        logger.info("Request successful: Saved weight");
-        return new ResponseEntity<>(savedWeightDto, HttpStatus.CREATED);
+        try {
+            ScaleWeightDto savedWeightDto = weightService.saveWeight(weightDto);
+            logger.info("Saved weight");
+            return new ResponseEntity<>(savedWeightDto, HttpStatus.CREATED);
+        } catch (final Exception e) {
+            logger.error("Exception occurred: Unable to save weight", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
-    
 }

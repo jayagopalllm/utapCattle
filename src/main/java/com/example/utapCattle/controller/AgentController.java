@@ -25,31 +25,48 @@ public class AgentController extends BaseController{
 
     @GetMapping("/{id}")
     public ResponseEntity<AgentDto> getAgentById(@PathVariable Long id) {
-        logger.info("Incoming request: Retrieving agent with ID: {}", id);
-        AgentDto agent = agentService.getAgentById(id);
-        if (agent != null) {
-            logger.info("Request successful: Retrieved agent with ID: {}", id);
-            return ResponseEntity.ok(agent);
-        } else {
-            logger.warn("Request failed: Agent not found for ID: {}", id);
-            return ResponseEntity.notFound().build();
+        try {
+            AgentDto agent = agentService.getAgentById(id);
+            if (agent != null) {
+                logger.info("Retrieved agent with ID: {}", id);
+                return ResponseEntity.ok(agent);
+            } else {
+                logger.warn("Agent not found for ID: {}", id);
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            logger.error("Exception occurred: Unable to retrieve Agent with ID: {}", id, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     @GetMapping
-    public List<AgentDto> getAllAgents() {
-        logger.info("Incoming request: Retrieving all agents");
-        List<AgentDto> agents = agentService.getAllAgents();
-        logger.info("Request successful: Retrieved {} agents", agents.size());
-        return agents;
+    public ResponseEntity<List<AgentDto>> getAllAgents() {
+        try {
+            List<AgentDto> agents = agentService.getAllAgents();
+            if (!agents.isEmpty()) {
+                logger.info("Retrieved {} Agents", agents.size());
+            } else {
+                logger.warn("No Agents found");
+            }
+            return ResponseEntity.ok(agents);
+        } catch (Exception e) {
+            logger.error("Exception occurred: Unable to retrieve Agents", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
-     @PostMapping("/save") 
-    public ResponseEntity<AgentDto> saveAgent(@RequestBody Agent agent) {
-        logger.info("Incoming request: Saving new agent: {}", agent);
-        AgentDto savedAgentDto = agentService.saveAgent(agent);
-        logger.info("Request successful: Saved agent with ID: {}", savedAgentDto.getAgentId());
-        return new ResponseEntity<>(savedAgentDto, HttpStatus.CREATED);
+    @PostMapping("/save") 
+    public ResponseEntity<Long> saveAgent(@RequestBody Agent agent) {
+        logger.info("Saving new agent: {}", agent);
+        try {
+            AgentDto savedAgentDto = agentService.saveAgent(agent);
+            logger.info("Saved Agent with ID: {}", savedAgentDto.getAgentId());
+            return new ResponseEntity<>(savedAgentDto.getAgentId(), HttpStatus.CREATED);
+        } catch (Exception e) {
+            logger.error("Exception occurred: Unable to save Agent", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
 }

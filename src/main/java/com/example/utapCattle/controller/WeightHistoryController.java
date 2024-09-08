@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.utapCattle.model.dto.WeightHistoryInfo;
@@ -30,32 +29,53 @@ public class WeightHistoryController extends BaseController {
 	private WeightHistoryService weightHistoryService;
 
 	@GetMapping("/{cattleId}")
-	public List<WeightHistoryProgressDto> getWeightProgressData(@PathVariable final String cattleId) {
+	public ResponseEntity<List<WeightHistoryProgressDto>> getWeightProgressData(@PathVariable final String cattleId) {
 		if (StringUtils.isEmpty(cattleId)) {
-			throw new IllegalArgumentException("Invalid cattleId");
+			logger.warn("Invalid cattleId provided");
+			return ResponseEntity.badRequest().build();
 		}
-		logger.info("Incoming request: Retrieving all weight data for {}", cattleId);
-		final List<WeightHistoryProgressDto> weightProgress = weightHistoryService
-				.deriveWeightHistoryInfoByCattleId(Long.parseLong(cattleId));
-		logger.info("Request successful: Retrieved all weight progress of {}", cattleId);
-		return weightProgress;
+		try {
+			final List<WeightHistoryProgressDto> weightProgress = weightHistoryService
+					.deriveWeightHistoryInfoByCattleId(Long.parseLong(cattleId));
+			if (CollectionUtils.isEmpty(weightProgress)) {
+				logger.warn("No weight data found for cattleId: {}", cattleId);
+				return ResponseEntity.noContent().build();
+			}
+			logger.info("Retrieved all weight progress of {}", cattleId);
+			return ResponseEntity.ok(weightProgress);
+		} catch (final Exception e) {
+			logger.error("Exception occurred: Unable to retrieve weight data for cattleId: {}", cattleId, e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
 	}
 
 	@PostMapping("/save")
 	public ResponseEntity<?> saveWeightAndMovement(
 			@RequestBody final TreatmentHistoryMetadata treatmentHistoryMetadata) {
+		logger.info("Saving weight and movement data: {}", treatmentHistoryMetadata);
 		try {
 			weightHistoryService.saveWeightAndMovement(treatmentHistoryMetadata);
+			logger.info("Saved weight and movement data");
 			return new ResponseEntity<>(treatmentHistoryMetadata, HttpStatus.CREATED);
 		} catch (final Exception e) {
-			return ResponseEntity.badRequest().body(e.getMessage());
+			logger.error("Exception occurred: Unable to save weight and movement data", e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
 		}
 	}
 
 	@GetMapping("/cattles-{penId}")
 	public ResponseEntity<List<WeightHistoryInfo>> getCattleInfoByPenId(@PathVariable Long penId) {
-		final List<WeightHistoryInfo> cattleWeightInfo = weightHistoryService.getWeightHistoryByPen(penId);
-		return CollectionUtils.isEmpty(cattleWeightInfo) ? ResponseEntity.noContent().build()
-				: ResponseEntity.ok(cattleWeightInfo);
+		try {
+			final List<WeightHistoryInfo> cattleWeightInfo = weightHistoryService.getWeightHistoryByPen(penId);
+			if (CollectionUtils.isEmpty(cattleWeightInfo)) {
+				logger.warn("No cattle weight info found for penId: {}", penId);
+				return ResponseEntity.noContent().build();
+			}
+			logger.info("Retrieved cattle weight info for penId: {}", penId);
+			return ResponseEntity.ok(cattleWeightInfo);
+		} catch (final Exception e) {
+			logger.error("Exception occurred: Unable to retrieve cattle weight info for penId: {}", penId, e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
 	}
 }

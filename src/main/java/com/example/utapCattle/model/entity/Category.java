@@ -19,7 +19,7 @@ public class Category {
 
     @Id
     @Column(name = "categoryid")
-    private Integer categoryId;
+    private Long categoryId;
 
     @Column(name = "categorydesc")
     private String categoryDesc;

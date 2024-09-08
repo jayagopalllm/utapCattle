@@ -24,31 +24,44 @@ public class CustomerController extends BaseController{
     private CustomerService customerService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Customer> getCustomerById(@PathVariable Long id) {
-        logger.info("Incoming request: Retrieving customer with ID: {}", id);
-        Customer customer = customerService.getCustomerById(id);
-        if (customer != null) {
-            logger.info("Request successful: Retrieved customer with ID: {}", id);
-            return ResponseEntity.ok(customer);
-        } else {
-            logger.warn("Request failed: Customer not found for ID: {}", id);
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<CustomerDto> getCustomerById(@PathVariable Long id) {
+        try {
+            CustomerDto customerDto = customerService.getCustomerById(id);
+            if (customerDto != null) {
+                logger.info("Request successful: Retrieved customer with ID: {}", id);
+                return ResponseEntity.ok(customerDto);
+            } else {
+                logger.warn("Request failed: Customer not found for ID: {}", id);
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            logger.error("Exception occurred: Unable to retrieve customer with ID: {}", id, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     @GetMapping
-    public List<Customer> getAllCustomers() {
-        logger.info("Incoming request: Retrieving all customers");
-        List<Customer> customers = customerService.getAllCustomers();
-        logger.info("Request successful: Retrieved {} customers", customers.size());
-        return customers;
+    public ResponseEntity<List<CustomerDto>> getAllCustomers() {
+        try {
+            List<CustomerDto> customers = customerService.getAllCustomers();
+            logger.info("Retrieved {} customers", customers.size());
+            return ResponseEntity.ok(customers);
+        } catch (Exception e) {
+            logger.error("Exception occurred: Unable to retrieve all customers", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @PostMapping("/save")
-    public ResponseEntity<CustomerDto> saveCustomer(@RequestBody Customer customer) {
-        logger.info("Incoming request: Saving new customer: {}", customer);
-        CustomerDto savedCustomerDto = customerService.saveCustomer(customer);
-        logger.info("Request successful: Saved customer with ID: {}", savedCustomerDto.getCustomerId()); // Assuming CustomerDto has getCustomerId()
-        return new ResponseEntity<>(savedCustomerDto, HttpStatus.CREATED);
+    public ResponseEntity<Long> saveCustomer(@RequestBody Customer customer) {
+        logger.info("Saving new customer: {}", customer);
+        try {
+            CustomerDto savedCustomerDto = customerService.saveCustomer(customer);
+            logger.info("Saved customer with ID: {}", savedCustomerDto.getCustomerId());
+            return new ResponseEntity<>(savedCustomerDto.getCustomerId(), HttpStatus.CREATED);
+        } catch (Exception e) {
+            logger.error("Exception occurred: Unable to save customer", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

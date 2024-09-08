@@ -13,7 +13,7 @@ public class Farm {
 
     @Id
     @Column(name = "farmid")
-    private Integer farmId;
+    private Long farmId;
 
     @Column(name = "farmcontact")
     private String farmContact;

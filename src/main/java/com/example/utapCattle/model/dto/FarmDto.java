@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FarmDto {
     
-    private Integer farmId;
+    private Long farmId;
     private String farmContact;
     private String farmName;
     private String address;

@@ -123,7 +123,7 @@ public class DataServiceImpl implements DataService {
 	private AllDataDto getInductionAndTreatmentData() {
 		final List<MedicalCondition> medicalConditions = medicalConditionRepository.findAll();
 		final List<Medication> medications = medicationRepository.findAll();
-		final List<Pen> pens = penRepository.findAll();
+		final List<Pen> pens = penRepository.findAll(); // should pick pen based on the select criteria filter 
 		final List<String> earTagList = cattleRepository.findEarTagsWithIncompleteInduction();
 		final List<String> eIdList = cattleRepository.findEIdsWithIncompleteInduction();
 

@@ -23,11 +23,16 @@ public class InductionController extends BaseController {
 	private InductionService inductionService;
 
 	@PostMapping("/save")
-	public ResponseEntity<?> saveInduction(@RequestBody final TreatmentHistoryMetadata treatmentHistoryMetadata) {
-		logger.info("Incoming request: Saving induction information");
-		final Map<String, Object> savedTreatmentHistoryDto = inductionService.saveInduction(treatmentHistoryMetadata);
-		logger.info("Request successful: saved induction");
-		return new ResponseEntity<>(savedTreatmentHistoryDto, HttpStatus.CREATED);
+	public ResponseEntity<Map<String, Object>> saveInduction(@RequestBody final TreatmentHistoryMetadata treatmentHistoryMetadata) {
+		logger.info("Saving induction information: {}", treatmentHistoryMetadata);
+		try {
+			final Map<String, Object> savedTreatmentHistoryDto = inductionService.saveInduction(treatmentHistoryMetadata);
+			logger.info("Saved induction information");
+			return new ResponseEntity<>(savedTreatmentHistoryDto, HttpStatus.CREATED);
+		} catch (final Exception e) {
+			logger.error("Exception occurred: Unable to save induction information", e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
 	}
 
 }

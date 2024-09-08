@@ -35,12 +35,10 @@ public class TbTestHistoryServiceImpl implements TbTestHistoryService {
 		return tbTestHistoryRepository.getNextSequenceValue();
 	}
 
-	// Find the Cattle record by earTag
 	private void validateCattle(final String earTag) {
 		try {
 			final Optional<Cattle> existingCattle = cattleRepository.findByEarTag(earTag);
 			if (existingCattle.isEmpty()) {
-				// Handle case where Cattle with the given earTag does not exist
 				throw new IllegalArgumentException("No Cattle record found with the given EarTag: " + earTag);
 			}
 		} catch (final NumberFormatException e) {
@@ -51,11 +49,6 @@ public class TbTestHistoryServiceImpl implements TbTestHistoryService {
 
 	}
 
-	/**
-	 * Returns the current date formatted as a string in the format "yyyy-MM-dd".
-	 *
-	 * @return The formatted current date.
-	 */
 	private static LocalDateTime getCurrentDateTime() {
 		return LocalDateTime.now();
 	}

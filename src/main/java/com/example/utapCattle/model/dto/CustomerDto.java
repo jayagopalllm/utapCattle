@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CustomerDto {
 
-    private Integer customerId;
+    private Long customerId;
     private String customerName; 
     
 }

@@ -2,8 +2,8 @@ package com.example.utapCattle.service;
 
 import java.util.Map;
 
-import com.example.utapCattle.model.entity.TreatmentHistory;
 import com.example.utapCattle.model.entity.TreatmentHistoryMetadata;
+import com.example.utapCattle.model.entity.TreatmentHistory;
 import com.example.utapCattle.service.impl.TreatmentHistoryServiceImpl;
 
 public interface InductionService {

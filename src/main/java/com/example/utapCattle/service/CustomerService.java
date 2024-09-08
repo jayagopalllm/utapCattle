@@ -7,9 +7,9 @@ import com.example.utapCattle.model.entity.Customer;
 
 public interface CustomerService {
 
-    List<Customer> getAllCustomers();
+    List<CustomerDto> getAllCustomers();
 
-    Customer getCustomerById(Long id);
+    CustomerDto getCustomerById(Long id);
 
     CustomerDto saveCustomer(Customer customer);
 }
