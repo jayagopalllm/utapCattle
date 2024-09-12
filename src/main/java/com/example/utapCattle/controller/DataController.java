@@ -44,4 +44,12 @@ public class DataController extends BaseController {
 		logger.info("Request successful: Retrieved Weigtht and TB Test pre-data");
 		return allData;
 	}
+
+	@GetMapping(value = "/sales")
+	public AllDataDto getSalesData() {
+		logger.info("Incoming request: Retrieving Sales pre-data");
+		final AllDataDto allData = dataService.getSalesData();
+		logger.info("Request successful: Retrieved Sales pre-data");
+		return allData;
+	}
 }
