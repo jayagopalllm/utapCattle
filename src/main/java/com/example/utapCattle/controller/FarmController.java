@@ -25,30 +25,43 @@ public class FarmController extends BaseController {
 
     @GetMapping("/{id}")
     public ResponseEntity<FarmDto> getFarmById(@PathVariable Long id) {
-        logger.info("Incoming request: Retrieving farm with ID: {}", id);
-        FarmDto farmDto = farmService.getFarmById(id);
-        if (farmDto != null) {
-            logger.info("Request successful: Retrieved farm with ID: {}", id);
-            return ResponseEntity.ok(farmDto);
-        } else {
-            logger.warn("Request failed: Farm not found for ID: {}", id);
-            return ResponseEntity.notFound().build();
+        try {
+            FarmDto farmDto = farmService.getFarmById(id);
+            if (farmDto != null) {
+                logger.info("Retrieved farm with ID: {}", id);
+                return ResponseEntity.ok(farmDto);
+            } else {
+                logger.warn("No Farm found with ID: {}", id);
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            logger.error("Exception occurred: Unable to retrieve farm with ID: {}", id, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    @GetMapping  // Get all farms
-    public List<FarmDto> getAllFarms() {
-        logger.info("Incoming request: Retrieving all farms");
-        List<FarmDto> farms = farmService.getAllFarms();
-        logger.info("Request successful: Retrieved {} farms", farms.size());
-        return farms;
+    @GetMapping
+    public ResponseEntity<List<FarmDto>> getAllFarms() {
+        try {
+            List<FarmDto> farms = farmService.getAllFarms();
+            logger.info("Retrieved {} farms", farms.size());
+            return ResponseEntity.ok(farms);
+        } catch (Exception e) {
+            logger.error("Exception occurred: Unable to retrieve all farms", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
-    @PostMapping("/save") // Save a new farm
-    public ResponseEntity<FarmDto> saveFarm(@RequestBody Farm farm) {
-        logger.info("Incoming request: Saving new farm: {}", farm);
-        FarmDto savedFarmDto = farmService.saveFarm(farm);
-        logger.info("Request successful: Saved farm with ID: {}", savedFarmDto.getFarmId());
-        return new ResponseEntity<>(savedFarmDto, HttpStatus.CREATED);
+    @PostMapping("/save")
+    public ResponseEntity<Long> saveFarm(@RequestBody Farm farm) {
+        logger.info("Saving new farm: {}", farm);
+        try {
+            FarmDto savedFarmDto = farmService.saveFarm(farm);
+            logger.info("Saved farm with ID: {}", savedFarmDto.getFarmId());
+            return new ResponseEntity<>(savedFarmDto.getFarmId(), HttpStatus.CREATED);
+        } catch (Exception e) {
+            logger.error("Exception occurred: Unable to save farm", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

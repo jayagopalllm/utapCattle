@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CategoryDto {
 
-    private Integer categoryId;
+    private Long categoryId;
     private String categoryDesc;
     private String sex; 
 }

@@ -28,52 +28,76 @@ public class CattleController extends BaseController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<CattleDto> getCattleById(@PathVariable final Long id) {
-		logger.info("Incoming request: Retrieving cattle with ID: {}", id);
-		final CattleDto cattleDto = cattleService.getCattleById(id);
-		if (cattleDto != null) {
-			logger.info("Request successful: Retrieved cattle with ID: {}", id);
-			return ResponseEntity.ok(cattleDto);
-		} else {
-			logger.warn("Request failed: Cattle not found for ID: {}", id);
-			return ResponseEntity.notFound().build();
+		try {
+			final CattleDto cattleDto = cattleService.getCattleById(id);
+			if (cattleDto != null) {
+				logger.info("Retrieved cattle with ID: {}", id);
+				return ResponseEntity.ok(cattleDto);
+			} else {
+				logger.warn("No Cattle found with ID: {}", id);
+				return ResponseEntity.notFound().build();
+			}
+		} catch (final Exception e) {
+			logger.error("Exception occurred: Unable to retrieve cattle with ID: {}", id, e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
 
 	@GetMapping
-	public List<CattleDto> getAllCattle() {
-		logger.info("Incoming request: Retrieving all cattle");
-		final List<CattleDto> cattleList = cattleService.getAllCattle();
-		logger.info("Request successful: Retrieved {} cattle", cattleList.size());
-		return cattleList;
+	public ResponseEntity<List<CattleDto>> getAllCattle() {
+		try {
+			final List<CattleDto> cattleList = cattleService.getAllCattle();
+			logger.info("Retrieved {} cattle", cattleList.size());
+			return ResponseEntity.ok(cattleList);
+		} catch (final Exception e) {
+			logger.error("Exception occurred: Unable to retrieve all cattle", e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
 	}
 
-	@GetMapping("/eartag") // Get cattle by ID
+	@GetMapping("/eartag")
 	public ResponseEntity<List<String>> findEarTagsWithIncompleteInduction() {
-		logger.info("Incoming request: Retrieving all cattle's eartags that has not completed the induction");
-		final List<String> earTagList = cattleService.findEarTagsWithIncompleteInduction();
-		logger.info("Request successful: Retrieved all cattle's eartag");
-		return (CollectionUtils.isEmpty(earTagList)) ? ResponseEntity.noContent().build()
-				: ResponseEntity.ok(earTagList);
+		try {
+			final List<String> earTagList = cattleService.findEarTagsWithIncompleteInduction();
+			if (CollectionUtils.isEmpty(earTagList)) {
+				logger.warn("No cattle ear tags found with incomplete induction");
+				return ResponseEntity.noContent().build();
+			} else {
+				logger.info("Retrieved {} cattle ear tags with incomplete induction", earTagList.size());
+				return ResponseEntity.ok(earTagList);
+			}
+		} catch (final Exception e) {
+			logger.error("Exception occurred: Unable to retrieve cattle ear tags", e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
 	}
 
 	@GetMapping("/eartag/{earTag}")
 	public ResponseEntity<CattleDto> getCattleByEarTag(@PathVariable String earTag) {
-		final CattleDto cattle = cattleService.getCattleByEarTag(earTag);
-		if (cattle != null) {
-			return ResponseEntity.ok(cattle);
+		try {
+			final CattleDto cattle = cattleService.getCattleByEarTag(earTag);
+			if (cattle != null) {
+				logger.info("Retrieved cattle with ear tag: {}", earTag);
+				return ResponseEntity.ok(cattle);
+			}
+			logger.warn("No Cattle found with ear tag: {}", earTag);
+			return ResponseEntity.noContent().build();
+		} catch (final Exception e) {
+			logger.error("Exception occurred: Unable to retrieve cattle with ear tag: {}", earTag, e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
-		return ResponseEntity.noContent().build();
 	}
 
 	@PostMapping("/save")
-	public ResponseEntity<?> saveCattle(@RequestBody final Cattle cattle) {
-		logger.info("Incoming request: Saving new cattle: {}", cattle);
+	public ResponseEntity<Long> saveCattle(@RequestBody final Cattle cattle) {
+		logger.info("Saving new cattle: {}", cattle);
 		try {
 			final CattleDto savedCattleDto = cattleService.saveCattle(cattle);
-			logger.info("Request successful: Saved cattle with ID: {}", savedCattleDto.getId());
-			return new ResponseEntity<>(savedCattleDto, HttpStatus.CREATED);
+			logger.info("Saved cattle with ID: {}", savedCattleDto.getId());
+			return new ResponseEntity<>(savedCattleDto.getId(), HttpStatus.CREATED);
 		} catch (final Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+			logger.error("Exception occurred: Unable to save cattle", e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
 

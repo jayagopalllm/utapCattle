@@ -23,9 +23,6 @@ public class MovementServiceImpl implements MovementService {
 		return mapToDto(savedMovement);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public Long getNextSequenceValue() {
 		return movementRepository.getNextSequenceValue();

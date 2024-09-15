@@ -1,6 +1,8 @@
 package com.example.utapCattle.service.impl;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,16 +19,19 @@ public class CustomerServiceImpl implements CustomerService {
     private CustomerRepository customerRepository;
 
     @Override
-    public List<Customer> getAllCustomers() {
-        return customerRepository.findAll();
+    public List<CustomerDto> getAllCustomers() {
+        return customerRepository.findAll().stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Customer getCustomerById(Long id) {
-        return customerRepository.findById(id).orElse(null);
+    public CustomerDto getCustomerById(Long id) {
+        Optional<Customer> customer = customerRepository.findById(id);
+        return customer.map(this::mapToDto).orElse(null);
     }
 
-        @Override
+    @Override
     public CustomerDto saveCustomer(Customer customer) {
         Customer savedCustomer = customerRepository.save(customer);
         return mapToDto(savedCustomer);

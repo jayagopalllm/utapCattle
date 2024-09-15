@@ -1,8 +1,10 @@
 package com.example.utapCattle.service.impl;
 
+import java.security.SecureRandom;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,62 +23,41 @@ public class InductionServiceImpl implements InductionService {
 	@Autowired
 	private TreatmentHistoryService treatmentHistoryService;
 
-	/*
-	 * {@inheritDoc}
-	 */
 	@Override
 	public final Map<String, Object> saveInduction(final TreatmentHistoryMetadata treatmentHistoryMetadata) {
-		// Step 1: Validate that EId and EarTag are present in the input treatment
-		// history records.
-		validateInductionVO(treatmentHistoryMetadata);
 
-		// add process id
-		treatmentHistoryMetadata.setProcessId(1L);
+		validateInduction(treatmentHistoryMetadata);
 
-		// Step 2: Store each treatment history record using the
-		// TreatmentHistoryServiceImpl
-		final Map<String, Object> savedTreatmentHistoryDtos = treatmentHistoryService
+		treatmentHistoryMetadata.setProcessId(new SecureRandom().nextLong());
+
+		updateCattleDetails(treatmentHistoryMetadata);
+
+		return treatmentHistoryService
 				.saveTreatmentHistory(treatmentHistoryMetadata);
-
-		// Step 3: Link the Cattle EId and EarTag, and update the 'isInductionCompleted'
-		// flag for the Cattle record.
-		updateCattleId(treatmentHistoryMetadata);
-
-		// Step 4: Convert the saved treatment history to DTO and return.
-		return savedTreatmentHistoryDtos; // Assuming you want to return the first saved record as DTO
 	}
 
-	private void validateInductionVO(final TreatmentHistoryMetadata treatmentHistoryMetadata) {
+	private void validateInduction(final TreatmentHistoryMetadata treatmentHistoryMetadata) {
 		if (treatmentHistoryMetadata.getCattleId() == null) {
 			throw new IllegalArgumentException("EId is a mandatory field and cannot be null or empty.");
 		}
-		if (treatmentHistoryMetadata.getEarTag() == null || treatmentHistoryMetadata.getEarTag().isEmpty()) {
+		if (StringUtils.isBlank(treatmentHistoryMetadata.getEarTag())) {
 			throw new IllegalArgumentException("EarTag is a mandatory field and cannot be null or empty.");
 		}
 	}
 
-	private void updateCattleId(final TreatmentHistoryMetadata treatmentHistoryMetadata) {
-		// Find the Cattle record by earTag
-		try {
-			final Optional<Cattle> existingCattle = cattleRepository.findByEarTag(treatmentHistoryMetadata.getEarTag());
-			if (existingCattle.isPresent()) {
-				// Update the cattleId with eid
-				final Cattle cattle = existingCattle.get();
-				cattle.setCattleId(Long.valueOf(treatmentHistoryMetadata.getCattleId()));
-				cattle.setIsInductionCompleted(true);
-				cattleRepository.save(cattle);
-			} else {
-				// Handle case where Cattle with the given earTag does not exist
-				throw new IllegalArgumentException(
-						"No Cattle record found with the given EarTag: " + treatmentHistoryMetadata.getEarTag());
-			}
-		} catch (final NumberFormatException e) {
-			throw new IllegalArgumentException(
-					"No Cattle record found with the given EarTag: " + treatmentHistoryMetadata.getEarTag());
-		} catch (final Exception e) {
-			throw e;
+	private void updateCattleDetails(final TreatmentHistoryMetadata treatmentHistoryMetadata) {
+		final String earTag = treatmentHistoryMetadata.getEarTag();
+		final Optional<Cattle> existingCattle = cattleRepository.findByEarTag(earTag);
+	
+		if (existingCattle.isPresent()) {
+			final Cattle cattle = existingCattle.get();
+			cattle.setCattleId(Long.valueOf(treatmentHistoryMetadata.getCattleId()));
+			cattle.setIsInductionCompleted(true);
+			cattleRepository.save(cattle);
+		} else {
+			throw new IllegalArgumentException("No Cattle record found with the given EarTag: " + earTag);
 		}
-
 	}
+	
 
 }

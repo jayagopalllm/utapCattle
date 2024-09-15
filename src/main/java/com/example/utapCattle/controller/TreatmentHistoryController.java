@@ -1,5 +1,6 @@
 package com.example.utapCattle.controller;
 
+import java.security.SecureRandom;
 import java.util.List;
 import java.util.Map;
 
@@ -31,47 +32,71 @@ public class TreatmentHistoryController extends BaseController {
 	@PostMapping("/save")
 	public ResponseEntity<?> saveTreatmentHistory(
 			@RequestBody final TreatmentHistoryMetadata treatmentHistoryMetadata) {
-
-		logger.info("Incoming request: Saving treatment history information");
-		// add process id
-		treatmentHistoryMetadata.setProcessId(2L);
-		final Map<String, Object> savedTreatmentHistoryDto = treatmentHistoryService
-				.saveTreatmentHistory(treatmentHistoryMetadata);
-		logger.info("Request successful: saved treatment history");
-		return MapUtils.isNotEmpty(savedTreatmentHistoryDto)
-				? new ResponseEntity<>(savedTreatmentHistoryDto, HttpStatus.CREATED)
-				: ResponseEntity.badRequest().build();
+		logger.info("Saving treatment history information: {}", treatmentHistoryMetadata);
+		try {
+			treatmentHistoryMetadata.setProcessId(new SecureRandom().nextLong());
+			final Map<String, Object> savedTreatmentHistoryDto = treatmentHistoryService
+					.saveTreatmentHistory(treatmentHistoryMetadata);
+			logger.info("saved treatment history");
+			return new ResponseEntity<>(savedTreatmentHistoryDto, HttpStatus.CREATED);
+		} catch (final Exception e) {
+			logger.error("Exception occurred: Unable to save treatment history information", e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+		}
 	}
 
 	@GetMapping("/{eId}")
 	public ResponseEntity<List<TreatmentHistoryDto>> getTreatmentHistoryById(@PathVariable("eId") final Long eId) {
-		logger.info("Incoming request: Get treatment history information by Id");
-		final List<TreatmentHistoryDto> treatmentHistoryDto = treatmentHistoryService.getTreatmentHistoriesByEId(eId);
-		logger.info("Request successful: Retreived treatment history information");
-		return (treatmentHistoryDto != null) ? ResponseEntity.ok(treatmentHistoryDto)
-				: ResponseEntity.noContent().build();
+		try {
+			final List<TreatmentHistoryDto> treatmentHistoryDto = treatmentHistoryService.getTreatmentHistoriesByEId(eId);
+			if (treatmentHistoryDto == null) {
+				logger.warn("No treatment history found for eId: {}", eId);
+				return ResponseEntity.noContent().build();
+			}
+			logger.info("Retrieved treatment history information");
+			return ResponseEntity.ok(treatmentHistoryDto);
+		} catch (final Exception e) {
+			logger.error("Exception occurred: Unable to retrieve treatment history for eId: {}", eId, e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
 	}
 
 	@GetMapping("/cattle-info/{earTagOrEId}")
 	public ResponseEntity<Map<String, Object>> getCattleDetailsAndAverageConditionScore(
 			@PathVariable("earTagOrEId") final String earTagOrEId) {
 		if (StringUtils.isEmpty(earTagOrEId)) {
-			throw new IllegalArgumentException("earTagOrEId cannot by empty");
+			logger.warn("Invalid earTagOrEId provided");
+			return ResponseEntity.badRequest().build();
 		}
-		logger.info("Incoming request: Get Cattle info and avg condition score by cattle Id Or Ear tag");
 		try {
 			final Map<String, Object> outputMap = treatmentHistoryService
 					.getCattleDetailsAndAverageConditionScore(earTagOrEId);
-			logger.info("Request successful: Retreived Cattle info and avg condition score");
-			return (MapUtils.isNotEmpty(outputMap)) ? ResponseEntity.ok(outputMap) : ResponseEntity.noContent().build();
+			if (MapUtils.isEmpty(outputMap)) {
+				logger.warn("No cattle info found for earTagOrEId: {}", earTagOrEId);
+				return ResponseEntity.noContent().build();
+			}
+			logger.info("Retrieved Cattle info and avg condition score");
+			return ResponseEntity.ok(outputMap);
 		} catch (final Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
+			logger.error("Exception occurred: Unable to retrieve cattle info for earTagOrEId: {}", earTagOrEId, e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
 
 	@GetMapping
-	public List<TreatmentHistoryDto> getAllTreatmentHistory() {
-		return treatmentHistoryService.getAllTreatmentHistory();
+	public ResponseEntity<List<TreatmentHistoryDto>> getAllTreatmentHistory() {
+		try {
+			final List<TreatmentHistoryDto> treatmentHistoryDto = treatmentHistoryService.getAllTreatmentHistory();
+			if (treatmentHistoryDto == null) {
+				logger.warn("No treatment history found");
+				return ResponseEntity.noContent().build();
+			}
+			logger.info("Retrieved all treatment history information");
+			return ResponseEntity.ok(treatmentHistoryDto);
+		} catch (final Exception e) {
+			logger.error("Exception occurred: Unable to retrieve treatment history", e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
 	}
 
 }

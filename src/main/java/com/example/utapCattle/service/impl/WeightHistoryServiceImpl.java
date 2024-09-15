@@ -50,23 +50,13 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 	@Autowired
 	private CattleRepository cattleRepository;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	public WeightHistoryDto saveWeightHistory(final WeightHistory weightHistory) {
 		weightHistory.setWeightHistoryId(getNextSequenceValue());
-		// Save the weight history entity
 		final WeightHistory savedWeightHistory = weightHistoryRepository.save(weightHistory);
 
-		// Convert the saved entity to DTO
 		return mapToDto(savedWeightHistory);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	public Long getNextSequenceValue() {
 		return weightHistoryRepository.getNextSequenceValue();
 	}
@@ -78,7 +68,6 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 		final Long cattleId = treatmentHistoryMetadata.getCattleId();
 		final String formattedDate = getCurrentFormattedDate();
 
-		// Save Weight History if the Record Weight flag is true
 		if (Boolean.TRUE.equals(treatmentHistoryMetadata.getRecordWeight())) {
 			final Double weight = treatmentHistoryMetadata.getWeight();
 			if (weight == null) {
@@ -92,7 +81,6 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 			saveWeightHistory(weightHistory);
 		}
 
-		// Save Movement if the Record Movement flag is true
 		if (Boolean.TRUE.equals(treatmentHistoryMetadata.getRecordMovement())) {
 			final Movement movement = new Movement();
 			final Integer pen = treatmentHistoryMetadata.getPen();
@@ -121,21 +109,17 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 		for (final WeightHistory currentWeightHistory : weightHistories) {
 			final WeightHistoryProgressDto info = new WeightHistoryProgressDto();
 
-			// Set the current date and weight
 			info.setDate(currentWeightHistory.getWeightDateTime());
 			info.setWeight(currentWeightHistory.getWeight());
 
 			if (previousWeightHistory != null) {
-				// Set the previous weight
 				info.setPreviousWeight(previousWeightHistory.getWeight());
 
-				// Calculate the weight difference
 				final double weightDiff = currentWeightHistory.getWeight() - previousWeightHistory.getWeight();
 				info.setWeightDiff(weightDiff);
 
 				LOGGER.debug("weightDiff = {} ", weightDiff);
 
-				// Calculate the number of days between current and previous dates
 				long daysBetween = calculateDaysBetween(previousWeightHistory.getWeightDateTime(),
 						currentWeightHistory.getWeightDateTime());
 
@@ -145,7 +129,6 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 
 				LOGGER.debug("daysBetween = {} ", daysBetween);
 
-				// Calculate DLWG (Daily Live Weight Gain)
 				final double dlwg = weightDiff / daysBetween;
 				final double roundedDlwg = Math.round(dlwg * 100.0) / 100.0;
 
@@ -163,16 +146,11 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 
 	@Override
 	public List<WeightHistoryInfo> getWeightHistoryByPen(Long penId) {
-		// Step 1: Get all cattle IDs associated with the given penId from the Movement
-		// table
 		final List<Long> cattleIds = movementService.findCattleIdsByPenId(penId);
-
-		// Step 2: For each cattle ID, retrieve weight history and process it
 		return cattleIds.stream().map(this::processWeightHistory).collect(Collectors.toList());
 	}
 
 	private WeightHistoryInfo processWeightHistory(final Long cattleId) {
-		// Retrieve the weight history for the given cattle ID, ordered by weight date
 		final List<WeightHistory> weightHistories = weightHistoryRepository.findByCattleIdOrderByWeightId(cattleId);
 
 		if (weightHistories.isEmpty()) {
@@ -181,7 +159,6 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 
 		sortWeightHistoryByDate(weightHistories);
 
-		// Step 3: Calculate Last Weight and Last DLWG
 		final WeightHistory lastWeightHistory = weightHistories.get(weightHistories.size() - 1);
 		final WeightHistory previousWeightHistory = weightHistories.size() > 1
 				? weightHistories.get(weightHistories.size() - 2)
@@ -191,39 +168,31 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 		Double lastDLWG = 0.0;
 
 		if (previousWeightHistory != null) {
-			// Calculate the number of days between current and previous dates
 			final long daysBetween = calculateDaysBetween(previousWeightHistory.getWeightDateTime(),
 					lastWeightHistory.getWeightDateTime());
 
 			if (daysBetween > 0) {
-				// Calculate weight difference using Double
 				final double weightDifference = lastWeightHistory.getWeight() - previousWeightHistory.getWeight();
 
-				// Calculate DLWG using Double
 				lastDLWG = weightDifference / daysBetween;
 			}
 		}
 
-		// Step 4: Calculate Overall DLWG
 		Double overallDLWG = 0.0;
 		if (weightHistories.size() > 1) {
 			final WeightHistory firstWeightHistory = weightHistories.get(0);
-			// Calculate the number of days between current and previous dates
 			final long totalDays = calculateDaysBetween(firstWeightHistory.getWeightDateTime(),
 					lastWeightHistory.getWeightDateTime());
 
 			LOGGER.debug("totalDays = {}", totalDays);
 
 			if (totalDays > 0) {
-				// Calculate total weight difference using Double
 				final double totalWeightDifference = lastWeightHistory.getWeight() - firstWeightHistory.getWeight();
 				LOGGER.debug("totalWeightDifference = {}", totalWeightDifference);
-				// Calculate overall DLWG using Double
 				overallDLWG = totalWeightDifference / totalDays;
 			}
 		}
 
-		// Step 5: Create WeightHistoryInfo object and return
 		final WeightHistoryInfo weightHistoryInfo = new WeightHistoryInfo();
 		weightHistoryInfo.setEid(cattleId);
 		weightHistoryInfo.setLastWeight(lastWeight);
@@ -233,12 +202,11 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 		return weightHistoryInfo;
 	}
 
-	// Find the Cattle record by earTag
+
 	private void validateCattle(final String earTag) {
 		try {
 			final Optional<Cattle> existingCattle = cattleRepository.findByEarTag(earTag);
 			if (existingCattle.isEmpty()) {
-				// Handle case where Cattle with the given earTag does not exist
 				throw new IllegalArgumentException("No Cattle record found with the given EarTag: " + earTag);
 			}
 		} catch (final NumberFormatException e) {
@@ -246,15 +214,12 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 		} catch (final Exception e) {
 			throw e;
 		}
-
 	}
 
 	private long calculateDaysBetween(final String previousDateStr, final String currentDateStr) {
-		// Convert the date strings to LocalDate
 		final LocalDate previousDate = parseDate(previousDateStr);
 		final LocalDate currentDate = parseDate(currentDateStr);
 
-		// Calculate the days between the two dates
 		return ChronoUnit.DAYS.between(previousDate, currentDate);
 	}
 
@@ -283,11 +248,6 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 		}
 	}
 
-	/**
-	 * Returns the current date formatted as a string in the format "yyyy-MM-dd".
-	 *
-	 * @return The formatted current date.
-	 */
 	private String getCurrentFormattedDate() {
 		final Date currentDate = new Date();
 		final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
