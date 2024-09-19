@@ -92,13 +92,7 @@ public class DataServiceImpl implements DataService {
 	@Override
 	public AllDataDto getTreatmentData() {
 		final AllDataDto treatmentData = getInductionAndTreatmentData();
-		final Optional<List<Cattle>> cattleList = cattleRepository.getEIdEartagMap();
-		final Map<Long, String> eIdEarTagMap = new HashMap<>();
-		if (cattleList.isPresent()) {
-			cattleList.get().forEach(cattle -> {
-				eIdEarTagMap.put(cattle.getCattleId(), cattle.getEarTag());
-			});
-		}
+		final Map<Long, String> eIdEarTagMap = getEidEarTagMapping();
 		treatmentData.setEIdEarTagMap(eIdEarTagMap);
 		return treatmentData;
 	}
@@ -106,6 +100,31 @@ public class DataServiceImpl implements DataService {
 	@Override
 	public AllDataDto getWeightAndTBTestData() {
 		final AllDataDto tbTestData = new AllDataDto();
+		final Map<Long, String> eIdEarTagMap = getEidEarTagMapping();
+		tbTestData.setEIdEarTagMap(eIdEarTagMap);
+
+		final List<Pen> pens = penRepository.findAll();
+		tbTestData.setPens(pens);
+		return tbTestData;
+	}
+
+	@Override
+	public AllDataDto getSalesData() {
+		final AllDataDto salesData = new AllDataDto();
+		// EID and Ear tag mapping
+		final Map<Long, String> eIdEarTagMap = getEidEarTagMapping();
+		salesData.setEIdEarTagMap(eIdEarTagMap);
+		// Pens
+		final List<Pen> pens = penRepository.findAll();
+		salesData.setPens(pens);
+		// Market
+		final List<Market> markets = marketRepository.findAll();
+		salesData.setMarket(markets);
+
+		return salesData;
+	}
+
+	private Map<Long, String> getEidEarTagMapping() {
 		final Optional<List<Cattle>> cattleList = cattleRepository.getEIdEartagMap();
 		final Map<Long, String> eIdEarTagMap = new HashMap<>();
 		if (cattleList.isPresent()) {
@@ -113,11 +132,7 @@ public class DataServiceImpl implements DataService {
 				eIdEarTagMap.put(cattle.getCattleId(), cattle.getEarTag());
 			});
 		}
-		tbTestData.setEIdEarTagMap(eIdEarTagMap);
-
-		final List<Pen> pens = penRepository.findAll();
-		tbTestData.setPens(pens);
-		return tbTestData;
+		return eIdEarTagMap;
 	}
 
 	private AllDataDto getInductionAndTreatmentData() {

@@ -86,4 +86,12 @@ public class DataController extends BaseController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
+
+	@GetMapping(value = "/sales")
+	public AllDataDto getSalesData() {
+		logger.info("Incoming request: Retrieving Sales pre-data");
+		final AllDataDto allData = dataService.getSalesData();
+		logger.info("Request successful: Retrieved Sales pre-data");
+		return allData;
+	}
 }
