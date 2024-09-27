@@ -1,23 +1,24 @@
 package com.example.utapCattle.service.impl;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.example.utapCattle.model.dto.CattleDto;
 import com.example.utapCattle.model.entity.Cattle;
 import com.example.utapCattle.service.CattleService;
 import com.example.utapCattle.service.repository.CattleRepository;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CattleServiceImpl implements CattleService {
 
-	@Autowired
-	private CattleRepository cattleRepository;
+	private final CattleRepository cattleRepository;
+
+	CattleServiceImpl(CattleRepository cattleRepository) {
+		this.cattleRepository = cattleRepository;
+	}
 
 	@Override
 	public List<CattleDto> getAllCattle() { // Return List<CattleDto>

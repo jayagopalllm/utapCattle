@@ -1,19 +1,5 @@
 package com.example.utapCattle.service.impl;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.coyote.BadRequestException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.example.utapCattle.model.dto.CattleDto;
 import com.example.utapCattle.model.dto.MovementDto;
 import com.example.utapCattle.model.dto.TreatmentHistoryDto;
@@ -29,24 +15,39 @@ import com.example.utapCattle.service.MovementService;
 import com.example.utapCattle.service.TreatmentHistoryService;
 import com.example.utapCattle.service.WeightHistoryService;
 import com.example.utapCattle.service.repository.TreatmentHistoryRepository;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.coyote.BadRequestException;
+import org.springframework.stereotype.Service;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class TreatmentHistoryServiceImpl implements TreatmentHistoryService {
 
-	@Autowired
-	private TreatmentHistoryRepository treatmentHistoryRepository;
+	private final TreatmentHistoryRepository treatmentHistoryRepository;
+	private final CommentService commentService;
+	private final WeightHistoryService weightHistoryService;
+	private final MovementService movementService;
+	private final CattleService cattleService;
 
-	@Autowired
-	private CommentService commentService;
-
-	@Autowired
-	private WeightHistoryService weightHistoryService;
-
-	@Autowired
-	private MovementService movementService;
-
-	@Autowired
-	private CattleService cattleService;
+	TreatmentHistoryServiceImpl(TreatmentHistoryRepository treatmentHistoryRepository,
+								CommentService commentService,
+								WeightHistoryService weightHistoryService,
+								MovementService movementService,
+								CattleService cattleService) {
+		this.treatmentHistoryRepository = treatmentHistoryRepository;
+		this.commentService = commentService;
+		this.weightHistoryService = weightHistoryService;
+		this.movementService = movementService;
+		this.cattleService = cattleService;
+	}
 
 	@Override
 	public List<TreatmentHistoryDto> getAllTreatmentHistory() {

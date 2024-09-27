@@ -1,22 +1,23 @@
 package com.example.utapCattle.service.impl;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.example.utapCattle.model.dto.MarketDto;
 import com.example.utapCattle.model.entity.Market;
 import com.example.utapCattle.service.MarketService;
 import com.example.utapCattle.service.repository.MarketRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class MarketServiceImpl implements MarketService {
 
-	@Autowired
-	private MarketRepository marketRepository;
+	private final MarketRepository marketRepository;
+
+	MarketServiceImpl(MarketRepository marketRepository) {
+		this.marketRepository = marketRepository;
+	}
 
 	@Override
 	public List<MarketDto> getAllMarkets() {

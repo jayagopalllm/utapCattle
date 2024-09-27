@@ -1,13 +1,5 @@
 package com.example.utapCattle.service.impl;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.example.utapCattle.model.dto.AllDataDto;
 import com.example.utapCattle.model.entity.Agent;
 import com.example.utapCattle.model.entity.Breed;
@@ -32,42 +24,51 @@ import com.example.utapCattle.service.repository.MarketRepository;
 import com.example.utapCattle.service.repository.MedicalConditionRepository;
 import com.example.utapCattle.service.repository.MedicationRepository;
 import com.example.utapCattle.service.repository.PenRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class DataServiceImpl implements DataService {
 
-	@Autowired
-	private FarmRepository farmRepository;
+	private final FarmRepository farmRepository;
+	private final BreedRepository breedRepository;
+	private final MarketRepository marketRepository;
+	private final CategoryRepository categoryRepository;
+	private final AgentRepository agentRepository;
+	private final CustomerRepository customerRepository;
+	private final MedicalConditionRepository medicalConditionRepository;
+	private final MedicationRepository medicationRepository;
+	private final CattleRepository cattleRepository;
+	private final PenRepository penRepository;
+	private final DefaultTreatmentRepository defaultTreatmentRepository;
 
-	@Autowired
-	private BreedRepository breedRepository;
-
-	@Autowired
-	private MarketRepository marketRepository;
-
-	@Autowired
-	private CategoryRepository categoryRepository;
-
-	@Autowired
-	private AgentRepository agentRepository;
-
-	@Autowired
-	private CustomerRepository customerRepository;
-
-	@Autowired
-	private MedicalConditionRepository medicalConditionRepository;
-
-	@Autowired
-	private MedicationRepository medicationRepository;
-
-	@Autowired
-	private CattleRepository cattleRepository;
-
-	@Autowired
-	private PenRepository penRepository;
-
-	@Autowired
-	private DefaultTreatmentRepository defaultTreatmentRepository;
+	DataServiceImpl(FarmRepository farmRepository,
+					BreedRepository breedRepository,
+					MarketRepository marketRepository,
+					CategoryRepository categoryRepository,
+					AgentRepository agentRepository,
+					CustomerRepository customerRepository,
+					MedicalConditionRepository medicalConditionRepository,
+					MedicationRepository medicationRepository,
+					CattleRepository cattleRepository,
+					PenRepository penRepository,
+					DefaultTreatmentRepository defaultTreatmentRepository) {
+		this.farmRepository = farmRepository;
+		this.breedRepository = breedRepository;
+		this.marketRepository = marketRepository;
+		this.categoryRepository = categoryRepository;
+		this.agentRepository = agentRepository;
+		this.customerRepository = customerRepository;
+		this.medicalConditionRepository = medicalConditionRepository;
+		this.medicationRepository = medicationRepository;
+		this.cattleRepository = cattleRepository;
+		this.penRepository = penRepository;
+		this.defaultTreatmentRepository = defaultTreatmentRepository;
+	}
 
 	@Override
 	public AllDataDto getAllData() {
@@ -138,7 +139,7 @@ public class DataServiceImpl implements DataService {
 	private AllDataDto getInductionAndTreatmentData() {
 		final List<MedicalCondition> medicalConditions = medicalConditionRepository.findAll();
 		final List<Medication> medications = medicationRepository.findAll();
-		final List<Pen> pens = penRepository.findAll(); // should pick pen based on the select criteria filter 
+		final List<Pen> pens = penRepository.findAll();
 		final List<String> earTagList = cattleRepository.findEarTagsWithIncompleteInduction();
 		final List<String> eIdList = cattleRepository.findEIdsWithIncompleteInduction();
 

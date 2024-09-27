@@ -1,25 +1,26 @@
 package com.example.utapCattle.service.impl;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.example.utapCattle.model.entity.Cattle;
 import com.example.utapCattle.model.entity.TbTestHistory;
 import com.example.utapCattle.service.TbTestHistoryService;
 import com.example.utapCattle.service.repository.CattleRepository;
 import com.example.utapCattle.service.repository.TbTestHistoryRepository;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class TbTestHistoryServiceImpl implements TbTestHistoryService {
 
-	@Autowired
-	private TbTestHistoryRepository tbTestHistoryRepository;
+	private final TbTestHistoryRepository tbTestHistoryRepository;
+	private final CattleRepository cattleRepository;
 
-	@Autowired
-	private CattleRepository cattleRepository;
+	TbTestHistoryServiceImpl(TbTestHistoryRepository tbTestHistoryRepository,
+							 CattleRepository cattleRepository) {
+		this.tbTestHistoryRepository = tbTestHistoryRepository;
+		this.cattleRepository = cattleRepository;
+	}
 
 	@Override
 	public TbTestHistory saveTbTestHistory(final TbTestHistory tbTestHistory) throws Exception {

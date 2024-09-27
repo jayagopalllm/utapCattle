@@ -1,22 +1,23 @@
 package com.example.utapCattle.service.impl;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.example.utapCattle.model.dto.CategoryDto;
 import com.example.utapCattle.model.entity.Category;
 import com.example.utapCattle.service.CategoryService;
 import com.example.utapCattle.service.repository.CategoryRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
 
-    @Autowired
-    private CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
+
+    CategoryServiceImpl(CategoryRepository categoryRepository) {
+        this.categoryRepository = categoryRepository;
+    }
 
         @Override
     public CategoryDto getCategoryById(Long id) {

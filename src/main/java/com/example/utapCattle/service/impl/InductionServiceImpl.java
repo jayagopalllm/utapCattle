@@ -1,27 +1,29 @@
 package com.example.utapCattle.service.impl;
 
-import java.security.SecureRandom;
-import java.util.Map;
-import java.util.Optional;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.example.utapCattle.model.entity.Cattle;
 import com.example.utapCattle.model.entity.TreatmentHistoryMetadata;
 import com.example.utapCattle.service.InductionService;
 import com.example.utapCattle.service.TreatmentHistoryService;
 import com.example.utapCattle.service.repository.CattleRepository;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
+
+import java.security.SecureRandom;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class InductionServiceImpl implements InductionService {
 
-	@Autowired
-	private CattleRepository cattleRepository;
+	private final CattleRepository cattleRepository;
 
-	@Autowired
-	private TreatmentHistoryService treatmentHistoryService;
+	private final TreatmentHistoryService treatmentHistoryService;
+
+	InductionServiceImpl(CattleRepository cattleRepository,
+						 TreatmentHistoryService treatmentHistoryService) {
+		this.cattleRepository = cattleRepository;
+		this.treatmentHistoryService = treatmentHistoryService;
+	}
 
 	@Override
 	public final Map<String, Object> saveInduction(final TreatmentHistoryMetadata treatmentHistoryMetadata) {
