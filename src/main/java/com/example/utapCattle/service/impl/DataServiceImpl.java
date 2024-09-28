@@ -46,7 +46,7 @@ public class DataServiceImpl implements DataService {
 	private final PenRepository penRepository;
 	private final DefaultTreatmentRepository defaultTreatmentRepository;
 
-	DataServiceImpl(FarmRepository farmRepository,
+	public DataServiceImpl(FarmRepository farmRepository,
 					BreedRepository breedRepository,
 					MarketRepository marketRepository,
 					CategoryRepository categoryRepository,

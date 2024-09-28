@@ -20,7 +20,7 @@ public class SaleServiceImpl implements SaleService {
 	private final CommentRepository commentRepository;
 	private final WeightHistoryService weightHistoryService;
 
-	SaleServiceImpl(SaleRepository saleRepository,
+	public SaleServiceImpl(SaleRepository saleRepository,
 					CommentRepository commentRepository,
 					WeightHistoryService weightHistoryService) {
 		this.saleRepository = saleRepository;

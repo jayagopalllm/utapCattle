@@ -14,7 +14,7 @@ public class MedicationServiceImpl implements MedicationService {
 
 	private final MedicationRepository medicationRepository;
 
-	MedicationServiceImpl(MedicationRepository medicationRepository) {
+	public MedicationServiceImpl(MedicationRepository medicationRepository) {
 		this.medicationRepository = medicationRepository;
 	}
 

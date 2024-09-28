@@ -13,7 +13,7 @@ public class MovementServiceImpl implements MovementService {
 
 	private final MovementRepository movementRepository;
 
-	MovementServiceImpl(MovementRepository movementRepository) {
+	public MovementServiceImpl(MovementRepository movementRepository) {
 		this.movementRepository = movementRepository;
 	}
 

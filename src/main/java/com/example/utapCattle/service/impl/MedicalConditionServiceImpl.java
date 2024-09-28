@@ -14,7 +14,7 @@ public class MedicalConditionServiceImpl implements MedicalConditionService {
 
 	private final MedicalConditionRepository medicalConditionRepository;
 
-	MedicalConditionServiceImpl(MedicalConditionRepository medicalConditionRepository) {
+	public MedicalConditionServiceImpl(MedicalConditionRepository medicalConditionRepository) {
 		this.medicalConditionRepository = medicalConditionRepository;
 	}
 

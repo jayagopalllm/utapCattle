@@ -16,7 +16,7 @@ public class TbTestHistoryServiceImpl implements TbTestHistoryService {
 	private final TbTestHistoryRepository tbTestHistoryRepository;
 	private final CattleRepository cattleRepository;
 
-	TbTestHistoryServiceImpl(TbTestHistoryRepository tbTestHistoryRepository,
+	public TbTestHistoryServiceImpl(TbTestHistoryRepository tbTestHistoryRepository,
 							 CattleRepository cattleRepository) {
 		this.tbTestHistoryRepository = tbTestHistoryRepository;
 		this.cattleRepository = cattleRepository;

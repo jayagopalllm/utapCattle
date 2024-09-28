@@ -15,7 +15,7 @@ public class MarketServiceImpl implements MarketService {
 
 	private final MarketRepository marketRepository;
 
-	MarketServiceImpl(MarketRepository marketRepository) {
+	public MarketServiceImpl(MarketRepository marketRepository) {
 		this.marketRepository = marketRepository;
 	}
 

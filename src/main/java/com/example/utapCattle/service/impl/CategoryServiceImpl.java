@@ -1,5 +1,6 @@
 package com.example.utapCattle.service.impl;
 
+import com.example.utapCattle.mapper.CategoryMapper;
 import com.example.utapCattle.model.dto.CategoryDto;
 import com.example.utapCattle.model.entity.Category;
 import com.example.utapCattle.service.CategoryService;
@@ -14,39 +15,31 @@ import java.util.stream.Collectors;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final CategoryMapper mapper;
 
-    CategoryServiceImpl(CategoryRepository categoryRepository) {
+    public CategoryServiceImpl(CategoryRepository categoryRepository,
+                               CategoryMapper mapper) {
         this.categoryRepository = categoryRepository;
+        this.mapper = mapper;
     }
 
         @Override
     public CategoryDto getCategoryById(Long id) {
         Optional<Category> category = categoryRepository.findById(id);
-        return category.map(this::mapToDto).orElse(null);
+        return category.map(mapper::toDto).orElse(null);
     }
 
     @Override
     public List<CategoryDto> getAllCategories() {
         return categoryRepository.findAll().stream()
-                .map(this::mapToDto)
+                .map(mapper::toDto)
                 .collect(Collectors.toList());
     }
 
     @Override
     public CategoryDto saveCategory(Category category) {
         Category savedCategory = categoryRepository.save(category);
-        return mapToDto(savedCategory);
+        return mapper.toDto(savedCategory);
     }
-
-    // Helper method to map Category to CategoryDto
-    private CategoryDto mapToDto(Category category) {
-        return new CategoryDto(
-                category.getCategoryId(),
-                category.getCategoryDesc(),
-                category.getSex()
-        );
-    }
-
-    // Add more methods for creating, updating, and deleting categories if needed
 }
 

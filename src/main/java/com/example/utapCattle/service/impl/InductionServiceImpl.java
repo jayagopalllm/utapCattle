@@ -19,7 +19,7 @@ public class InductionServiceImpl implements InductionService {
 
 	private final TreatmentHistoryService treatmentHistoryService;
 
-	InductionServiceImpl(CattleRepository cattleRepository,
+	public InductionServiceImpl(CattleRepository cattleRepository,
 						 TreatmentHistoryService treatmentHistoryService) {
 		this.cattleRepository = cattleRepository;
 		this.treatmentHistoryService = treatmentHistoryService;

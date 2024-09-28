@@ -1,5 +1,6 @@
 package com.example.utapCattle.service.impl;
 
+import com.example.utapCattle.mapper.BreedMapper;
 import com.example.utapCattle.model.dto.BreedDto;
 import com.example.utapCattle.model.entity.Breed;
 import com.example.utapCattle.service.BreedService;
@@ -10,44 +11,35 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-
 @Service
 public class BreedServiceImpl implements BreedService{
 
     private final BreedRepository breedRepository;
+    private final BreedMapper mapper;
 
-    BreedServiceImpl(BreedRepository breedRepository) {
+    public BreedServiceImpl(BreedRepository breedRepository,
+                            BreedMapper mapper) {
         this.breedRepository = breedRepository;
+        this.mapper = mapper;
     }
 
     @Override
     public List<BreedDto> getAllBreeds() {
         return breedRepository.findAll().stream()
-                .map(this::mapToDto)
+                .map(mapper::toDto)
                 .collect(Collectors.toList());
     }
 
     @Override
     public BreedDto getBreedById(Long id) {
         Optional<Breed> breed = breedRepository.findById(id);
-        return breed.map(this::mapToDto).orElse(null);
+        return breed.map(mapper::toDto).orElse(null);
     }
 
     @Override
     public BreedDto saveBreed(Breed breed) {
         Breed savedBreed = breedRepository.save(breed);
-        return mapToDto(savedBreed);
-    }
-
-    private BreedDto mapToDto(Breed breed) {
-        return new BreedDto(
-                breed.getBreedid(),
-                breed.getBreeddesc(),
-                breed.getBreedabbr(),
-                breed.getBreedfull(),
-                breed.getBreedcatego(),
-                breed.getBeefdairy()
-        );
+        return mapper.toDto(savedBreed);
     }
 
 }

@@ -37,7 +37,7 @@ public class TreatmentHistoryServiceImpl implements TreatmentHistoryService {
 	private final MovementService movementService;
 	private final CattleService cattleService;
 
-	TreatmentHistoryServiceImpl(TreatmentHistoryRepository treatmentHistoryRepository,
+	public TreatmentHistoryServiceImpl(TreatmentHistoryRepository treatmentHistoryRepository,
 								CommentService commentService,
 								WeightHistoryService weightHistoryService,
 								MovementService movementService,

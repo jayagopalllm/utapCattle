@@ -16,7 +16,7 @@ public class CattleServiceImpl implements CattleService {
 
 	private final CattleRepository cattleRepository;
 
-	CattleServiceImpl(CattleRepository cattleRepository) {
+	public CattleServiceImpl(CattleRepository cattleRepository) {
 		this.cattleRepository = cattleRepository;
 	}
 

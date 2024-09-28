@@ -13,7 +13,7 @@ public class CommentServiceImpl implements CommentService {
 
 	private final CommentRepository commentRepository;
 
-	CommentServiceImpl(CommentRepository commentRepository) {
+	public CommentServiceImpl(CommentRepository commentRepository) {
 		this.commentRepository = commentRepository;
 	}
 
