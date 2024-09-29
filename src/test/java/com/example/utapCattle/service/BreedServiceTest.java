@@ -34,7 +34,13 @@ public class BreedServiceTest {
 
     @Test
     public void fetchAllBreed_WhenBreedExists_ShouldReturnAllBreed() {
-        Breed breed = new Breed(1L, "Sample-Breed", "ABC","ABCD","AC","Dairy1");
+        Breed breed = breedMapper.toEntity(new BreedDto().builder().breedid(1L)
+                .breeddesc("Sample-Breed")
+                .breedabbr("ABC")
+                .breedfull("ABCD")
+                .breedcatego("AC")
+                .beefdairy("Dairy1")
+                .build());
         List<Breed> breedList = Arrays.asList(breed);
 
         when(breedRepository.findAll()).thenReturn(breedList);
@@ -45,7 +51,13 @@ public class BreedServiceTest {
 
     @Test
     public void fetchBreedById_WhenBreedExists_ShouldReturnBreed() {
-        Breed breed = new Breed(1L, "Sample-Breed", "ABC","ABCD","AC","Dairy1");
+        Breed breed = breedMapper.toEntity(new BreedDto().builder().breedid(1L)
+                .breeddesc("Sample-Breed")
+                .breedabbr("ABC")
+                .breedfull("ABCD")
+                .breedcatego("AC")
+                .beefdairy("Dairy1")
+                .build());
         BreedDto breedDto = breedMapper.toDto(breed);
 
         when(breedRepository.findById(1L)).thenReturn(Optional.of(breed));
@@ -56,7 +68,13 @@ public class BreedServiceTest {
 
     @Test
     public void fetchSavedBreed_WhenBreedIsSaved_ShouldReturnSavedBreed() {
-        Breed breed = new Breed(1L, "Sample-Breed", "ABC","ABCD","AC","Dairy1");
+        Breed breed = breedMapper.toEntity(new BreedDto().builder().breedid(1L)
+                .breeddesc("Sample-Breed")
+                .breedabbr("ABC")
+                .breedfull("ABCD")
+                .breedcatego("AC")
+                .beefdairy("Dairy1")
+                .build());
         BreedDto breedDto = breedMapper.toDto(breed);
 
         when(breedRepository.save(any(Breed.class))).thenReturn(breed);

@@ -3,6 +3,7 @@ package com.example.utapCattle.service;
 import java.util.List;
 import java.util.Map;
 
+import com.example.utapCattle.exception.CommentValidationException;
 import com.example.utapCattle.model.dto.MovementDto;
 import com.example.utapCattle.model.dto.TreatmentHistoryDto;
 import com.example.utapCattle.model.dto.WeightHistoryDto;
@@ -26,7 +27,7 @@ public interface TreatmentHistoryService {
 	 * @throws IllegalArgumentException if any mandatory fields are missing in the
 	 *                                  treatment history records.
 	 */
-	public Map<String, Object> saveTreatmentHistory(final TreatmentHistoryMetadata treatmentHistoryMetadata);
+	public Map<String, Object> saveTreatmentHistory(final TreatmentHistoryMetadata treatmentHistoryMetadata) throws CommentValidationException;
 
 	public Map<String, Object> getCattleDetailsAndAverageConditionScore(final String earTagOrEId) throws Exception;
 }

@@ -1,5 +1,6 @@
 package com.example.utapCattle.service.impl;
 
+import com.example.utapCattle.mapper.CustomerMapper;
 import com.example.utapCattle.model.dto.CustomerDto;
 import com.example.utapCattle.model.entity.Customer;
 import com.example.utapCattle.service.CustomerService;
@@ -14,35 +15,30 @@ import java.util.stream.Collectors;
 public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
+    private final CustomerMapper mapper;
 
-    public CustomerServiceImpl(CustomerRepository customerRepository) {
+    public CustomerServiceImpl(CustomerRepository customerRepository,
+                               CustomerMapper mapper) {
         this.customerRepository = customerRepository;
+        this.mapper = mapper;
     }
 
     @Override
     public List<CustomerDto> getAllCustomers() {
         return customerRepository.findAll().stream()
-                .map(this::mapToDto)
+                .map(mapper::toDto)
                 .collect(Collectors.toList());
     }
 
     @Override
     public CustomerDto getCustomerById(Long id) {
         Optional<Customer> customer = customerRepository.findById(id);
-        return customer.map(this::mapToDto).orElse(null);
+        return customer.map(mapper::toDto).orElse(null);
     }
 
     @Override
     public CustomerDto saveCustomer(Customer customer) {
         Customer savedCustomer = customerRepository.save(customer);
-        return mapToDto(savedCustomer);
-    }
-
-    // Helper method to map Customer to CustomerDto
-    private CustomerDto mapToDto(Customer customer) {
-        return new CustomerDto(
-                customer.getCustomerId(),
-                customer.getCustomerName()
-        );
+        return mapper.toDto(savedCustomer);
     }
 }

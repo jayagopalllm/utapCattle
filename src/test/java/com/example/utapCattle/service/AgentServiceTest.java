@@ -34,8 +34,8 @@ public class AgentServiceTest {
 
     @Test
     void fetchAllAgent_WhenAgentExists_ShouldReturnAllAgents() {
-        Agent agent1 = new Agent(1L, "Agent1");
-        Agent agent2 = new Agent(2L, "Agent2");
+        Agent agent1 = agentMapper.toEntity(new AgentDto().builder().agentId(1L).agentName("Agent1").build());
+        Agent agent2 = agentMapper.toEntity(new AgentDto().builder().agentId(2L).agentName("Agent2").build());
         List<Agent> agentList = Arrays.asList(agent1, agent2);
 
         when(agentRepository.findAll()).thenReturn(agentList);
@@ -46,7 +46,7 @@ public class AgentServiceTest {
 
     @Test
     public void fetchAgentById_WhenAgentExists_ShouldReturnAgent() {
-        Agent agent = new Agent(1L, "AgentA");
+        Agent agent = agentMapper.toEntity(new AgentDto().builder().agentId(1L).agentName("AgentA").build());
         AgentDto agentDto = agentMapper.toDto(agent);
 
         when(agentRepository.findById(1L)).thenReturn(Optional.of(agent));
@@ -57,7 +57,7 @@ public class AgentServiceTest {
 
     @Test
     public void fetchSavedAgent_WhenAgentIsSaved_ShouldReturnAgent() {
-        Agent agent = new Agent(1L, "Agent1");
+        Agent agent = agentMapper.toEntity(new AgentDto().builder().agentId(1L).agentName("Agent1").build());
         AgentDto agentDto = agentMapper.toDto(agent);
 
         when(agentRepository.save(any(Agent.class))).thenReturn(agent);

@@ -2,6 +2,7 @@ package com.example.utapCattle.service;
 
 import java.util.Map;
 
+import com.example.utapCattle.exception.CommentValidationException;
 import com.example.utapCattle.model.entity.TreatmentHistoryMetadata;
 import com.example.utapCattle.model.entity.TreatmentHistory;
 import com.example.utapCattle.service.impl.TreatmentHistoryServiceImpl;
@@ -29,5 +30,5 @@ public interface InductionService {
 	 * @return A object representing the saved treatment history data.
 	 * @throws IllegalArgumentException if EId or EarTag is missing or invalid.
 	 */
-	public Map<String, Object> saveInduction(final TreatmentHistoryMetadata treatmentHistoryMetadata);
+	public Map<String, Object> saveInduction(final TreatmentHistoryMetadata treatmentHistoryMetadata) throws CommentValidationException;
 }

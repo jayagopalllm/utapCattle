@@ -1,5 +1,6 @@
 package com.example.utapCattle.service.impl;
 
+import com.example.utapCattle.exception.CommentValidationException;
 import com.example.utapCattle.model.dto.CattleDto;
 import com.example.utapCattle.model.dto.MovementDto;
 import com.example.utapCattle.model.dto.TreatmentHistoryDto;
@@ -61,7 +62,7 @@ public class TreatmentHistoryServiceImpl implements TreatmentHistoryService {
 	}
 
 	@Override
-	public Map<String, Object> saveTreatmentHistory(final TreatmentHistoryMetadata treatmentHistoryMetadata) {
+	public Map<String, Object> saveTreatmentHistory(final TreatmentHistoryMetadata treatmentHistoryMetadata) throws CommentValidationException {
 		final List<TreatmentHistory> treatmentHistories = treatmentHistoryMetadata.getTreatmentHistories();
 
 		validateInductionVO(treatmentHistories);

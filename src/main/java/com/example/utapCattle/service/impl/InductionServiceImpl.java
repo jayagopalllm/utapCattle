@@ -1,5 +1,6 @@
 package com.example.utapCattle.service.impl;
 
+import com.example.utapCattle.exception.CommentValidationException;
 import com.example.utapCattle.model.entity.Cattle;
 import com.example.utapCattle.model.entity.TreatmentHistoryMetadata;
 import com.example.utapCattle.service.InductionService;
@@ -26,7 +27,7 @@ public class InductionServiceImpl implements InductionService {
 	}
 
 	@Override
-	public final Map<String, Object> saveInduction(final TreatmentHistoryMetadata treatmentHistoryMetadata) {
+	public final Map<String, Object> saveInduction(final TreatmentHistoryMetadata treatmentHistoryMetadata) throws CommentValidationException {
 
 		validateInduction(treatmentHistoryMetadata);
 

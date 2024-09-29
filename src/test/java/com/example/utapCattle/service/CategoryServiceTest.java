@@ -36,7 +36,10 @@ public class CategoryServiceTest {
 
     @Test
     public void fetchAllCategory_WhenCategoryExists_ShouldReturnAllCategory() {
-        Category category = new Category(1L, "Heifer", "F");
+        Category category = categoryMapper.toEntity(new CategoryDto().builder()
+                .categoryId(1L)
+                .categoryDesc("Heifer")
+                .sex("F").build());
         List<Category> categoryList = Arrays.asList(category);
 
         when(categoryRepository.findAll()).thenReturn(categoryList);
@@ -47,7 +50,10 @@ public class CategoryServiceTest {
 
     @Test
     public void fetchCategoryById_WhenCategoryExists_ShouldReturnCategory() {
-        Category category = new Category(1L, "Heifer", "F");
+        Category category = categoryMapper.toEntity(new CategoryDto().builder()
+                .categoryId(1L)
+                .categoryDesc("Heifer")
+                .sex("F").build());
         CategoryDto categoryDto = categoryMapper.toDto(category);
 
         when(categoryRepository.findById(1L)).thenReturn(Optional.of(category));
@@ -58,7 +64,10 @@ public class CategoryServiceTest {
 
     @Test
     public void fetchSavedCategory_WhenCategoryIsSaved_ShouldReturnSavedCategory() {
-        Category category = new Category(1L, "Heifer", "F");
+        Category category = categoryMapper.toEntity(new CategoryDto().builder()
+                .categoryId(1L)
+                .categoryDesc("Heifer")
+                .sex("F").build());
         CategoryDto categoryDto = categoryMapper.toDto(category);
 
         when(categoryRepository.save(any(Category.class))).thenReturn(category);
