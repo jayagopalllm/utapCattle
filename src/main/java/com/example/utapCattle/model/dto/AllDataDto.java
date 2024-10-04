@@ -1,8 +1,5 @@
 package com.example.utapCattle.model.dto;
 
-import java.util.List;
-import java.util.Map;
-
 import com.example.utapCattle.model.entity.Agent;
 import com.example.utapCattle.model.entity.Breed;
 import com.example.utapCattle.model.entity.Category;
@@ -14,13 +11,19 @@ import com.example.utapCattle.model.entity.MedicalCondition;
 import com.example.utapCattle.model.entity.Medication;
 import com.example.utapCattle.model.entity.Pen;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+import java.util.Map;
+
 @Data
+@Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @NoArgsConstructor
+@AllArgsConstructor
 public class AllDataDto {
 
 	private List<Farm> sourceFarm;
@@ -36,23 +39,4 @@ public class AllDataDto {
 	private List<Pen> pens;
 	private List<DefaultTreatment> defaultTreatments;
 	private Map<Long, String> eIdEarTagMap;
-
-	public AllDataDto(final List<Farm> sourceFarm, final List<Breed> breed, final List<Market> market,
-			final List<Category> category, final List<Agent> agent, final List<Customer> fatteningFor) {
-		this.sourceFarm = sourceFarm;
-		this.breed = breed;
-		this.market = market;
-		this.category = category;
-		this.agent = agent;
-		this.fatteningFor = fatteningFor;
-	}
-
-	public AllDataDto(final List<MedicalCondition> medicalCondition, final List<Medication> medication,
-			final List<Pen> pens, List<String> eIdList, final List<String> earTagList) {
-		this.medicalCondition = medicalCondition;
-		this.medication = medication;
-		this.pens = pens;
-		this.eIdList = eIdList;
-		this.earTagList = earTagList;
-	}
 }

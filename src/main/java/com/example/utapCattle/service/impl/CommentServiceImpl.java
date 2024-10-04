@@ -1,6 +1,6 @@
 package com.example.utapCattle.service.impl;
 
-import com.example.utapCattle.exception.CommentValidationException;
+import com.example.utapCattle.exception.CommentException;
 import com.example.utapCattle.mapper.CommentMapper;
 import com.example.utapCattle.model.dto.CommentDto;
 import com.example.utapCattle.model.entity.Comment;
@@ -25,7 +25,7 @@ public class CommentServiceImpl implements CommentService {
 	}
 
 	@Override
-	public List<CommentDto> saveComments(List<Comment> comments) throws CommentValidationException {
+	public List<CommentDto> saveComments(List<Comment> comments) throws CommentException {
 		validateCommentVO(comments);
 		return commentRepository.saveAll(comments).stream().map(mapper::toDto).collect(Collectors.toList());
 	}
@@ -35,10 +35,10 @@ public class CommentServiceImpl implements CommentService {
 		return commentRepository.getNextSequenceValue();
 	}
 
-	private void validateCommentVO(List<Comment> comments) throws CommentValidationException {
+	private void validateCommentVO(List<Comment> comments) throws CommentException {
 		for (final Comment comment : comments) {
 			if (StringUtils.isBlank(comment.getComment())) {
-				throw new CommentValidationException("Comment text is a mandatory field and cannot be null or empty.");
+				throw new CommentException("Comment text is a mandatory field and cannot be null or empty.");
 			}
 			if (comment.getId() == null) {
 				final Long id = getNextSequenceValue();

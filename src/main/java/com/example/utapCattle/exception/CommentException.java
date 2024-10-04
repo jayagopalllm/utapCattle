@@ -1,17 +1,16 @@
 package com.example.utapCattle.exception;
 
-public class CommentValidationException extends Exception {
+public class CommentException extends Exception {
 
     private final String error;
 
-    public CommentValidationException(String error) {
-        super("Comment Validation Exception");
+    public CommentException(String error) {
+        super("Comment Exception");
         this.error = error;
     }
 
     public String getError(){
         return error;
     }
-
 
 }

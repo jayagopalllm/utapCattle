@@ -79,7 +79,14 @@ public class DataServiceImpl implements DataService {
 		final List<Agent> agents = agentRepository.findAll();
 		final List<Customer> customers = customerRepository.findAll();
 
-		return new AllDataDto(farms, breeds, markets, categories, agents, customers);
+		return new AllDataDto().builder()
+				.sourceFarm(farms)
+				.breed(breeds)
+				.market(markets)
+				.category(categories)
+				.agent(agents)
+				.fatteningFor(customers)
+				.build();
 	}
 
 	@Override
@@ -111,18 +118,14 @@ public class DataServiceImpl implements DataService {
 
 	@Override
 	public AllDataDto getSalesData() {
-		final AllDataDto salesData = new AllDataDto();
-		// EID and Ear tag mapping
 		final Map<Long, String> eIdEarTagMap = getEidEarTagMapping();
-		salesData.setEIdEarTagMap(eIdEarTagMap);
-		// Pens
 		final List<Pen> pens = penRepository.findAll();
-		salesData.setPens(pens);
-		// Market
 		final List<Market> markets = marketRepository.findAll();
-		salesData.setMarket(markets);
 
-		return salesData;
+		return new AllDataDto().builder()
+				.eIdEarTagMap(eIdEarTagMap)
+				.pens(pens)
+				.market(markets).build();
 	}
 
 	private Map<Long, String> getEidEarTagMapping() {
@@ -143,14 +146,12 @@ public class DataServiceImpl implements DataService {
 		final List<String> earTagList = cattleRepository.findEarTagsWithIncompleteInduction();
 		final List<String> eIdList = cattleRepository.findEIdsWithIncompleteInduction();
 
-		final AllDataDto conditionData = new AllDataDto();
-		conditionData.setMedicalCondition(medicalConditions);
-		conditionData.setMedication(medications);
-		conditionData.setPens(pens);
-		conditionData.setEIdList(eIdList);
-		conditionData.setEarTagList(earTagList);
-
-		return conditionData;
+		return new AllDataDto().builder()
+				.medicalCondition(medicalConditions)
+				.medication(medications)
+				.pens(pens)
+				.eIdList(eIdList)
+				.earTagList(earTagList).build();
 	}
 
 }

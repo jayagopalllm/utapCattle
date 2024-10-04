@@ -33,7 +33,7 @@ public class BreedServiceTest {
     }
 
     @Test
-    public void fetchAllBreed_WhenBreedExists_ShouldReturnAllBreed() {
+    public void testGetAllBreeds_WhenBreedExists_ShouldReturnAllBreed() {
         Breed breed = breedMapper.toEntity(new BreedDto().builder().breedid(1L)
                 .breeddesc("Sample-Breed")
                 .breedabbr("ABC")
@@ -50,7 +50,7 @@ public class BreedServiceTest {
     }
 
     @Test
-    public void fetchBreedById_WhenBreedExists_ShouldReturnBreed() {
+    public void testGetBreedById_WhenBreedExists_ShouldReturnBreed() {
         Breed breed = breedMapper.toEntity(new BreedDto().builder().breedid(1L)
                 .breeddesc("Sample-Breed")
                 .breedabbr("ABC")
@@ -67,7 +67,7 @@ public class BreedServiceTest {
     }
 
     @Test
-    public void fetchSavedBreed_WhenBreedIsSaved_ShouldReturnSavedBreed() {
+    public void testSaveBreed_WhenBreedIsSaved_ShouldReturnSavedBreed() {
         Breed breed = breedMapper.toEntity(new BreedDto().builder().breedid(1L)
                 .breeddesc("Sample-Breed")
                 .breedabbr("ABC")

@@ -35,7 +35,7 @@ public class CategoryServiceTest {
     }
 
     @Test
-    public void fetchAllCategory_WhenCategoryExists_ShouldReturnAllCategory() {
+    public void testGetAllCategories_WhenCategoryExists_ShouldReturnAllCategory() {
         Category category = categoryMapper.toEntity(new CategoryDto().builder()
                 .categoryId(1L)
                 .categoryDesc("Heifer")
@@ -49,7 +49,7 @@ public class CategoryServiceTest {
     }
 
     @Test
-    public void fetchCategoryById_WhenCategoryExists_ShouldReturnCategory() {
+    public void testGetCategoryById_WhenCategoryExists_ShouldReturnCategory() {
         Category category = categoryMapper.toEntity(new CategoryDto().builder()
                 .categoryId(1L)
                 .categoryDesc("Heifer")
@@ -63,7 +63,7 @@ public class CategoryServiceTest {
     }
 
     @Test
-    public void fetchSavedCategory_WhenCategoryIsSaved_ShouldReturnSavedCategory() {
+    public void testSaveCategory_WhenCategoryIsSaved_ShouldReturnSavedCategory() {
         Category category = categoryMapper.toEntity(new CategoryDto().builder()
                 .categoryId(1L)
                 .categoryDesc("Heifer")

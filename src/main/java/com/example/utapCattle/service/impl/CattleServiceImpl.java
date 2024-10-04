@@ -1,6 +1,6 @@
 package com.example.utapCattle.service.impl;
 
-import com.example.utapCattle.exception.CattleValidationException;
+import com.example.utapCattle.exception.CattleException;
 import com.example.utapCattle.mapper.CattleMapper;
 import com.example.utapCattle.model.dto.CattleDto;
 import com.example.utapCattle.model.entity.Cattle;
@@ -45,7 +45,7 @@ public class CattleServiceImpl implements CattleService {
 	}
 
 	@Override
-	public CattleDto saveCattle(final Cattle cattle) throws CattleValidationException {
+	public CattleDto saveCattle(final Cattle cattle) throws CattleException {
 		validateCattleInformation(cattle);
 		final long nextInductionId = cattleRepository.getNextSequenceValue();
 		cattle.setId(nextInductionId);
@@ -59,7 +59,7 @@ public class CattleServiceImpl implements CattleService {
 		return earTagList;
 	}
 
-	private boolean validateCattleInformation(final Cattle cattle) throws CattleValidationException {
+	private boolean validateCattleInformation(final Cattle cattle) throws CattleException {
 
 		List<String> validationErrors = new ArrayList<>();
 
@@ -79,7 +79,7 @@ public class CattleServiceImpl implements CattleService {
 			validationErrors.add("CATTLE_VERSION_MISSING");
 		}
 		if (!validationErrors.isEmpty()) {
-			throw new CattleValidationException(validationErrors);
+			throw new CattleException(validationErrors);
 		}
 		return true;
 	}

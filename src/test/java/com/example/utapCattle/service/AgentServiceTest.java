@@ -33,7 +33,7 @@ public class AgentServiceTest {
     }
 
     @Test
-    void fetchAllAgent_WhenAgentExists_ShouldReturnAllAgents() {
+    void testGetAllAgents_WhenAgentExists_ShouldReturnAllAgents() {
         Agent agent1 = agentMapper.toEntity(new AgentDto().builder().agentId(1L).agentName("Agent1").build());
         Agent agent2 = agentMapper.toEntity(new AgentDto().builder().agentId(2L).agentName("Agent2").build());
         List<Agent> agentList = Arrays.asList(agent1, agent2);
@@ -45,7 +45,7 @@ public class AgentServiceTest {
     }
 
     @Test
-    public void fetchAgentById_WhenAgentExists_ShouldReturnAgent() {
+    public void testGetAgentById_WhenAgentExists_ShouldReturnAgent() {
         Agent agent = agentMapper.toEntity(new AgentDto().builder().agentId(1L).agentName("AgentA").build());
         AgentDto agentDto = agentMapper.toDto(agent);
 
@@ -56,7 +56,7 @@ public class AgentServiceTest {
     }
 
     @Test
-    public void fetchSavedAgent_WhenAgentIsSaved_ShouldReturnAgent() {
+    public void testSaveAgent_WhenAgentIsSaved_ShouldReturnAgent() {
         Agent agent = agentMapper.toEntity(new AgentDto().builder().agentId(1L).agentName("Agent1").build());
         AgentDto agentDto = agentMapper.toDto(agent);
 

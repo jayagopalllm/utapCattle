@@ -1,6 +1,9 @@
 package com.example.utapCattle.model.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +17,7 @@ public class Market {
 
     @Id
     @Column(name = "marketid")
-    private Integer marketId;
+    private Long marketId;
 
     @Column(name = "marketname")
     private String marketName;

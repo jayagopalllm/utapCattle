@@ -1,7 +1,7 @@
 package com.example.utapCattle.service.impl;
 
+import com.example.utapCattle.mapper.MedicalConditionMapper;
 import com.example.utapCattle.model.dto.MedicalConditionDto;
-import com.example.utapCattle.model.entity.MedicalCondition;
 import com.example.utapCattle.service.MedicalConditionService;
 import com.example.utapCattle.service.repository.MedicalConditionRepository;
 import org.springframework.stereotype.Service;
@@ -14,17 +14,16 @@ public class MedicalConditionServiceImpl implements MedicalConditionService {
 
 	private final MedicalConditionRepository medicalConditionRepository;
 
-	public MedicalConditionServiceImpl(MedicalConditionRepository medicalConditionRepository) {
+	private final MedicalConditionMapper mapper;
+
+	public MedicalConditionServiceImpl(MedicalConditionRepository medicalConditionRepository, MedicalConditionMapper mapper) {
 		this.medicalConditionRepository = medicalConditionRepository;
+		this.mapper = mapper;
 	}
 
 	@Override
 	public List<MedicalConditionDto> getAllMedicalCondition() {
-		return medicalConditionRepository.findAll().stream().map(this::mapToDto).collect(Collectors.toList());
-	}
-
-	private MedicalConditionDto mapToDto(MedicalCondition medicalCond) {
-		return new MedicalConditionDto(medicalCond.getMedicalConditionId(), medicalCond.getConditionDesc());
+		return medicalConditionRepository.findAll().stream().map(mapper::toDto).collect(Collectors.toList());
 	}
 
 }

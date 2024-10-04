@@ -1,6 +1,6 @@
 package com.example.utapCattle.service;
 
-import com.example.utapCattle.exception.CommentValidationException;
+import com.example.utapCattle.exception.CommentException;
 import com.example.utapCattle.mapper.CommentMapper;
 import com.example.utapCattle.model.dto.CommentDto;
 import com.example.utapCattle.model.entity.Comment;
@@ -36,7 +36,7 @@ public class CommentServiceTest {
     }
 
     @Test
-    public void fetchSavedComments_WhenCommentsAreSaved_ShouldReturnSavedComments() throws CommentValidationException {
+    public void testSaveComments_WhenCommentsAreSaved_ShouldReturnSavedComments() throws CommentException {
         List<CommentDto> commentDtoList = Arrays.asList(
                  new CommentDto().builder().id(1L).comment("Comment1").build()
                 ,new CommentDto().builder().id(2L).comment("Comment2").build());
@@ -49,7 +49,7 @@ public class CommentServiceTest {
         assertEquals(result, commentDtoList);
     }
 
-    //TODO: should the cattleId and EntityId and ProcessId should also be checked for null
+    //TODO: should the cattleId and EntityId and ProcessId should also be checked for null ?
     @Test
     public void testSaveComments_WhenCommentIsNull_ShouldThrowCommentValidationException() {
         List<CommentDto> commentDtoList = Arrays.asList(
@@ -58,7 +58,7 @@ public class CommentServiceTest {
         List<Comment> commentList = commentDtoList
                 .stream().map(mapper::toEntity).collect(Collectors.toList());
 
-        CommentValidationException result = assertThrows(CommentValidationException.class
+        CommentException result = assertThrows(CommentException.class
                 , () -> commentService.saveComments(commentList));
         assertEquals(result.getError(), "Comment text is a mandatory field and cannot be null or empty.");
     }

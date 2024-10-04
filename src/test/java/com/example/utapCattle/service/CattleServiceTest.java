@@ -1,6 +1,6 @@
 package com.example.utapCattle.service;
 
-import com.example.utapCattle.exception.CattleValidationException;
+import com.example.utapCattle.exception.CattleException;
 import com.example.utapCattle.mapper.CattleMapper;
 import com.example.utapCattle.model.dto.CattleDto;
 import com.example.utapCattle.model.entity.Cattle;
@@ -38,7 +38,7 @@ public class CattleServiceTest {
     }
 
     @Test
-    public void fetchAllCattle_WhenCattleExists_ShouldReturnAllCattles() {
+    public void testGetAllCattle_WhenCattleExists_ShouldReturnAllCattles() {
         Cattle cattle = mapper.toEntity(new CattleDto().builder()
                 .id(1L)
                 .cattleId(211298L)
@@ -59,7 +59,7 @@ public class CattleServiceTest {
     }
 
     @Test
-    public void fetchCattleById_WhenCattleExists_ShouldReturnCattle() {
+    public void testGetCattleById_WhenCattleExists_ShouldReturnCattle() {
         Cattle cattle = mapper.toEntity(new CattleDto().builder()
                 .id(1L)
                 .cattleId(211298L)
@@ -80,7 +80,7 @@ public class CattleServiceTest {
     }
 
     @Test
-    public void fetchCattlebyEarId_WhenCattleExists_ShouldReturnCattle() {
+    public void testGetCattlebyEarTag_WhenCattleExists_ShouldReturnCattle() {
         Cattle cattle = mapper.toEntity(new CattleDto().builder()
                 .id(1L)
                 .cattleId(211298L)
@@ -101,7 +101,7 @@ public class CattleServiceTest {
     }
 
     @Test
-    public void fetchSavedCattle_WhenCattleIsSaved_ShouldReturnSavedCattle() throws Exception {
+    public void testSaveCattle_WhenCattleIsSaved_ShouldReturnSavedCattle() throws Exception {
 
         Cattle cattle = mapper.toEntity(new CattleDto().builder()
                 .id(1L)
@@ -144,7 +144,7 @@ public class CattleServiceTest {
                 .version(null).build());
         CattleDto cattleDto = mapper.toDto(inValidCattle);
 
-        CattleValidationException exception = assertThrows(CattleValidationException.class
+        CattleException exception = assertThrows(CattleException.class
                 , () -> cattleService.saveCattle(inValidCattle));
         assertEquals(String.join(",",exception.getErrors()), "CATTLE_EAR_TAG_MISSING,CATTLE_DOB_MISSING,CATTLE_BREED_ID_MISSING,CATTLE_CATEGORY_MISSING,CATTLE_VERSION_MISSING");
     }

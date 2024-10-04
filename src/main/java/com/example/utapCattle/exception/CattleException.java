@@ -2,12 +2,12 @@ package com.example.utapCattle.exception;
 
 import java.util.List;
 
-public class CattleValidationException extends Exception {
+public class CattleException extends Exception {
 
     private final List<String> validationErrors;
 
-    public CattleValidationException(List<String> error) {
-        super("Cattle Validation Exception");
+    public CattleException(List<String> error) {
+        super("Cattle Exception");
         this.validationErrors = error;
     }
 

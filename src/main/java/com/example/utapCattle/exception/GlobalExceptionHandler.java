@@ -1,6 +1,5 @@
 package com.example.utapCattle.exception;
 
-import jakarta.xml.bind.ValidationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -14,9 +13,21 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>("An error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(CattleValidationException.class)
-    public ResponseEntity<String> handleCattleValidationException(CattleValidationException e) {
+    @ExceptionHandler(CattleException.class)
+    public ResponseEntity<String> handleCattleException(CattleException e) {
         String errorMessages = String.join(",", e.getErrors());
-        return new ResponseEntity<>("Validation Errors:" + errorMessages, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>("Cattle Validation Errors:" + errorMessages, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(CommentException.class)
+    public ResponseEntity<String> handleCommentException(CommentException e) {
+        String errorMessages = String.join(",", e.getError());
+        return new ResponseEntity<>("Comment Validation Errors:" + errorMessages, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InductionException.class)
+    public ResponseEntity<String> handleInductionException(InductionException e) {
+        return new ResponseEntity<>("Induction Validation Errors:"+ e.getError(), HttpStatus.BAD_REQUEST);
+
     }
 }

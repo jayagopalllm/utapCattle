@@ -35,7 +35,7 @@ public class CustomerServiceTest {
     }
 
     @Test
-    public void fetchAllCustomer_WhenCustomerExists_ShouldReturnAllCustomers() {
+    public void testGetAllCustomers_WhenCustomerExists_ShouldReturnAllCustomers() {
         List<CustomerDto> customerDtoList = Arrays.asList(new CustomerDto().builder()
                         .customerId(1L)
                         .customerName("person1").build(),
@@ -51,7 +51,7 @@ public class CustomerServiceTest {
     }
 
     @Test
-    public void fetchCustomerById_WhenCustomerExists_ShouldReturnCustomer() {
+    public void testGetCustomerById_WhenCustomerExists_ShouldReturnCustomer() {
         CustomerDto customerDto = new CustomerDto().builder()
                 .customerId(1L)
                 .customerName("person1").build();
@@ -63,7 +63,7 @@ public class CustomerServiceTest {
     }
 
     @Test
-    public void fetchSavedCustomer_WhenCustomerIsSaved_ShouldReturnSavedCustomer() throws Exception {
+    public void testSaveCustomer_WhenCustomerIsSaved_ShouldReturnSavedCustomer() throws Exception {
         CustomerDto customerDto = new CustomerDto().builder()
                 .customerId(1L)
                 .customerName("person1").build();

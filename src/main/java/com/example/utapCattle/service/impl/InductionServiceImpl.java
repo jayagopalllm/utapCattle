@@ -1,8 +1,12 @@
 package com.example.utapCattle.service.impl;
 
-import com.example.utapCattle.exception.CommentValidationException;
+import com.example.utapCattle.exception.CattleException;
+import com.example.utapCattle.exception.CommentException;
+import com.example.utapCattle.exception.InductionException;
+import com.example.utapCattle.model.dto.CattleDto;
 import com.example.utapCattle.model.entity.Cattle;
 import com.example.utapCattle.model.entity.TreatmentHistoryMetadata;
+import com.example.utapCattle.service.CattleService;
 import com.example.utapCattle.service.InductionService;
 import com.example.utapCattle.service.TreatmentHistoryService;
 import com.example.utapCattle.service.repository.CattleRepository;
@@ -17,17 +21,19 @@ import java.util.Optional;
 public class InductionServiceImpl implements InductionService {
 
 	private final CattleRepository cattleRepository;
-
+	private final CattleService cattleService;
 	private final TreatmentHistoryService treatmentHistoryService;
 
 	public InductionServiceImpl(CattleRepository cattleRepository,
-						 TreatmentHistoryService treatmentHistoryService) {
+								CattleService cattleService,
+								TreatmentHistoryService treatmentHistoryService) {
 		this.cattleRepository = cattleRepository;
+		this.cattleService = cattleService;
 		this.treatmentHistoryService = treatmentHistoryService;
 	}
 
 	@Override
-	public final Map<String, Object> saveInduction(final TreatmentHistoryMetadata treatmentHistoryMetadata) throws CommentValidationException {
+	public final Map<String, Object> saveInduction(final TreatmentHistoryMetadata treatmentHistoryMetadata) throws CommentException, InductionException, CattleException {
 
 		validateInduction(treatmentHistoryMetadata);
 
@@ -39,26 +45,27 @@ public class InductionServiceImpl implements InductionService {
 				.saveTreatmentHistory(treatmentHistoryMetadata);
 	}
 
-	private void validateInduction(final TreatmentHistoryMetadata treatmentHistoryMetadata) {
+	private void validateInduction(final TreatmentHistoryMetadata treatmentHistoryMetadata) throws InductionException {
 		if (treatmentHistoryMetadata.getCattleId() == null) {
-			throw new IllegalArgumentException("EId is a mandatory field and cannot be null or empty.");
+			throw new InductionException("EId is a mandatory field and cannot be null or empty.");
 		}
 		if (StringUtils.isBlank(treatmentHistoryMetadata.getEarTag())) {
-			throw new IllegalArgumentException("EarTag is a mandatory field and cannot be null or empty.");
+			throw new InductionException("EarTag is a mandatory field and cannot be null or empty.");
 		}
 	}
 
-	private void updateCattleDetails(final TreatmentHistoryMetadata treatmentHistoryMetadata) {
+	public CattleDto updateCattleDetails(final TreatmentHistoryMetadata treatmentHistoryMetadata) throws InductionException, CattleException {
 		final String earTag = treatmentHistoryMetadata.getEarTag();
 		final Optional<Cattle> existingCattle = cattleRepository.findByEarTag(earTag);
 	
 		if (existingCattle.isPresent()) {
 			final Cattle cattle = existingCattle.get();
-			cattle.setCattleId(Long.valueOf(treatmentHistoryMetadata.getCattleId()));
+			//TODO: is cattle id mandatory or not ?
+			//cattle.setCattleId(Long.valueOf(treatmentHistoryMetadata.getCattleId()));
 			cattle.setIsInductionCompleted(true);
-			cattleRepository.save(cattle);
+			return cattleService.saveCattle(cattle);
 		} else {
-			throw new IllegalArgumentException("No Cattle record found with the given EarTag: " + earTag);
+			throw new InductionException("No Cattle record found with the given EarTag: " + earTag);
 		}
 	}
 	
