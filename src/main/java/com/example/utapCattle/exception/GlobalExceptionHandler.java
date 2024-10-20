@@ -28,6 +28,21 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InductionException.class)
     public ResponseEntity<String> handleInductionException(InductionException e) {
         return new ResponseEntity<>("Induction Validation Errors:"+ e.getError(), HttpStatus.BAD_REQUEST);
+    }
 
+    @ExceptionHandler(SaleException.class)
+    public ResponseEntity<String> handleSaleException(SaleException e) {
+        return new ResponseEntity<>("SaleException Validation Errors:"+ e.getError(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(TreatmentHistoryException.class)
+    public ResponseEntity<String> handleTreatmentHistoryException(TreatmentHistoryException e) {
+        String errorMessages = String.join(",", e.getErrors());
+        return new ResponseEntity<>("TreatmentHistory Validation Errors:" + errorMessages, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(TbTestHistoryException.class)
+    public ResponseEntity<String> handleTbTestHistoryException(TbTestHistoryException e) {
+        return new ResponseEntity<>("TbTestHistory Validation Errors:"+ e.getError(), HttpStatus.BAD_REQUEST);
     }
 }

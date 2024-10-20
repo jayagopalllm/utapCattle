@@ -1,14 +1,16 @@
 package com.example.utapCattle.service.impl;
 
 import com.example.utapCattle.exception.CommentException;
+import com.example.utapCattle.exception.TreatmentHistoryException;
+import com.example.utapCattle.mapper.TreatmentHistoryMapper;
 import com.example.utapCattle.model.dto.CattleDto;
 import com.example.utapCattle.model.dto.MovementDto;
 import com.example.utapCattle.model.dto.TreatmentHistoryDto;
+import com.example.utapCattle.model.dto.TreatmentHistoryMetadataDto;
 import com.example.utapCattle.model.dto.WeightHistoryDto;
 import com.example.utapCattle.model.entity.Comment;
 import com.example.utapCattle.model.entity.Movement;
 import com.example.utapCattle.model.entity.TreatmentHistory;
-import com.example.utapCattle.model.entity.TreatmentHistoryMetadata;
 import com.example.utapCattle.model.entity.WeightHistory;
 import com.example.utapCattle.service.CattleService;
 import com.example.utapCattle.service.CommentService;
@@ -22,6 +24,8 @@ import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -37,52 +41,51 @@ public class TreatmentHistoryServiceImpl implements TreatmentHistoryService {
 	private final WeightHistoryService weightHistoryService;
 	private final MovementService movementService;
 	private final CattleService cattleService;
+	private final TreatmentHistoryMapper mapper;
 
 	public TreatmentHistoryServiceImpl(TreatmentHistoryRepository treatmentHistoryRepository,
-								CommentService commentService,
-								WeightHistoryService weightHistoryService,
-								MovementService movementService,
-								CattleService cattleService) {
+									   CommentService commentService,
+									   WeightHistoryService weightHistoryService,
+									   MovementService movementService,
+									   CattleService cattleService,
+									   TreatmentHistoryMapper mapper) {
 		this.treatmentHistoryRepository = treatmentHistoryRepository;
 		this.commentService = commentService;
 		this.weightHistoryService = weightHistoryService;
 		this.movementService = movementService;
 		this.cattleService = cattleService;
+		this.mapper = mapper;
 	}
 
 	@Override
 	public List<TreatmentHistoryDto> getAllTreatmentHistory() {
-		return treatmentHistoryRepository.findAll().stream().map(this::mapToDto).collect(Collectors.toList());
+		return treatmentHistoryRepository.findAll().stream().map(mapper::toDto).collect(Collectors.toList());
 	}
 
 	@Override
 	public List<TreatmentHistoryDto> getTreatmentHistoriesByEId(Long eId) {
 		final List<TreatmentHistory> treatmentHistories = treatmentHistoryRepository.findByCattleId(eId);
-		return mapToDto(treatmentHistories);
+		return treatmentHistories.stream().map(mapper::toDto).collect(Collectors.toList());
 	}
 
 	@Override
-	public Map<String, Object> saveTreatmentHistory(final TreatmentHistoryMetadata treatmentHistoryMetadata) throws CommentException {
-		final List<TreatmentHistory> treatmentHistories = treatmentHistoryMetadata.getTreatmentHistories();
-
+	public Map<String, Object> saveTreatmentHistory(final TreatmentHistoryMetadataDto treatmentHistoryMetadataDto) throws CommentException, TreatmentHistoryException {
+		final List<TreatmentHistoryDto> treatmentHistories = treatmentHistoryMetadataDto.getTreatmentHistories();
 		validateInductionVO(treatmentHistories);
 
-		final String formattedDate = getCurrentFormattedDate();
-
-		final Long cattleId = treatmentHistoryMetadata.getCattleId();
-		final Long processId = treatmentHistoryMetadata.getProcessId();
-
+		final String formattedDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		final Long cattleId = treatmentHistoryMetadataDto.getCattleId();
+		final Long processId = treatmentHistoryMetadataDto.getProcessId();
 		final List<Comment> commentList = new ArrayList<>();
-		final Long commentId = createTreatmentComment(treatmentHistoryMetadata.getComment(), cattleId, processId, null,
+		final Long commentId = createTreatmentComment(treatmentHistoryMetadataDto.getComment(), cattleId, processId, null,
 				formattedDate, commentList);
-
 		updateTreatmentHistories(treatmentHistories, formattedDate, cattleId, processId, commentId, commentList);
 
-		final List<TreatmentHistory> savedTreatmentHistory = treatmentHistoryRepository.saveAll(treatmentHistories);
+		final List<TreatmentHistory> savedTreatmentHistory = treatmentHistoryRepository.saveAll(treatmentHistories.stream().map(mapper::toEntity).collect(Collectors.toList()));
 
 		final Map<String, Object> outputMap = new HashMap<>();
 
-		final List<TreatmentHistoryDto> savedTreatmentHistoryDtos = mapToDto(savedTreatmentHistory);
+		final List<TreatmentHistoryDto> savedTreatmentHistoryDtos = savedTreatmentHistory.stream().map(mapper::toDto).collect(Collectors.toList());
 		outputMap.put("treatmentHistories", savedTreatmentHistoryDtos);
 
 		if (CollectionUtils.isNotEmpty(commentList)) {
@@ -90,14 +93,14 @@ public class TreatmentHistoryServiceImpl implements TreatmentHistoryService {
 			outputMap.put("comments", commentList);
 		}
 
-		if (Boolean.TRUE.equals(treatmentHistoryMetadata.getRecordWeight())) {
+		if (Boolean.TRUE.equals(treatmentHistoryMetadataDto.getRecordWeight())) {
 			final WeightHistoryDto weightHistoryDto = saveWeightHistory(cattleId, formattedDate,
-					treatmentHistoryMetadata.getWeight());
+					treatmentHistoryMetadataDto.getWeight());
 			outputMap.put("weightHistories", weightHistoryDto);
 		}
 
-		if (Boolean.TRUE.equals(treatmentHistoryMetadata.getRecordMovement())) {
-			final MovementDto movementDto = saveMovement(cattleId, treatmentHistoryMetadata.getPen(), formattedDate);
+		if (Boolean.TRUE.equals(treatmentHistoryMetadataDto.getRecordMovement())) {
+			final MovementDto movementDto = saveMovement(cattleId, treatmentHistoryMetadataDto.getPen(), formattedDate);
 			outputMap.put("movements", movementDto);
 		}
 
@@ -122,15 +125,9 @@ public class TreatmentHistoryServiceImpl implements TreatmentHistoryService {
 		return outputMap;
 	}
 
-	private String getCurrentFormattedDate() {
-		final Date currentDate = new Date();
-		final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-		return formatter.format(currentDate);
-	}
-
-	private void updateTreatmentHistories(final List<TreatmentHistory> treatmentHistories, final String formattedDate,
+	private void updateTreatmentHistories(final List<TreatmentHistoryDto> treatmentHistories, final String formattedDate,
 			final Long cattleId, final Long processId, final Long commentId, final List<Comment> commentList) {
-		for (final TreatmentHistory treatmentHistory : treatmentHistories) {
+		for (final TreatmentHistoryDto treatmentHistory : treatmentHistories) {
 			final Long id = treatmentHistoryRepository.getNextSequenceValue();
 			treatmentHistory.setTreatmentHistoryId(id);
 			treatmentHistory.setTreatmentDate(formattedDate);
@@ -150,11 +147,10 @@ public class TreatmentHistoryServiceImpl implements TreatmentHistoryService {
 			return null;
 		}
 		final Long commentId = commentService.getNextSequenceValue();
-
 		final Comment treatmentComment = new Comment(commentId, comment, processId, cattleId, null, entityId,
 				formattedDate);
-
 		commentList.add(treatmentComment);
+		//TODO: unless the comment is persisted the nextsequencevale will always return same
 		return commentId;
 	}
 
@@ -176,37 +172,30 @@ public class TreatmentHistoryServiceImpl implements TreatmentHistoryService {
 		return movementService.saveMovement(movement);
 	}
 
-	private void validateInductionVO(List<TreatmentHistory> treatmentHistories) {
+	private void validateInductionVO(List<TreatmentHistoryDto> treatmentHistories) throws TreatmentHistoryException {
+
+		List<String> validationErrors = new ArrayList<>();
+
 		if (CollectionUtils.isEmpty(treatmentHistories)) {
-			throw new IllegalArgumentException("treatmentHistories is a mandatory field and cannot be null or empty.");
+			validationErrors.add("TREATMENT HISTORIES MISSING");
 		}
-		for (final TreatmentHistory treatmentHistory : treatmentHistories) {
+		for (final TreatmentHistoryDto treatmentHistory : treatmentHistories) {
 			if (StringUtils.isEmpty(treatmentHistory.getMedicalConditionId())) {
-				throw new IllegalArgumentException(
-						"MedicalConditionId is a mandatory field and cannot be null or empty.");
+				validationErrors.add(
+						"MEDICALCONDITIONID MISSING");
 			}
 			if (treatmentHistory.getMedicationId() == null) {
-				throw new IllegalArgumentException("MedicationId is a mandatory field and cannot be null.");
+				validationErrors.add("MEDICATIONID MISSING");
 			}
 			if (treatmentHistory.getConditionScore() == null) {
-				throw new IllegalArgumentException("ConditionScore is a mandatory field and cannot be null.");
+				validationErrors.add("CONDITIONSCORE MISSING");
 			}
 			if (StringUtils.isEmpty(treatmentHistory.getBatchNumber())) {
-				throw new IllegalArgumentException("BatchNumber is a mandatory field and cannot be null or empty.");
+				validationErrors.add("BATCHNUMBER MISSING");
+			}
+			if (!validationErrors.isEmpty()) {
+				throw new TreatmentHistoryException(validationErrors);
 			}
 		}
 	}
-
-	private List<TreatmentHistoryDto> mapToDto(List<TreatmentHistory> savedTreatmentHistory) {
-		return savedTreatmentHistory.stream().map(this::mapToDto).collect(Collectors.toList());
-	}
-
-	private TreatmentHistoryDto mapToDto(TreatmentHistory treatmentHistory) {
-		return new TreatmentHistoryDto(treatmentHistory.getTreatmentHistoryId(), treatmentHistory.getCattleId(),
-				treatmentHistory.getUserId(), treatmentHistory.getMedicalConditionId(),
-				treatmentHistory.getMedicationId(), treatmentHistory.getBatchNumber(),
-				treatmentHistory.getTreatmentDate(), treatmentHistory.getCommentId(),
-				treatmentHistory.getConditionCommentId());
-	}
-
 }

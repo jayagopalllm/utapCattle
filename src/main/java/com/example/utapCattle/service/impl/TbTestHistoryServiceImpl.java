@@ -1,34 +1,40 @@
 package com.example.utapCattle.service.impl;
 
-import com.example.utapCattle.model.entity.Cattle;
+import com.example.utapCattle.exception.CattleException;
+import com.example.utapCattle.exception.TbTestHistoryException;
+import com.example.utapCattle.mapper.TbTestHistoryMapper;
+import com.example.utapCattle.model.dto.CattleDto;
+import com.example.utapCattle.model.dto.TbTestHistoryDto;
 import com.example.utapCattle.model.entity.TbTestHistory;
+import com.example.utapCattle.service.CattleService;
 import com.example.utapCattle.service.TbTestHistoryService;
-import com.example.utapCattle.service.repository.CattleRepository;
 import com.example.utapCattle.service.repository.TbTestHistoryRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class TbTestHistoryServiceImpl implements TbTestHistoryService {
 
 	private final TbTestHistoryRepository tbTestHistoryRepository;
-	private final CattleRepository cattleRepository;
+	private final CattleService cattleService;
+	private final TbTestHistoryMapper mapper;
 
 	public TbTestHistoryServiceImpl(TbTestHistoryRepository tbTestHistoryRepository,
-							 CattleRepository cattleRepository) {
+									CattleService cattleService,
+									TbTestHistoryMapper mapper) {
 		this.tbTestHistoryRepository = tbTestHistoryRepository;
-		this.cattleRepository = cattleRepository;
+		this.cattleService = cattleService;
+		this.mapper = mapper;
 	}
 
 	@Override
-	public TbTestHistory saveTbTestHistory(final TbTestHistory tbTestHistory) throws Exception {
-		validateCattle(tbTestHistory.getEarTag());
+	public TbTestHistoryDto saveTbTestHistory(final TbTestHistoryDto tbTestHistoryDto) throws Exception {
+		validateCattle(tbTestHistoryDto.getEarTag());
 		final Long id = tbTestHistoryRepository.getNextSequenceValue();
-		tbTestHistory.setTbTestHistoryId(id);
-		tbTestHistory.setTestDate(getCurrentDateTime());
-		return tbTestHistoryRepository.save(tbTestHistory);
+		return mapper.toDto(tbTestHistoryRepository.save(mapper.toEntity(tbTestHistoryDto.builder().tbTestHistoryId(id).testDate(LocalDateTime.now()).build())));
 	}
 
 	@Override
@@ -36,22 +42,10 @@ public class TbTestHistoryServiceImpl implements TbTestHistoryService {
 		return tbTestHistoryRepository.getNextSequenceValue();
 	}
 
-	private void validateCattle(final String earTag) {
-		try {
-			final Optional<Cattle> existingCattle = cattleRepository.findByEarTag(earTag);
-			if (existingCattle.isEmpty()) {
-				throw new IllegalArgumentException("No Cattle record found with the given EarTag: " + earTag);
-			}
-		} catch (final NumberFormatException e) {
-			throw new IllegalArgumentException("No Cattle record found with the given EarTag: " + earTag);
-		} catch (final Exception e) {
-			throw e;
+	private void validateCattle(final String earTag) throws TbTestHistoryException {
+		final CattleDto existingCattle = cattleService.getCattleByEarTag(earTag);
+		if (existingCattle == null ) {
+			throw new TbTestHistoryException("No Cattle record found with the given EarTag: " + earTag);
 		}
-
 	}
-
-	private static LocalDateTime getCurrentDateTime() {
-		return LocalDateTime.now();
-	}
-
 }

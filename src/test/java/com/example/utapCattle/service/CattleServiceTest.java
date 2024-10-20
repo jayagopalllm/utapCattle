@@ -80,7 +80,7 @@ public class CattleServiceTest {
     }
 
     @Test
-    public void testGetCattlebyEarTag_WhenCattleExists_ShouldReturnCattle() {
+    public void testGetCattlebyEarTag_WhenCattleExists_ShouldReturnCattle() throws CattleException {
         Cattle cattle = mapper.toEntity(new CattleDto().builder()
                 .id(1L)
                 .cattleId(211298L)

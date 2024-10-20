@@ -1,5 +1,7 @@
 package com.example.utapCattle.controller;
 
+import com.example.utapCattle.exception.CommentException;
+import com.example.utapCattle.exception.SaleException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +21,7 @@ public class SaleController {
 	private SaleService saleService;
 
 	@PostMapping("/sell")
-	public ResponseEntity<SaleDto> sellCattle(@RequestBody SaleDto saleDto) {
+	public ResponseEntity<SaleDto> sellCattle(@RequestBody SaleDto saleDto) throws CommentException {
 		SaleDto savedSale = saleService.sellCattle(saleDto);
 		return new ResponseEntity<>(savedSale, HttpStatus.CREATED);
 	}

@@ -3,7 +3,9 @@ package com.example.utapCattle.service.impl;
 import com.example.utapCattle.exception.CattleException;
 import com.example.utapCattle.exception.CommentException;
 import com.example.utapCattle.exception.InductionException;
+import com.example.utapCattle.exception.TreatmentHistoryException;
 import com.example.utapCattle.model.dto.CattleDto;
+import com.example.utapCattle.model.dto.TreatmentHistoryMetadataDto;
 import com.example.utapCattle.model.entity.Cattle;
 import com.example.utapCattle.model.entity.TreatmentHistoryMetadata;
 import com.example.utapCattle.service.CattleService;
@@ -33,29 +35,29 @@ public class InductionServiceImpl implements InductionService {
 	}
 
 	@Override
-	public final Map<String, Object> saveInduction(final TreatmentHistoryMetadata treatmentHistoryMetadata) throws CommentException, InductionException, CattleException {
+	public final Map<String, Object> saveInduction(final TreatmentHistoryMetadataDto treatmentHistoryMetadataDto) throws CommentException, InductionException, CattleException, TreatmentHistoryException {
 
-		validateInduction(treatmentHistoryMetadata);
+		validateInduction(treatmentHistoryMetadataDto);
 
-		treatmentHistoryMetadata.setProcessId(new SecureRandom().nextLong());
+		treatmentHistoryMetadataDto.setProcessId(new SecureRandom().nextLong());
 
-		updateCattleDetails(treatmentHistoryMetadata);
+		updateCattleDetails(treatmentHistoryMetadataDto);
 
 		return treatmentHistoryService
-				.saveTreatmentHistory(treatmentHistoryMetadata);
+				.saveTreatmentHistory(treatmentHistoryMetadataDto);
 	}
 
-	private void validateInduction(final TreatmentHistoryMetadata treatmentHistoryMetadata) throws InductionException {
-		if (treatmentHistoryMetadata.getCattleId() == null) {
+	private void validateInduction(final TreatmentHistoryMetadataDto treatmentHistoryMetadataDto) throws InductionException {
+		if (treatmentHistoryMetadataDto.getCattleId() == null) {
 			throw new InductionException("EId is a mandatory field and cannot be null or empty.");
 		}
-		if (StringUtils.isBlank(treatmentHistoryMetadata.getEarTag())) {
+		if (StringUtils.isBlank(treatmentHistoryMetadataDto.getEarTag())) {
 			throw new InductionException("EarTag is a mandatory field and cannot be null or empty.");
 		}
 	}
 
-	public CattleDto updateCattleDetails(final TreatmentHistoryMetadata treatmentHistoryMetadata) throws InductionException, CattleException {
-		final String earTag = treatmentHistoryMetadata.getEarTag();
+	public CattleDto updateCattleDetails(final TreatmentHistoryMetadataDto treatmentHistoryMetadataDto) throws InductionException, CattleException {
+		final String earTag = treatmentHistoryMetadataDto.getEarTag();
 		final Optional<Cattle> existingCattle = cattleRepository.findByEarTag(earTag);
 	
 		if (existingCattle.isPresent()) {

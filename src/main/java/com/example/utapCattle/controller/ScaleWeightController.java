@@ -13,7 +13,7 @@ import com.example.utapCattle.service.ScaleWeightService;
 
 @RestController
 @RequestMapping("/scale")
-public class WeighScaleController extends BaseController {
+public class ScaleWeightController extends BaseController {
 
     @Autowired
     private ScaleWeightService weightService;

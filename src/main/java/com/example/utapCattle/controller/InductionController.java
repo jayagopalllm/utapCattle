@@ -2,6 +2,7 @@ package com.example.utapCattle.controller;
 
 import java.util.Map;
 
+import com.example.utapCattle.model.dto.TreatmentHistoryMetadataDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,10 +24,11 @@ public class InductionController extends BaseController {
 	private InductionService inductionService;
 
 	@PostMapping("/save")
-	public ResponseEntity<Map<String, Object>> saveInduction(@RequestBody final TreatmentHistoryMetadata treatmentHistoryMetadata) {
-		logger.info("Saving induction information: {}", treatmentHistoryMetadata);
+	public ResponseEntity<Map<String, Object>> saveInduction(@RequestBody final TreatmentHistoryMetadataDto treatmentHistoryMetadataDto
+	) {
+		logger.info("Saving induction information: {}", treatmentHistoryMetadataDto);
 		try {
-			final Map<String, Object> savedTreatmentHistoryDto = inductionService.saveInduction(treatmentHistoryMetadata);
+			final Map<String, Object> savedTreatmentHistoryDto = inductionService.saveInduction(treatmentHistoryMetadataDto);
 			logger.info("Saved induction information");
 			return new ResponseEntity<>(savedTreatmentHistoryDto, HttpStatus.CREATED);
 		} catch (final Exception e) {

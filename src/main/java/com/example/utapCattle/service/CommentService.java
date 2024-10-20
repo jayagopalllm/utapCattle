@@ -11,4 +11,6 @@ public interface CommentService {
 	public Long getNextSequenceValue();
 
 	public List<CommentDto> saveComments(final List<Comment> comments) throws CommentException;
+
+	public CommentDto saveComment(final Comment comment) throws CommentException;
 }

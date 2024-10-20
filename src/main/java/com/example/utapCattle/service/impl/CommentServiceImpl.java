@@ -26,8 +26,16 @@ public class CommentServiceImpl implements CommentService {
 
 	@Override
 	public List<CommentDto> saveComments(List<Comment> comments) throws CommentException {
-		validateCommentVO(comments);
+		for (final Comment comment : comments) {
+			validateCommentVO(comment);
+		}
 		return commentRepository.saveAll(comments).stream().map(mapper::toDto).collect(Collectors.toList());
+	}
+
+	@Override
+	public CommentDto saveComment(Comment comment) throws CommentException {
+		validateCommentVO(comment);
+		return mapper.toDto(commentRepository.save(comment));
 	}
 
 	@Override
@@ -35,15 +43,13 @@ public class CommentServiceImpl implements CommentService {
 		return commentRepository.getNextSequenceValue();
 	}
 
-	private void validateCommentVO(List<Comment> comments) throws CommentException {
-		for (final Comment comment : comments) {
-			if (StringUtils.isBlank(comment.getComment())) {
-				throw new CommentException("Comment text is a mandatory field and cannot be null or empty.");
-			}
-			if (comment.getId() == null) {
-				final Long id = getNextSequenceValue();
-				comment.setId(id);
-			}
+	private void validateCommentVO(Comment comment) throws CommentException {
+		if (StringUtils.isBlank(comment.getComment())) {
+			throw new CommentException("Comment text is a mandatory field and cannot be null or empty.");
+		}
+		if (comment.getId() == null) {
+			final Long id = getNextSequenceValue();
+			comment.setId(id);
 		}
 	}
 

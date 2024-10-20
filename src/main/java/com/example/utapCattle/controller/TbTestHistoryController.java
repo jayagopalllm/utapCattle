@@ -2,6 +2,8 @@ package com.example.utapCattle.controller;
 
 import java.security.SecureRandom;
 
+import com.example.utapCattle.model.dto.TbTestHistoryDto;
+import com.example.utapCattle.model.dto.TreatmentHistoryMetadataDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,15 +30,15 @@ public class TbTestHistoryController extends BaseController {
 	private TreatmentHistoryService treatmentHistoryService;
 
 	@PostMapping("/save")
-	public ResponseEntity<?> saveTbTestHistory(@RequestBody final TreatmentHistoryMetadata treatmentHistoryMetadata) {
-		logger.info("Saving tb test information: {}", treatmentHistoryMetadata);
+	public ResponseEntity<?> saveTbTestHistory(@RequestBody final TreatmentHistoryMetadataDto treatmentHistoryMetadataDto) {
+		logger.info("Saving tb test information: {}", treatmentHistoryMetadataDto);
 
     	try {
-			treatmentHistoryMetadata.setProcessId(new SecureRandom().nextLong());
-			treatmentHistoryMetadata.setCattleId(treatmentHistoryMetadata.getCattleId());
-			final TbTestHistory savedTbTestHistory = tbTestHistoryService.saveTbTestHistory(treatmentHistoryMetadata.getTbTestHistory());
+			treatmentHistoryMetadataDto.builder().
+					processId(new SecureRandom().nextLong()).build();
+			final TbTestHistoryDto savedTbTestHistory = tbTestHistoryService.saveTbTestHistory(treatmentHistoryMetadataDto.getTbTestHistory());
 			logger.info("Saved tb test information with ID: {}", savedTbTestHistory.getTbTestHistoryId());
-			treatmentHistoryService.saveTreatmentHistory(treatmentHistoryMetadata);
+			treatmentHistoryService.saveTreatmentHistory(treatmentHistoryMetadataDto);
 			return ResponseEntity.ok(savedTbTestHistory);
 		} catch (final Exception e) {
 			logger.error("Exception occurred: Unable to save tb test information", e);

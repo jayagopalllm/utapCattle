@@ -20,6 +20,7 @@ public class Sale {
 	@Column(name = "saleid")
 	private Long saleId;
 
+	//TODO: why is not in DATE datatype ?
 	@Column(name = "saledate")
 	private String saleDate;
 
