@@ -33,7 +33,7 @@ public class AgentServiceTest {
     }
 
     @Test
-    void testGetAllAgents_WhenAgentExists_ShouldReturnAllAgents() {
+    public void testGetAllAgents_WhenAgentExists_ShouldReturnAllAgents() {
         Agent agent1 = agentMapper.toEntity(new AgentDto().builder().agentId(1L).agentName("Agent1").build());
         Agent agent2 = agentMapper.toEntity(new AgentDto().builder().agentId(2L).agentName("Agent2").build());
         List<Agent> agentList = Arrays.asList(agent1, agent2);
