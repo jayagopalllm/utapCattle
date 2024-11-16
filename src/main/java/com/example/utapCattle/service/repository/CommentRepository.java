@@ -9,6 +9,6 @@ import com.example.utapCattle.model.entity.Comment;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-	@Query(value = "SELECT nextval('comments_seq')", nativeQuery = true)
+	@Query(value = "SELECT nextval('comment_seq')", nativeQuery = true)
 	Long getNextSequenceValue();
 }

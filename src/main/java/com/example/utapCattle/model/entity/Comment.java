@@ -12,15 +12,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "comments", schema = "public")
+@Table(name = "comment", schema = "public")
 public class Comment {
 
 	@Id
 	@Column(name = "id")
 	private Long id;
 
-	@Column(name = "comment")
-	private String comment;
+	@Column(name = "comments")
+	private String comments;
 
 	@Column(name = "processid")
 	private Long processId;

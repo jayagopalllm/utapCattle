@@ -19,11 +19,6 @@ public class DataController extends BaseController {
 	@Autowired
 	private DataService dataService;
 
-	/**
-	 * Endpoint to retrieve all necessary data for the CattleManagement application on startup.
-	 * 
-	 * @return An {@link AllDataDto} object containing all the required data
-	 */
 	@GetMapping()
 	public ResponseEntity<AllDataDto> getAllData() {
 		try {
@@ -36,11 +31,6 @@ public class DataController extends BaseController {
 		}
 	}
 
-	/**
-	 * Endpoint to retrieve data required for the medical condition section of the induction page in the CattleManagement application.
-	 * 
-	 * @return An {@link AllDataDto} object containing the necessary medical condition data.
-	 */
 	@GetMapping(value = "/condition")
 	public ResponseEntity<AllDataDto> getMedicalConditionData() {
 		try {
@@ -53,11 +43,6 @@ public class DataController extends BaseController {
 		}
 	}
 
-	/**
-	 * Endpoint to retrieve data required for the treatment page in the CattleManagement application.
-	 * 
-	 * @return An {@link AllDataDto} object containing the necessary treatment data.
-	 */
 	@GetMapping(value = "/treatment")
 	public ResponseEntity<AllDataDto> getTreatmentData() {
 		try {
@@ -70,16 +55,11 @@ public class DataController extends BaseController {
 		}
 	}
 
-	/**
-	 * Endpoint to retrieve data required for both the Weight&Sort page and the TBTest page in the CattleManagement application.
-	 * 
-	 * @return An {@link AllDataDto} object containing the necessary data for Weight&Sort and TBTest pages.
-	 */
 	@GetMapping(value = "/weight-tb")
 	public ResponseEntity<AllDataDto> getTBTestData() {
 		try {
 			final AllDataDto allData = dataService.getWeightAndTBTestData();
-			logger.info("Retrieved Weigtht and TB Test pre-data");
+			logger.info("Retrieved Weight and TB Test pre-data");
 			return ResponseEntity.ok(allData);
 		} catch (final Exception e) {
 			logger.error("Exception occurred: Unable to retrieve weight and TB test data", e);

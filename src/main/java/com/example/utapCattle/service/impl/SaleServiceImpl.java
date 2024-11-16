@@ -38,7 +38,7 @@ public class SaleServiceImpl implements SaleService {
 			comment.setProcessId(new Random().nextLong());
 			comment.setId(commentId);
 			comment.setCattleId(saleDto.getCattleId());
-			comment.setComment(saleDto.getComment());
+			comment.setComments(saleDto.getComment());
 			comment.setCommentDate(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
 			commentService.saveComment(comment);
 		}

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.example.utapCattle.model.entity.Cattle;
 
 @Repository
-public interface CattleRepository extends JpaRepository<Cattle, Long> { // Use Long as the ID type
+public interface CattleRepository extends JpaRepository<Cattle, Long> {
 
 	@Query(value = "SELECT nextval('cattle_seq')", nativeQuery = true)
 	Long getNextSequenceValue();

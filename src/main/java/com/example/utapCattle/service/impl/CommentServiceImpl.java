@@ -44,7 +44,7 @@ public class CommentServiceImpl implements CommentService {
 	}
 
 	private void validateCommentVO(Comment comment) throws CommentException {
-		if (StringUtils.isBlank(comment.getComment())) {
+		if (StringUtils.isBlank(comment.getComments())) {
 			throw new CommentException("Comment text is a mandatory field and cannot be null or empty.");
 		}
 		if (comment.getId() == null) {

@@ -47,8 +47,8 @@ public class CattleServiceImpl implements CattleService {
 	@Override
 	public CattleDto saveCattle(final Cattle cattle) throws CattleException {
 		validateCattleInformation(cattle);
-		final long nextInductionId = cattleRepository.getNextSequenceValue();
-		cattle.setId(nextInductionId);
+		//final long nextInductionId = cattleRepository.getNextSequenceValue();
+		//cattle.setId(nextInductionId);
 		final Cattle savedCattle = cattleRepository.save(cattle);
 		return mapper.toDto(savedCattle);
 	}
