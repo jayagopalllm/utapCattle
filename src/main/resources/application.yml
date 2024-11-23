@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: utapCattle
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        web-allow-others: true
+  datasource:
+    url: jdbc:postgresql://35.178.210.158:5432/qrcode
+#    url: jdbc:postgresql://localhost:5432/qrcode
+    driverClassName: org.postgresql.Driver
+    username: postgres
+    password: postgres
+    initialization-mode: always
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true # Optional: To enable SQL logging
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+# logging:
+#   level:
+#     org.hibernate.SQL: DEBUG
+#     org.hibernate.type: TRACE
+
+
