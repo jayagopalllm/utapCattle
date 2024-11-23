@@ -18,8 +18,12 @@ public class CattleDto {
 	private String motherEarTag;
 	private Integer breedId;
 	private Integer categoryId;
+	private String breedName;
+	private String categoryName;
 	private Integer farmId;
+	private String farmName;
 	private Integer sourceMarketId;
+	private String sourceMarketName;
 	private String datePurchased;
 	private BigDecimal purchasePrice;
 	private Integer saleId;
@@ -29,6 +33,7 @@ public class CattleDto {
 	private String previousHolding;
 	private Integer flatteningFor;
 	private Integer agentId;
+	private String agentName;
 	private String conditionScore;
 	private String healthScore;
 	private String weightAtSale;
@@ -51,5 +56,7 @@ public class CattleDto {
 	private String fatCoverId;
 	private String weightAtPurchase;
 	private String numPrevMovements;
+	private Long totalTreatments;
+	private String lastWithdraw;
 	private Boolean isInductionCompleted;
 }

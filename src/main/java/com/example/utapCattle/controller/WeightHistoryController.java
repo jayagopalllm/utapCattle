@@ -36,7 +36,7 @@ public class WeightHistoryController extends BaseController {
 		}
 		try {
 			final List<WeightHistoryProgressDto> weightProgress = weightHistoryService
-					.deriveWeightHistoryInfoByCattleId(Long.parseLong(cattleId));
+					.deriveWeightHistoryInfoByCattleId(cattleId);
 			if (CollectionUtils.isEmpty(weightProgress)) {
 				logger.warn("No weight data found for cattleId: {}", cattleId);
 				return ResponseEntity.noContent().build();

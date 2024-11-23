@@ -14,10 +14,12 @@ spring:
     password: postgres
     initialization-mode: always
   jpa:
-      hibernate:
-        ddl-auto: update
-      properties:
-        hibernate.dialect: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true # Optional: To enable SQL logging
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
 # logging:
 #   level:
 #     org.hibernate.SQL: DEBUG
