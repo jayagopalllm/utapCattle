@@ -49,6 +49,9 @@ public class TreatmentHistory {
 	@Column(name = "processid")
 	private Long processId;
 
+	@Column(name = "withdrawaldate")
+	private String withdrawalDate;
+
 	@Transient
 	private String conditionComment;
 

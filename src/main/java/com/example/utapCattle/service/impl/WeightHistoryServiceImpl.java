@@ -96,8 +96,14 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 	}
 
 	@Override
-	public List<WeightHistoryProgressDto> deriveWeightHistoryInfoByCattleId(final Long cattleId) {
-		final List<WeightHistory> weightHistories = weightHistoryRepository.findByCattleIdOrderByWeightId(cattleId);
+	public List<WeightHistoryProgressDto> deriveWeightHistoryInfoByCattleId(final String cattleId) {
+		final Optional<Cattle> existingCattle = cattleRepository.findByEarTag(cattleId);
+		Cattle cattle = null;
+		if (existingCattle.isPresent()) {
+			cattle = existingCattle.get();
+		}
+		assert cattle != null;
+		final List<WeightHistory> weightHistories = weightHistoryRepository.findByCattleIdOrderByWeightId(cattle.getCattleId());
 		sortWeightHistoryByDate(weightHistories);
 		return deriveWeightHistoryInfo(weightHistories);
 	}

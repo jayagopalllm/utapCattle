@@ -38,7 +38,6 @@ public interface WeightHistoryService {
 	 * </p>
 	 * 
 	 * @return the next value in the sequence as a {@link Long}.
-	 * @throws javax.persistence.PersistenceException if there is an issue executing
 	 *                                                the query.
 	 */
 	public Long getNextSequenceValue();
@@ -62,7 +61,7 @@ public interface WeightHistoryService {
 	 * @throws IllegalArgumentException if the cattleId is null
 	 * @throws DataAccessException      if there is an error accessing the database
 	 */
-	List<WeightHistoryProgressDto> deriveWeightHistoryInfoByCattleId(final Long cattleId);
+	List<WeightHistoryProgressDto> deriveWeightHistoryInfoByCattleId(final String cattleId);
 
 	/**
 	 * Retrieves the latest weight, last DLWG, and overall DLWG for a given EID.
