@@ -90,30 +90,49 @@ public class DataServiceImpl implements DataService {
 	}
 
 	@Override
-	public AllDataDto getMedicalConditionData() {
-		final AllDataDto conditionData = getInductionAndTreatmentData();
+	public AllDataDto getInductionData() {
 		final List<DefaultTreatment> defaultTreatments = defaultTreatmentRepository.findAll();
-		conditionData.setDefaultTreatments(defaultTreatments);
-		return conditionData;
+		final List<MedicalCondition> medicalConditions = medicalConditionRepository.findAll();
+		final List<Medication> medications = medicationRepository.findAll();
+		final List<Pen> pens = penRepository.findAll();
+		final List<String> earTagList = cattleRepository.findEarTagsWithIncompleteInduction();
+		final List<String> eIdList = cattleRepository.findEIdsWithIncompleteInduction();
+
+		return new AllDataDto().builder()
+				.medicalCondition(medicalConditions)
+				.medication(medications)
+				.pens(pens)
+				.eIdList(eIdList)
+				.earTagList(earTagList)
+				.defaultTreatments(defaultTreatments).build();
 	}
 
 	@Override
 	public AllDataDto getTreatmentData() {
-		final AllDataDto treatmentData = getInductionAndTreatmentData();
+		final List<MedicalCondition> medicalConditions = medicalConditionRepository.findAll();
+		final List<Medication> medications = medicationRepository.findAll();
+		final List<Pen> pens = penRepository.findAll();
+		final List<String> earTagList = cattleRepository.findEarTagsWithIncompleteInduction();
+		final List<String> eIdList = cattleRepository.findEIdsWithIncompleteInduction();
 		final Map<Long, String> eIdEarTagMap = getEidEarTagMapping();
-		treatmentData.setEIdEarTagMap(eIdEarTagMap);
-		return treatmentData;
+
+		return new AllDataDto().builder()
+				.medicalCondition(medicalConditions)
+				.medication(medications)
+				.pens(pens)
+				.eIdList(eIdList)
+				.earTagList(earTagList)
+				.eIdEarTagMap(eIdEarTagMap).build();
 	}
 
 	@Override
 	public AllDataDto getWeightAndTBTestData() {
-		final AllDataDto tbTestData = new AllDataDto();
 		final Map<Long, String> eIdEarTagMap = getEidEarTagMapping();
-		tbTestData.setEIdEarTagMap(eIdEarTagMap);
-
 		final List<Pen> pens = penRepository.findAll();
-		tbTestData.setPens(pens);
-		return tbTestData;
+
+		return new AllDataDto().builder()
+				.pens(pens)
+				.eIdEarTagMap(eIdEarTagMap).build();
 	}
 
 	@Override
@@ -137,21 +156,6 @@ public class DataServiceImpl implements DataService {
 			});
 		}
 		return eIdEarTagMap;
-	}
-
-	private AllDataDto getInductionAndTreatmentData() {
-		final List<MedicalCondition> medicalConditions = medicalConditionRepository.findAll();
-		final List<Medication> medications = medicationRepository.findAll();
-		final List<Pen> pens = penRepository.findAll();
-		final List<String> earTagList = cattleRepository.findEarTagsWithIncompleteInduction();
-		final List<String> eIdList = cattleRepository.findEIdsWithIncompleteInduction();
-
-		return new AllDataDto().builder()
-				.medicalCondition(medicalConditions)
-				.medication(medications)
-				.pens(pens)
-				.eIdList(eIdList)
-				.earTagList(earTagList).build();
 	}
 
 }

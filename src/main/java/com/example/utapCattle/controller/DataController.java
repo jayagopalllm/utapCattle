@@ -19,6 +19,20 @@ public class DataController extends BaseController {
 	@Autowired
 	private DataService dataService;
 
+	/**
+	 * Retrieves all data required for populating the dropdown list on the passport page.
+	 *
+	 * <p>This endpoint is used as a lookup to populate various dropdowns on the UI.
+	 * It fetches data via the {@code dataService.getAllData()} method. The retrieved data
+	 * is encapsulated in an {@link AllDataDto} object.
+	 *
+	 * @return a {@link ResponseEntity} containing:
+	 *         <ul>
+	 *           <li>The {@link AllDataDto} object with the retrieved data, and an HTTP 200 (OK) status code if successful.</li>
+	 *           <li>An HTTP 500 (Internal Server Error) status code if an error occurs during data retrieval.</li>
+	 *         </ul>
+	 * @see AllDataDto
+	 */
 	@GetMapping()
 	public ResponseEntity<AllDataDto> getAllData() {
 		try {
@@ -31,10 +45,31 @@ public class DataController extends BaseController {
 		}
 	}
 
+	/**
+	 * Retrieves medical condition data required for the induction page.
+	 *
+	 * <p>This endpoint populates the following dropdowns and lookup fields on the induction page:
+	 * <ul>
+	 *   <li><b>medicalCondition</b> - List of medical conditions available.</li>
+	 *   <li><b>medication</b> - List of medications.</li>
+	 *   <li><b>earTagList</b> - List of ear tags with incomplete induction.</li>
+	 *   <li><b>pens</b> - List of available pens.</li>
+	 *   <li><b>defaultTreatments</b> - List of default treatments.</li>
+	 *   <li><b>eidList</b> - List of EIDs with incomplete induction.</li>
+	 * </ul>
+	 *
+	 * @return a {@link ResponseEntity} containing an {@link AllDataDto} object with all the required data,
+	 *         and an HTTP status code:
+	 *         <ul>
+	 *           <li>200 (OK): If the data is successfully retrieved.</li>
+	 *           <li>500 (Internal Server Error): If an error occurs during data retrieval.</li>
+	 *         </ul>
+	 * @see AllDataDto
+	 */
 	@GetMapping(value = "/condition")
-	public ResponseEntity<AllDataDto> getMedicalConditionData() {
+	public ResponseEntity<AllDataDto> getInductionData() {
 		try {
-			final AllDataDto allData = dataService.getMedicalConditionData();
+			final AllDataDto allData = dataService.getInductionData();
 			logger.info("Retrieved medical condition data");
 			return ResponseEntity.ok(allData);
 		} catch (final Exception e) {

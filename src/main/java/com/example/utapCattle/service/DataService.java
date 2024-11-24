@@ -6,7 +6,7 @@ public interface DataService {
 
 	public AllDataDto getAllData();
 
-	public AllDataDto getMedicalConditionData();
+	public AllDataDto getInductionData();
 
 	public AllDataDto getTreatmentData();
 
