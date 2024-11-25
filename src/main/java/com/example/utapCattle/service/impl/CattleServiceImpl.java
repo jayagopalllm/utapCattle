@@ -57,10 +57,14 @@ public class CattleServiceImpl implements CattleService {
     @Override
     public CattleDto updateCattle(final Long id, final Cattle cattle) throws Exception { // Return CattleDto
 //        validateCattleInformation(cattle);
-        Optional<Cattle> cattleOptional = cattleRepository.findByCattleId(id);
+        Optional<Cattle> cattleOptional = cattleRepository.findByCattleIdAndEarTag(id , cattle.getEarTag());
         if (cattleOptional.isPresent()) {
             Cattle cattle1 = cattleOptional.get();
-            final Cattle savedCattle = cattleRepository.save(cattle);
+            cattle1.setBreedId(cattle.getBreedId());
+            cattle1.setCategoryId(cattle.getCategoryId());
+            cattle1.setSourceMarketId(cattle.getSourceMarketId());
+            cattle1.setDateOfBirth(cattle.getDateOfBirth());
+            final Cattle savedCattle = cattleRepository.save(cattle1);
             return mapToDto(savedCattle); // Map the saved Cattle to DTO
         }
         return null;

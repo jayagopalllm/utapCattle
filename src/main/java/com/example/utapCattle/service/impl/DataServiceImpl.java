@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.example.utapCattle.model.dto.MarketDto;
 import com.example.utapCattle.model.entity.*;
+import com.example.utapCattle.service.MarketService;
 import com.example.utapCattle.service.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,9 @@ public class DataServiceImpl implements DataService {
 
 	@Autowired
 	private BreedRepository breedRepository;
+
+	@Autowired
+	private MarketService marketService;
 
 	@Autowired
 	private MarketRepository marketRepository;
@@ -56,7 +61,7 @@ public class DataServiceImpl implements DataService {
 	public AllDataDto getAllData() {
 		final List<Farm> farms = farmRepository.findAll();
 		final List<Breed> breeds = breedRepository.findAll();
-		final List<Market> markets = marketRepository.findAll();
+		final List<MarketDto> markets = marketService.getAllMarkets();
 		final List<Category> categories = categoryRepository.findAll();
 		final List<Agent> agents = agentRepository.findAll();
 		final List<Customer> customers = customerRepository.findAll();

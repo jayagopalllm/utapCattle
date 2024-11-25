@@ -24,6 +24,8 @@ public interface CattleRepository extends JpaRepository<Cattle, Long> { // Use L
 
 	Optional<Cattle> findByCattleId(Long cattleId);
 
+	Optional<Cattle> findByCattleIdAndEarTag(Long cattleId, String earTag);
+
 	/*
 	 * @Query(value = "SELECT * FROM cattle WHERE tagid = :tagId LIMIT 1",
 	 * nativeQuery = true) Cattle findByEartag(@Param("tagId") Integer tagId);

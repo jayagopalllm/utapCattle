@@ -16,7 +16,7 @@ public class AllDataDto {
 
 	private List<Farm> sourceFarm;
 	private List<Breed> breed;
-	private List<Market> market;
+	private List<MarketDto> market;
 	private List<SellerMarket> sellerMarket;
 	private List<Category> category;
 	private List<Agent> agent;
@@ -29,7 +29,7 @@ public class AllDataDto {
 	private List<DefaultTreatment> defaultTreatments;
 	private Map<Long, String> eIdEarTagMap;
 
-	public AllDataDto(final List<Farm> sourceFarm, final List<Breed> breed, final List<Market> market,
+	public AllDataDto(final List<Farm> sourceFarm, final List<Breed> breed, final List<MarketDto> market,
 			final List<Category> category, final List<Agent> agent, final List<Customer> fatteningFor) {
 		this.sourceFarm = sourceFarm;
 		this.breed = breed;

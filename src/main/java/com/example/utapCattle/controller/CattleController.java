@@ -95,7 +95,7 @@ public class CattleController extends BaseController {
 		}
 	}
 
-	@PutMapping("/update/{cattleid}")
+	@PutMapping("/update/{cattleId}")
 	public ResponseEntity<Long> saveCattle(@PathVariable Long cattleId ,@RequestBody final Cattle cattle) {
 		logger.info("Saving new cattle: {}", cattle);
 		try {

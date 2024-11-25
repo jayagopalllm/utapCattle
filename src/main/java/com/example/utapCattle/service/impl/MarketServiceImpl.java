@@ -37,7 +37,8 @@ public class MarketServiceImpl implements MarketService {
 
 	// Helper method to map Market to MarketDto
 	private MarketDto mapToDto(Market market) {
-		return new MarketDto(market.getMarketId(), market.getMarketName(), market.getHoldingNumber(),
+		return new MarketDto(market.getMarketId(),market.getMarketId()
+				, market.getMarketName(), market.getHoldingNumber(),
 				market.getCurrent());
 	}
 }
