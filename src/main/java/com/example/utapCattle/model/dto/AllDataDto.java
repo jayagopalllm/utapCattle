@@ -3,16 +3,7 @@ package com.example.utapCattle.model.dto;
 import java.util.List;
 import java.util.Map;
 
-import com.example.utapCattle.model.entity.Agent;
-import com.example.utapCattle.model.entity.Breed;
-import com.example.utapCattle.model.entity.Category;
-import com.example.utapCattle.model.entity.Customer;
-import com.example.utapCattle.model.entity.DefaultTreatment;
-import com.example.utapCattle.model.entity.Farm;
-import com.example.utapCattle.model.entity.Market;
-import com.example.utapCattle.model.entity.MedicalCondition;
-import com.example.utapCattle.model.entity.Medication;
-import com.example.utapCattle.model.entity.Pen;
+import com.example.utapCattle.model.entity.*;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.Data;
@@ -26,6 +17,7 @@ public class AllDataDto {
 	private List<Farm> sourceFarm;
 	private List<Breed> breed;
 	private List<Market> market;
+	private List<SellerMarket> sellerMarket;
 	private List<Category> category;
 	private List<Agent> agent;
 	private List<Customer> fatteningFor;

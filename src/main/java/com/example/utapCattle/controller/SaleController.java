@@ -3,16 +3,14 @@ package com.example.utapCattle.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.utapCattle.model.dto.SaleDto;
 import com.example.utapCattle.service.SaleService;
 
 @RestController
 @RequestMapping("/sale")
+@CrossOrigin(origins = { "http://localhost:4200", "http://35.178.210.158" })
 public class SaleController {
 
 	@Autowired

@@ -11,6 +11,7 @@ public class SaleDto {
 	private Long saleId;
 	private String saleDate;
 	private Long saleMarketId;
+	private String saleMarketName;
 	private Long cattleId;
 	private Long penId;
 	private String comment; 
