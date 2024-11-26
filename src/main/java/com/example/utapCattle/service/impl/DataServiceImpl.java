@@ -5,33 +5,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.example.utapCattle.model.dto.MarketDto;
+import com.example.utapCattle.model.entity.*;
+import com.example.utapCattle.service.MarketService;
+import com.example.utapCattle.service.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.utapCattle.model.dto.AllDataDto;
-import com.example.utapCattle.model.entity.Agent;
-import com.example.utapCattle.model.entity.Breed;
-import com.example.utapCattle.model.entity.Category;
-import com.example.utapCattle.model.entity.Cattle;
-import com.example.utapCattle.model.entity.Customer;
-import com.example.utapCattle.model.entity.DefaultTreatment;
-import com.example.utapCattle.model.entity.Farm;
-import com.example.utapCattle.model.entity.Market;
-import com.example.utapCattle.model.entity.MedicalCondition;
-import com.example.utapCattle.model.entity.Medication;
-import com.example.utapCattle.model.entity.Pen;
 import com.example.utapCattle.service.DataService;
-import com.example.utapCattle.service.repository.AgentRepository;
-import com.example.utapCattle.service.repository.BreedRepository;
-import com.example.utapCattle.service.repository.CategoryRepository;
-import com.example.utapCattle.service.repository.CattleRepository;
-import com.example.utapCattle.service.repository.CustomerRepository;
-import com.example.utapCattle.service.repository.DefaultTreatmentRepository;
-import com.example.utapCattle.service.repository.FarmRepository;
-import com.example.utapCattle.service.repository.MarketRepository;
-import com.example.utapCattle.service.repository.MedicalConditionRepository;
-import com.example.utapCattle.service.repository.MedicationRepository;
-import com.example.utapCattle.service.repository.PenRepository;
 
 @Service
 public class DataServiceImpl implements DataService {
@@ -43,7 +25,13 @@ public class DataServiceImpl implements DataService {
 	private BreedRepository breedRepository;
 
 	@Autowired
+	private MarketService marketService;
+
+	@Autowired
 	private MarketRepository marketRepository;
+
+	@Autowired
+	private SellerMarketRepository sellerMarketRepository;
 
 	@Autowired
 	private CategoryRepository categoryRepository;
@@ -73,7 +61,7 @@ public class DataServiceImpl implements DataService {
 	public AllDataDto getAllData() {
 		final List<Farm> farms = farmRepository.findAll();
 		final List<Breed> breeds = breedRepository.findAll();
-		final List<Market> markets = marketRepository.findAll();
+		final List<MarketDto> markets = marketService.getAllMarkets();
 		final List<Category> categories = categoryRepository.findAll();
 		final List<Agent> agents = agentRepository.findAll();
 		final List<Customer> customers = customerRepository.findAll();
@@ -118,8 +106,10 @@ public class DataServiceImpl implements DataService {
 		final List<Pen> pens = penRepository.findAll();
 		salesData.setPens(pens);
 		// Market
-		final List<Market> markets = marketRepository.findAll();
-		salesData.setMarket(markets);
+		final List<SellerMarket> sellerMarkets = sellerMarketRepository.findAll();
+//		final List<Market> markets = marketRepository.findAll();
+		salesData.setSellerMarket(sellerMarkets);
+//		salesData.setMarket(markets);
 
 		return salesData;
 	}

@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 public class MarketDto {
 
     private Integer marketId;
+    private Integer sourceMarketId;
     private String marketName;
     private String holdingNumber;
     private String current; 
