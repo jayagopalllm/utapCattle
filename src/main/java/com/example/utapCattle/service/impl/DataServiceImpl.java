@@ -114,6 +114,16 @@ public class DataServiceImpl implements DataService {
 		return salesData;
 	}
 
+	@Override
+	public AllDataDto getRegisterUserData() {
+		final AllDataDto salesData = new AllDataDto();
+		final List<Farm> farms = farmRepository.findAll();
+		final List<Customer> customers = customerRepository.findAll();
+		salesData.setSourceFarm(farms);
+		salesData.setFatteningFor(customers);
+		return salesData;
+	}
+
 	private Map<Long, String> getEidEarTagMapping() {
 		final Optional<List<Cattle>> cattleList = cattleRepository.getEIdEartagMap();
 		final Map<Long, String> eIdEarTagMap = new HashMap<>();

@@ -70,7 +70,7 @@ public class Cattle {
 	private String previousHolding;
 
 	@Column(name = "flatteningfor")
-	private Integer flatteningFor; // Consider making this a foreign key
+	private Integer fatteningFor; // Consider making this a foreign key
 
 	@Column(name = "agentid")
 	private Integer agentId; // Consider making this a foreign key
@@ -151,7 +151,7 @@ public class Cattle {
 				+ breedId + ", categoryId=" + categoryId + ", farmId=" + farmId + ", sourceMarketId=" + sourceMarketId
 				+ ", datePurchased='" + datePurchased + '\'' + ", purchasePrice=" + purchasePrice + ", saleId=" + saleId
 				+ ", salePrice='" + salePrice + '\'' + ", comments='" + comments + '\'' + ", version='" + version + '\''
-				+ ", previousHolding='" + previousHolding + '\'' + ", flatteningFor=" + flatteningFor + ", agentId="
+				+ ", previousHolding='" + previousHolding + '\'' + ", flatteningFor=" + fatteningFor + ", agentId="
 				+ agentId + ", conditionScore='" + conditionScore + '\'' + ", healthScore='" + healthScore + '\''
 				+ ", weightAtSale='" + weightAtSale + '\'' + ", bodyWeight='" + bodyWeight + '\'' + ", expenses="
 				+ expenses + ", sireEarTag='" + sireEarTag + '\'' + ", sireName='" + sireName + '\''
