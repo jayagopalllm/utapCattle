@@ -31,7 +31,8 @@ public class CattleDto {
 	private String comments;
 	private String version;
 	private String previousHolding;
-	private Integer flatteningFor;
+	private Integer fatteningFor;
+	private String fatteningForName;
 	private Integer agentId;
 	private String agentName;
 	private String conditionScore;

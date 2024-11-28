@@ -28,6 +28,8 @@ public class CattleServiceImpl implements CattleService {
     @Autowired
     private MarketService marketService;
     @Autowired
+    private CustomerService customerService;
+    @Autowired
     private AgentService agentService;
     @Autowired
     private TreatmentHistoryRepository treatmentHistoryRepository;
@@ -57,7 +59,7 @@ public class CattleServiceImpl implements CattleService {
     @Override
     public CattleDto updateCattle(final Long id, final Cattle cattle) throws Exception { // Return CattleDto
 //        validateCattleInformation(cattle);
-        Optional<Cattle> cattleOptional = cattleRepository.findByCattleIdAndEarTag(id , cattle.getEarTag());
+        Optional<Cattle> cattleOptional = cattleRepository.findByCattleIdAndEarTag(id, cattle.getEarTag());
         if (cattleOptional.isPresent()) {
             Cattle cattle1 = cattleOptional.get();
             cattle1.setBreedId(cattle.getBreedId());
@@ -69,6 +71,7 @@ public class CattleServiceImpl implements CattleService {
         }
         return null;
     }
+
     @Override
     public CattleDto saveCattle(final Cattle cattle) throws Exception { // Return CattleDto
         validateCattleInformation(cattle);
@@ -91,6 +94,7 @@ public class CattleServiceImpl implements CattleService {
         String farmName = getFarmName(cattle.getFarmId());
         String agentName = getAgentName(cattle.getAgentId());
         Long treatmentCount = getCattleTotalTreatmentCount(cattle.getCattleId());
+        String fatteningForName = getFatteningFor(cattle.getFatteningFor());
         String lastTreatment = getLastWithdrawalDate(cattle.getCattleId());
 
         return new CattleDto(
@@ -115,7 +119,8 @@ public class CattleServiceImpl implements CattleService {
                 cattle.getComments(),
                 cattle.getVersion(),
                 cattle.getPreviousHolding(),
-                cattle.getFlatteningFor(),
+                cattle.getFatteningFor(),
+                fatteningForName,
                 cattle.getAgentId(),
                 agentName,
                 cattle.getConditionScore(),
@@ -161,6 +166,12 @@ public class CattleServiceImpl implements CattleService {
     private String getCattleMarketName(Integer sourceMarketId) {
         return (sourceMarketId != null)
                 ? marketService.getMarketById(sourceMarketId.longValue()).getMarketName()
+                : null;
+    }
+
+    private String getFatteningFor(Integer fatteningForId) {
+        return (fatteningForId != null)
+                ? customerService.getCustomerById(fatteningForId.longValue()).getCustomerName()
                 : null;
     }
 
