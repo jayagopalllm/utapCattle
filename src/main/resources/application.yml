@@ -23,7 +23,7 @@ spring:
 
 settings:
 #  cors_origin: http://localhost:4200
-  cors_origin: http://35.178.210/.158:4200
+  cors_origin: http://35.178.210.158:4200
 # logging:
 #   level:
 #     org.hibernate.SQL: DEBUG
