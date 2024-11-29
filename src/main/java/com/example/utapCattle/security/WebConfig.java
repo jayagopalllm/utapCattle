@@ -9,17 +9,17 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    @Value("${settings.cors_origin}")
-    private String corsOrigin;
-
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins(corsOrigin) // Use the property value for allowed origins
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD")
-                .allowedHeaders("*")
-                .allowCredentials(true);
-    }
+//    @Value("${settings.cors_origin}")
+//    private String corsOrigin;
+//
+//    @Override
+//    public void addCorsMappings(CorsRegistry registry) {
+//        registry.addMapping("/**")
+//                .allowedOrigins(corsOrigin) // Use the property value for allowed origins
+//                .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD")
+//                .allowedHeaders("*")
+//                .allowCredentials(true);
+//    }
 }
 
 
