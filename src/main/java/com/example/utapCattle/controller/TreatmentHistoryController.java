@@ -1,12 +1,10 @@
 package com.example.utapCattle.controller;
 
-import java.security.SecureRandom;
-import java.util.List;
-import java.util.Map;
-
+import com.example.utapCattle.model.dto.TreatmentHistoryDto;
+import com.example.utapCattle.model.entity.TreatmentHistoryMetadata;
+import com.example.utapCattle.service.TreatmentHistoryService;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,17 +15,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.utapCattle.model.dto.TreatmentHistoryDto;
-import com.example.utapCattle.model.entity.TreatmentHistoryMetadata;
-import com.example.utapCattle.service.TreatmentHistoryService;
+import java.security.SecureRandom;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin
 @RequestMapping("/treatment")
 public class TreatmentHistoryController extends BaseController {
 
-	@Autowired
-	private TreatmentHistoryService treatmentHistoryService;
+	private final TreatmentHistoryService treatmentHistoryService;
+
+	public TreatmentHistoryController(TreatmentHistoryService treatmentHistoryService) {
+		this.treatmentHistoryService = treatmentHistoryService;
+	}
 
 	@PostMapping("/save")
 	public ResponseEntity<?> saveTreatmentHistory(
