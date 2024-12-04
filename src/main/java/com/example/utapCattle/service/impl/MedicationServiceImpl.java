@@ -1,21 +1,22 @@
 package com.example.utapCattle.service.impl;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.example.utapCattle.model.dto.MedicationDto;
 import com.example.utapCattle.model.entity.Medication;
 import com.example.utapCattle.service.MedicationService;
 import com.example.utapCattle.service.repository.MedicationRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class MedicationServiceImpl implements MedicationService {
 
-	@Autowired
-	private MedicationRepository medicationRepository;
+	private final MedicationRepository medicationRepository;
+
+	public MedicationServiceImpl(MedicationRepository medicationRepository) {
+		this.medicationRepository = medicationRepository;
+	}
 
 	@Override
 	public List<MedicationDto> getAllMedication() {

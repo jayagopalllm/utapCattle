@@ -13,8 +13,11 @@ import com.example.utapCattle.service.repository.CommentRepository;
 @Service
 public class CommentServiceImpl implements CommentService {
 
-	@Autowired
-	private CommentRepository commentRepository;
+	private final CommentRepository commentRepository;
+
+	public CommentServiceImpl(CommentRepository commentRepository) {
+		this.commentRepository = commentRepository;
+	}
 
 	@Override
 	public List<Comment> saveComments(List<Comment> comments) {

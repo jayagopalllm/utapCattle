@@ -1,61 +1,85 @@
 package com.example.utapCattle.service.impl;
 
+import com.example.utapCattle.model.dto.AllDataDto;
+import com.example.utapCattle.model.dto.MarketDto;
+import com.example.utapCattle.model.entity.Agent;
+import com.example.utapCattle.model.entity.Breed;
+import com.example.utapCattle.model.entity.Category;
+import com.example.utapCattle.model.entity.Cattle;
+import com.example.utapCattle.model.entity.Customer;
+import com.example.utapCattle.model.entity.DefaultTreatment;
+import com.example.utapCattle.model.entity.Farm;
+import com.example.utapCattle.model.entity.MedicalCondition;
+import com.example.utapCattle.model.entity.Medication;
+import com.example.utapCattle.model.entity.Pen;
+import com.example.utapCattle.model.entity.SellerMarket;
+import com.example.utapCattle.service.DataService;
+import com.example.utapCattle.service.MarketService;
+import com.example.utapCattle.service.repository.AgentRepository;
+import com.example.utapCattle.service.repository.BreedRepository;
+import com.example.utapCattle.service.repository.CategoryRepository;
+import com.example.utapCattle.service.repository.CattleRepository;
+import com.example.utapCattle.service.repository.CustomerRepository;
+import com.example.utapCattle.service.repository.DefaultTreatmentRepository;
+import com.example.utapCattle.service.repository.FarmRepository;
+import com.example.utapCattle.service.repository.MarketRepository;
+import com.example.utapCattle.service.repository.MedicalConditionRepository;
+import com.example.utapCattle.service.repository.MedicationRepository;
+import com.example.utapCattle.service.repository.PenRepository;
+import com.example.utapCattle.service.repository.SellerMarketRepository;
+import org.springframework.stereotype.Service;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import com.example.utapCattle.model.dto.MarketDto;
-import com.example.utapCattle.model.entity.*;
-import com.example.utapCattle.service.MarketService;
-import com.example.utapCattle.service.repository.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.example.utapCattle.model.dto.AllDataDto;
-import com.example.utapCattle.service.DataService;
-
 @Service
 public class DataServiceImpl implements DataService {
 
-	@Autowired
-	private FarmRepository farmRepository;
+	private final FarmRepository farmRepository;
+	private final BreedRepository breedRepository;
+	private final MarketService marketService;
+	private final MarketRepository marketRepository;
+	private final SellerMarketRepository sellerMarketRepository;
+	private final CategoryRepository categoryRepository;
+	private final AgentRepository agentRepository;
+	private final CustomerRepository customerRepository;
+	private final MedicalConditionRepository medicalConditionRepository;
+	private final MedicationRepository medicationRepository;
+	private final CattleRepository cattleRepository;
+	private final PenRepository penRepository;
+	private final DefaultTreatmentRepository defaultTreatmentRepository;
 
-	@Autowired
-	private BreedRepository breedRepository;
+	public DataServiceImpl(
+			FarmRepository farmRepository,
+			BreedRepository breedRepository,
+			MarketService marketService,
+			MarketRepository marketRepository,
+			SellerMarketRepository sellerMarketRepository,
+			CategoryRepository categoryRepository,
+			AgentRepository agentRepository,
+			CustomerRepository customerRepository,
+			MedicalConditionRepository medicalConditionRepository,
+			MedicationRepository medicationRepository,
+			CattleRepository cattleRepository,
+			PenRepository penRepository,
+			DefaultTreatmentRepository defaultTreatmentRepository) {
 
-	@Autowired
-	private MarketService marketService;
-
-	@Autowired
-	private MarketRepository marketRepository;
-
-	@Autowired
-	private SellerMarketRepository sellerMarketRepository;
-
-	@Autowired
-	private CategoryRepository categoryRepository;
-
-	@Autowired
-	private AgentRepository agentRepository;
-
-	@Autowired
-	private CustomerRepository customerRepository;
-
-	@Autowired
-	private MedicalConditionRepository medicalConditionRepository;
-
-	@Autowired
-	private MedicationRepository medicationRepository;
-
-	@Autowired
-	private CattleRepository cattleRepository;
-
-	@Autowired
-	private PenRepository penRepository;
-
-	@Autowired
-	private DefaultTreatmentRepository defaultTreatmentRepository;
+		this.farmRepository = farmRepository;
+		this.breedRepository = breedRepository;
+		this.marketService = marketService;
+		this.marketRepository = marketRepository;
+		this.sellerMarketRepository = sellerMarketRepository;
+		this.categoryRepository = categoryRepository;
+		this.agentRepository = agentRepository;
+		this.customerRepository = customerRepository;
+		this.medicalConditionRepository = medicalConditionRepository;
+		this.medicationRepository = medicationRepository;
+		this.cattleRepository = cattleRepository;
+		this.penRepository = penRepository;
+		this.defaultTreatmentRepository = defaultTreatmentRepository;
+	}
 
 	@Override
 	public AllDataDto getAllData() {

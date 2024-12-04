@@ -11,7 +11,6 @@ import com.example.utapCattle.service.repository.CattleRepository;
 import com.example.utapCattle.service.repository.CommentRepository;
 import com.example.utapCattle.service.repository.SaleRepository;
 import com.example.utapCattle.service.repository.SellerMarketRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -20,19 +19,24 @@ import java.util.Date;
 @Service
 public class SaleServiceImpl implements SaleService {
 
-    @Autowired
-    private SaleRepository saleRepository;
+    private final SaleRepository saleRepository;
+    private final CattleRepository cattleRepository;
+    private final CommentRepository commentRepository;
+    private final SellerMarketRepository sellerMarketRepository;
+    private final WeightHistoryService weightHistoryService;
 
-    @Autowired
-    private CattleRepository cattleRepository;
-
-    @Autowired
-    private CommentRepository commentRepository;
-@Autowired
-    private SellerMarketRepository sellerMarketRepository;
-
-    @Autowired
-    private WeightHistoryService weightHistoryService;
+    public SaleServiceImpl(
+            SaleRepository saleRepository,
+            CattleRepository cattleRepository,
+            CommentRepository commentRepository,
+            SellerMarketRepository sellerMarketRepository,
+            WeightHistoryService weightHistoryService) {
+        this.saleRepository = saleRepository;
+        this.cattleRepository = cattleRepository;
+        this.commentRepository = commentRepository;
+        this.sellerMarketRepository = sellerMarketRepository;
+        this.weightHistoryService = weightHistoryService;
+    }
 
     @Override
     public SaleDto sellCattle(SaleDto saleDto) {
