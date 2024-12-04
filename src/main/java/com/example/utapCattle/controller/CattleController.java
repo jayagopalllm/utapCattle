@@ -1,24 +1,32 @@
 package com.example.utapCattle.controller;
 
-import java.util.List;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import com.example.utapCattle.model.dto.CattleDto;
 import com.example.utapCattle.model.entity.Cattle;
 import com.example.utapCattle.service.CattleService;
+import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/cattle")
 @CrossOrigin
 public class CattleController extends BaseController {
 
-	@Autowired
-	private CattleService cattleService;
+	private final CattleService cattleService;
+
+	public CattleController(CattleService cattleService) {
+		this.cattleService = cattleService;
+	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<CattleDto> getCattleById(@PathVariable final Long id) {

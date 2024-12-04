@@ -1,8 +1,8 @@
 package com.example.utapCattle.controller;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.utapCattle.model.dto.FarmDto;
+import com.example.utapCattle.model.entity.Farm;
+import com.example.utapCattle.service.FarmService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,16 +12,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.utapCattle.model.dto.FarmDto;
-import com.example.utapCattle.model.entity.Farm;
-import com.example.utapCattle.service.FarmService;
+import java.util.List;
 
 @RestController
 @RequestMapping("/farm")
 public class FarmController extends BaseController {
 
-    @Autowired
-    private FarmService farmService;
+    private final FarmService farmService;
+
+    public FarmController(FarmService farmService) {
+        this.farmService = farmService;
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<FarmDto> getFarmById(@PathVariable Long id) {

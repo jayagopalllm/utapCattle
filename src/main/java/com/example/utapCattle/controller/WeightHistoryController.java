@@ -1,10 +1,11 @@
 package com.example.utapCattle.controller;
 
-import java.util.List;
-
+import com.example.utapCattle.model.dto.WeightHistoryInfo;
+import com.example.utapCattle.model.dto.WeightHistoryProgressDto;
+import com.example.utapCattle.model.entity.TreatmentHistoryMetadata;
+import com.example.utapCattle.service.WeightHistoryService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -15,18 +16,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.utapCattle.model.dto.WeightHistoryInfo;
-import com.example.utapCattle.model.dto.WeightHistoryProgressDto;
-import com.example.utapCattle.model.entity.TreatmentHistoryMetadata;
-import com.example.utapCattle.service.WeightHistoryService;
+import java.util.List;
 
 @RestController
 @RequestMapping("/weight")
 @CrossOrigin(origins = { "http://localhost:4200", "http://35.178.210.158" })
 public class WeightHistoryController extends BaseController {
 
-	@Autowired
-	private WeightHistoryService weightHistoryService;
+	private final WeightHistoryService weightHistoryService;
+
+	public WeightHistoryController(WeightHistoryService weightHistoryService) {
+		this.weightHistoryService = weightHistoryService;
+	}
 
 	@GetMapping("/{cattleId}")
 	public ResponseEntity<List<WeightHistoryProgressDto>> getWeightProgressData(@PathVariable final String cattleId) {

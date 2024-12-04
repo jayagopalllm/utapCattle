@@ -1,15 +1,15 @@
 package com.example.utapCattle.controller;
 
-import com.example.utapCattle.model.dto.AgentDto;
 import com.example.utapCattle.model.dto.UserDto;
-import com.example.utapCattle.model.entity.Agent;
-import com.example.utapCattle.model.entity.User;
-import com.example.utapCattle.service.AgentService;
 import com.example.utapCattle.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -17,8 +17,11 @@ import java.util.List;
 @RequestMapping("/user")
 public class RegisterUserController extends BaseController{
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public RegisterUserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getAgentById(@PathVariable Long id) {
