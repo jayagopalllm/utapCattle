@@ -1,5 +1,20 @@
 package com.example.utapCattle.service.impl;
 
+import com.example.utapCattle.model.dto.WeightHistoryDto;
+import com.example.utapCattle.model.dto.WeightHistoryInfo;
+import com.example.utapCattle.model.dto.WeightHistoryProgressDto;
+import com.example.utapCattle.model.entity.Cattle;
+import com.example.utapCattle.model.entity.Movement;
+import com.example.utapCattle.model.entity.TreatmentHistoryMetadata;
+import com.example.utapCattle.model.entity.WeightHistory;
+import com.example.utapCattle.service.MovementService;
+import com.example.utapCattle.service.WeightHistoryService;
+import com.example.utapCattle.service.repository.CattleRepository;
+import com.example.utapCattle.service.repository.WeightHistoryRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -12,43 +27,24 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.example.utapCattle.model.dto.WeightHistoryDto;
-import com.example.utapCattle.model.dto.WeightHistoryInfo;
-import com.example.utapCattle.model.dto.WeightHistoryProgressDto;
-import com.example.utapCattle.model.entity.Cattle;
-import com.example.utapCattle.model.entity.Movement;
-import com.example.utapCattle.model.entity.TreatmentHistoryMetadata;
-import com.example.utapCattle.model.entity.WeightHistory;
-import com.example.utapCattle.service.MovementService;
-import com.example.utapCattle.service.WeightHistoryService;
-import com.example.utapCattle.service.repository.CattleRepository;
-import com.example.utapCattle.service.repository.WeightHistoryRepository;
-
 @Service
 public class WeightHistoryServiceImpl implements WeightHistoryService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(WeightHistoryServiceImpl.class);
-
-	private final WeightHistoryRepository weightHistoryRepository;
-
 	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 	private static final DateTimeFormatter DATE_FORMATTER_1 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-	@Autowired
-	public WeightHistoryServiceImpl(WeightHistoryRepository weightHistoryRepository) {
+	private final WeightHistoryRepository weightHistoryRepository;
+	private final MovementService movementService;
+	private final CattleRepository cattleRepository;
+
+	public WeightHistoryServiceImpl(WeightHistoryRepository weightHistoryRepository,
+									MovementService movementService,
+									CattleRepository cattleRepository) {
 		this.weightHistoryRepository = weightHistoryRepository;
+		this.movementService = movementService;
+		this.cattleRepository = cattleRepository;
 	}
-
-	@Autowired
-	private MovementService movementService;
-
-	@Autowired
-	private CattleRepository cattleRepository;
 
 	public WeightHistoryDto saveWeightHistory(final WeightHistory weightHistory) {
 		weightHistory.setWeightHistoryId(getNextSequenceValue());

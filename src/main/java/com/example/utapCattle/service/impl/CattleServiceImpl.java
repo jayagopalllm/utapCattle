@@ -2,11 +2,16 @@ package com.example.utapCattle.service.impl;
 
 import com.example.utapCattle.model.dto.CattleDto;
 import com.example.utapCattle.model.entity.Cattle;
-import com.example.utapCattle.service.*;
+import com.example.utapCattle.service.AgentService;
+import com.example.utapCattle.service.BreedService;
+import com.example.utapCattle.service.CategoryService;
+import com.example.utapCattle.service.CattleService;
+import com.example.utapCattle.service.CustomerService;
+import com.example.utapCattle.service.FarmService;
+import com.example.utapCattle.service.MarketService;
 import com.example.utapCattle.service.repository.CattleRepository;
 import com.example.utapCattle.service.repository.TreatmentHistoryRepository;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -17,22 +22,33 @@ import java.util.stream.Collectors;
 @Service
 public class CattleServiceImpl implements CattleService {
 
-    @Autowired
-    private CattleRepository cattleRepository;
-    @Autowired
-    private BreedService breedService;
-    @Autowired
-    private CategoryService categoryService;
-    @Autowired
-    private FarmService farmService;
-    @Autowired
-    private MarketService marketService;
-    @Autowired
-    private CustomerService customerService;
-    @Autowired
-    private AgentService agentService;
-    @Autowired
-    private TreatmentHistoryRepository treatmentHistoryRepository;
+    private final CattleRepository cattleRepository;
+    private final BreedService breedService;
+    private final CategoryService categoryService;
+    private final FarmService farmService;
+    private final MarketService marketService;
+    private final CustomerService customerService;
+    private final AgentService agentService;
+    private final TreatmentHistoryRepository treatmentHistoryRepository;
+
+    public CattleServiceImpl(CattleRepository cattleRepository
+            , BreedService breedService
+            , CategoryService categoryService
+            , FarmService farmService
+            , MarketService marketService
+            , CustomerService customerService
+            , AgentService agentService
+            , TreatmentHistoryRepository treatmentHistoryRepository) {
+        this.cattleRepository = cattleRepository;
+        this.breedService = breedService;
+        this.categoryService = categoryService;
+        this.farmService = farmService;
+        this.marketService = marketService;
+        this.customerService = customerService;
+        this.agentService = agentService;
+        this.treatmentHistoryRepository = treatmentHistoryRepository;
+
+    }
 
     @Override
     public List<CattleDto> getAllCattle() { // Return List<CattleDto>
