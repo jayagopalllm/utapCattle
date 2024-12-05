@@ -1,8 +1,7 @@
 package com.example.utapCattle.controller;
 
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.utapCattle.model.entity.TreatmentHistoryMetadata;
+import com.example.utapCattle.service.InductionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -11,16 +10,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.utapCattle.model.entity.TreatmentHistoryMetadata;
-import com.example.utapCattle.service.InductionService;
+import java.util.Map;
 
 @RestController
 @CrossOrigin
 @RequestMapping("/induction")
 public class InductionController extends BaseController {
 
-	@Autowired
-	private InductionService inductionService;
+	private final InductionService inductionService;
+
+	public InductionController(InductionService inductionService) {
+		this.inductionService = inductionService;
+	}
 
 	@PostMapping("/save")
 	public ResponseEntity<Map<String, Object>> saveInduction(@RequestBody final TreatmentHistoryMetadata treatmentHistoryMetadata) {

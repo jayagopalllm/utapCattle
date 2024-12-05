@@ -4,7 +4,6 @@ import com.example.utapCattle.model.dto.DefaultTreatmentDto;
 import com.example.utapCattle.model.entity.DefaultTreatment;
 import com.example.utapCattle.service.DefaultTreatmentService;
 import com.example.utapCattle.service.repository.DefaultTreatmentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,8 +12,12 @@ import java.util.stream.Collectors;
 
 @Service
 public class DefaultTreatmentServiceImpl implements DefaultTreatmentService {
-    @Autowired
-    private DefaultTreatmentRepository defaultTreatmentRepository;
+
+    private final DefaultTreatmentRepository defaultTreatmentRepository;
+
+    public DefaultTreatmentServiceImpl( DefaultTreatmentRepository defaultTreatmentRepository) {
+        this.defaultTreatmentRepository = defaultTreatmentRepository;
+    }
 
     @Override
     public List<DefaultTreatmentDto> getAllDefaultTreatment() {

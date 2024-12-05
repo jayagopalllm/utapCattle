@@ -1,8 +1,9 @@
 package com.example.utapCattle.controller;
 
-import java.security.SecureRandom;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.utapCattle.model.entity.TbTestHistory;
+import com.example.utapCattle.model.entity.TreatmentHistoryMetadata;
+import com.example.utapCattle.service.TbTestHistoryService;
+import com.example.utapCattle.service.TreatmentHistoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -11,21 +12,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.utapCattle.model.entity.TbTestHistory;
-import com.example.utapCattle.model.entity.TreatmentHistoryMetadata;
-import com.example.utapCattle.service.TbTestHistoryService;
-import com.example.utapCattle.service.TreatmentHistoryService;
+import java.security.SecureRandom;
 
 @RestController
 @RequestMapping("/tbtest")
 @CrossOrigin(origins = { "http://localhost:4200", "http://35.178.210.158" })
 public class TbTestHistoryController extends BaseController {
 
-	@Autowired
-	private TbTestHistoryService tbTestHistoryService;
+	private final TbTestHistoryService tbTestHistoryService;
 
-	@Autowired
-	private TreatmentHistoryService treatmentHistoryService;
+	private final TreatmentHistoryService treatmentHistoryService;
+
+	public TbTestHistoryController(TbTestHistoryService tbTestHistoryService, TreatmentHistoryService treatmentHistoryService) {
+		this.tbTestHistoryService = tbTestHistoryService;
+		this.treatmentHistoryService = treatmentHistoryService;
+	}
 
 	@PostMapping("/save")
 	public ResponseEntity<?> saveTbTestHistory(@RequestBody final TreatmentHistoryMetadata treatmentHistoryMetadata) {

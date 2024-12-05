@@ -4,7 +4,6 @@ import com.example.utapCattle.model.dto.UserDto;
 import com.example.utapCattle.model.entity.User;
 import com.example.utapCattle.service.UserService;
 import com.example.utapCattle.service.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -13,11 +12,13 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
-    @Autowired
-    UserRepository userRepository;
 
     @Autowired
     PasswordEncoder encoder;
+
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public UserDto getByUserId(Long id) {

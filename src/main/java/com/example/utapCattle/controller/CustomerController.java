@@ -1,8 +1,8 @@
 package com.example.utapCattle.controller;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.utapCattle.model.dto.CustomerDto;
+import com.example.utapCattle.model.entity.Customer;
+import com.example.utapCattle.service.CustomerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,16 +12,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.utapCattle.model.dto.CustomerDto;
-import com.example.utapCattle.model.entity.Customer;
-import com.example.utapCattle.service.CustomerService;
+import java.util.List;
 
 @RestController
 @RequestMapping("/customer")
 public class CustomerController extends BaseController{
 
-    @Autowired
     private CustomerService customerService;
+
+    public CustomerController(CustomerService customerService) {
+        this.customerService = customerService;
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<CustomerDto> getCustomerById(@PathVariable Long id) {
