@@ -28,7 +28,7 @@ public class DataServiceImpl implements DataService {
 	private MarketService marketService;
 
 	@Autowired
-	private MarketRepository marketRepository;
+	private FilterRepository filterRepository;
 
 	@Autowired
 	private SellerMarketRepository sellerMarketRepository;
@@ -121,6 +121,14 @@ public class DataServiceImpl implements DataService {
 		final List<Customer> customers = customerRepository.findAll();
 		salesData.setSourceFarm(farms);
 		salesData.setFatteningFor(customers);
+		return salesData;
+	}
+
+	@Override
+	public AllDataDto getFilterData() {
+		final AllDataDto salesData = new AllDataDto();
+		final List<FilterCriteria> filterCriteria = filterRepository.findAll();
+		salesData.setFilterCriteria(filterCriteria);
 		return salesData;
 	}
 

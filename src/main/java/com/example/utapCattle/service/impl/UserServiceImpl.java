@@ -5,6 +5,7 @@ import com.example.utapCattle.model.entity.User;
 import com.example.utapCattle.service.UserService;
 import com.example.utapCattle.service.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,8 +16,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     UserRepository userRepository;
 
-//    @Autowired
-//    PasswordEncoder encoder;
+    @Autowired
+    PasswordEncoder encoder;
 
     @Override
     public UserDto getByUserId(Long id) {
@@ -45,8 +46,7 @@ public class UserServiceImpl implements UserService {
         user1.setCustomerId(userDto.getCustomerId());
         user1.setRole(userDto.getRole());
         user1.setFarmId(userDto.getFarmId());
-//        user1.setPassword(encoder.encode(userDto.getPassword()));
-        user1.setPassword(userDto.getPassword());
+        user1.setPassword(encoder.encode(userDto.getPassword()));
         user1.setId(nextId);
 
         user1 = userRepository.save(user1);

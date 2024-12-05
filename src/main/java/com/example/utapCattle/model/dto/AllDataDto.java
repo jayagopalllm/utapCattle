@@ -26,6 +26,7 @@ public class AllDataDto {
 	private List<String> earTagList;
 	private List<String> eIdList;
 	private List<Pen> pens;
+	private List<FilterCriteria> filterCriteria;
 	private List<DefaultTreatment> defaultTreatments;
 	private Map<Long, String> eIdEarTagMap;
 
