@@ -15,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/user")
+@CrossOrigin(origins = "http://35.178.210.158")
 public class RegisterUserController extends BaseController{
 
     private final UserService userService;

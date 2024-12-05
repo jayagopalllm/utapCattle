@@ -81,6 +81,36 @@ public class DataServiceImpl implements DataService {
 		this.defaultTreatmentRepository = defaultTreatmentRepository;
 	}
 
+	@Autowired
+	private FilterRepository filterRepository;
+
+	@Autowired
+	private SellerMarketRepository sellerMarketRepository;
+
+	@Autowired
+	private CategoryRepository categoryRepository;
+
+	@Autowired
+	private AgentRepository agentRepository;
+
+	@Autowired
+	private CustomerRepository customerRepository;
+
+	@Autowired
+	private MedicalConditionRepository medicalConditionRepository;
+
+	@Autowired
+	private MedicationRepository medicationRepository;
+
+	@Autowired
+	private CattleRepository cattleRepository;
+
+	@Autowired
+	private PenRepository penRepository;
+
+	@Autowired
+	private DefaultTreatmentRepository defaultTreatmentRepository;
+
 	@Override
 	public AllDataDto getAllData() {
 		final List<Farm> farms = farmRepository.findAll();
@@ -145,6 +175,14 @@ public class DataServiceImpl implements DataService {
 		final List<Customer> customers = customerRepository.findAll();
 		salesData.setSourceFarm(farms);
 		salesData.setFatteningFor(customers);
+		return salesData;
+	}
+
+	@Override
+	public AllDataDto getFilterData() {
+		final AllDataDto salesData = new AllDataDto();
+		final List<FilterCriteria> filterCriteria = filterRepository.findAll();
+		salesData.setFilterCriteria(filterCriteria);
 		return salesData;
 	}
 

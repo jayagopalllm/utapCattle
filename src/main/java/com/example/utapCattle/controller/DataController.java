@@ -98,8 +98,16 @@ public class DataController extends BaseController {
 
 	@GetMapping(value = "/register-user")
 	public AllDataDto getRegisterUserData() {
-		logger.info("Incoming request: Retrieving Sales pre-data");
+		logger.info("Incoming request: Registering data pre-data");
 		final AllDataDto allData = dataService.getRegisterUserData();
+		logger.info("Request successful: Retrieved Sales pre-data");
+		return allData;
+	}
+
+	@GetMapping(value = "/filter")
+	public AllDataDto getFilterData() {
+		logger.info("Incoming request: Retrieving Sales pre-data");
+		final AllDataDto allData = dataService.getFilterData();
 		logger.info("Request successful: Retrieved Sales pre-data");
 		return allData;
 	}

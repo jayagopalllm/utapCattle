@@ -16,4 +16,6 @@ public interface DataService {
 
 	public AllDataDto getRegisterUserData();
 
+	public AllDataDto getFilterData();
+
 }
