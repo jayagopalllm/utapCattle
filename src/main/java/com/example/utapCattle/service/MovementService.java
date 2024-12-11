@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.example.utapCattle.model.dto.MovementDto;
 import com.example.utapCattle.model.entity.Movement;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface MovementService {
 
@@ -14,6 +15,8 @@ public interface MovementService {
 	 * @return The saved MovementDto.
 	 */
 	MovementDto saveMovement(final Movement movement);
+
+	Long saveMovementFileData(final MultipartFile file);
 
 	/**
 	 * Retrieves the next value from the configured sequence in the database.

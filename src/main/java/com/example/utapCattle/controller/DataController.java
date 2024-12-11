@@ -111,4 +111,12 @@ public class DataController extends BaseController {
 		logger.info("Request successful: Retrieved Sales pre-data");
 		return allData;
 	}
+
+	@GetMapping(value = "/slaughter-market")
+	public AllDataDto getSlaughtersHouse() {
+		logger.info("Incoming request: Retrieving Slaughter House pre-data");
+		final AllDataDto allData = dataService.getSlaughtersHouse();
+		logger.info("Request successful: Retrieved Sales pre-data");
+		return allData;
+	}
 }

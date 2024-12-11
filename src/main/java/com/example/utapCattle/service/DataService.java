@@ -18,4 +18,6 @@ public interface DataService {
 
 	public AllDataDto getFilterData();
 
+	public AllDataDto getSlaughtersHouse();
+
 }

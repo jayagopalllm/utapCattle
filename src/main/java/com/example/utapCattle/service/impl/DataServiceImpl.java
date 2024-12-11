@@ -37,6 +37,7 @@ import java.util.Optional;
 @Service
 public class DataServiceImpl implements DataService {
 
+<<<<<<< Updated upstream
 	private final FarmRepository farmRepository;
 	private final BreedRepository breedRepository;
 	private final MarketService marketService;
@@ -86,6 +87,66 @@ public class DataServiceImpl implements DataService {
 
 	@Autowired
 	private SellerMarketRepository sellerMarketRepository;
+=======
+    private final FarmRepository farmRepository;
+    private final BreedRepository breedRepository;
+    private final MarketService marketService;
+    private final MarketRepository marketRepository;
+    private final SlaughterMarketRepository slaughterMarketRepository;
+    private final FilterRepository filterRepository;
+    private final SellerMarketRepository sellerMarketRepository;
+    private final CategoryRepository categoryRepository;
+    private final AgentRepository agentRepository;
+    private final CustomerRepository customerRepository;
+    private final MedicalConditionRepository medicalConditionRepository;
+    private final MedicationRepository medicationRepository;
+    private final CattleRepository cattleRepository;
+    private final PenRepository penRepository;
+    private final DefaultTreatmentRepository defaultTreatmentRepository;
+
+    public DataServiceImpl(
+            FarmRepository farmRepository,
+            FilterRepository filterRepository,
+            BreedRepository breedRepository,
+            MarketService marketService,
+            MarketRepository marketRepository,
+            SlaughterMarketRepository slaughterMarketRepository,
+            SellerMarketRepository sellerMarketRepository,
+            CategoryRepository categoryRepository,
+            AgentRepository agentRepository,
+            CustomerRepository customerRepository,
+            MedicalConditionRepository medicalConditionRepository,
+            MedicationRepository medicationRepository,
+            CattleRepository cattleRepository,
+            PenRepository penRepository,
+            DefaultTreatmentRepository defaultTreatmentRepository) {
+
+        this.farmRepository = farmRepository;
+        this.breedRepository = breedRepository;
+        this.marketService = marketService;
+        this.marketRepository = marketRepository;
+        this.slaughterMarketRepository = slaughterMarketRepository;
+        this.sellerMarketRepository = sellerMarketRepository;
+        this.categoryRepository = categoryRepository;
+        this.agentRepository = agentRepository;
+        this.customerRepository = customerRepository;
+        this.medicalConditionRepository = medicalConditionRepository;
+        this.medicationRepository = medicationRepository;
+        this.cattleRepository = cattleRepository;
+        this.penRepository = penRepository;
+        this.filterRepository = filterRepository;
+        this.defaultTreatmentRepository = defaultTreatmentRepository;
+    }
+
+    @Override
+    public AllDataDto getAllData() {
+        final List<Farm> farms = farmRepository.findAll();
+        final List<Breed> breeds = breedRepository.findAll();
+        final List<MarketDto> markets = marketService.getAllMarkets();
+        final List<Category> categories = categoryRepository.findAll();
+        final List<Agent> agents = agentRepository.findAll();
+        final List<Customer> customers = customerRepository.findAll();
+>>>>>>> Stashed changes
 
 	@Autowired
 	private CategoryRepository categoryRepository;
@@ -186,6 +247,7 @@ public class DataServiceImpl implements DataService {
 		return salesData;
 	}
 
+<<<<<<< Updated upstream
 	private Map<Long, String> getEidEarTagMapping() {
 		final Optional<List<Cattle>> cattleList = cattleRepository.getEIdEartagMap();
 		final Map<Long, String> eIdEarTagMap = new HashMap<>();
@@ -196,6 +258,26 @@ public class DataServiceImpl implements DataService {
 		}
 		return eIdEarTagMap;
 	}
+=======
+  @Override
+    public AllDataDto getSlaughtersHouse() {
+        final AllDataDto slaughterData = new AllDataDto();
+        final List<SlaughterMarket> slaughterMarkets = slaughterMarketRepository.findAll();
+      slaughterData.setSlaughterMarket(slaughterMarkets);
+        return slaughterData;
+    }
+
+    private Map<Long, String> getEidEarTagMapping() {
+        final Optional<List<Cattle>> cattleList = cattleRepository.getEIdEartagMap();
+        final Map<Long, String> eIdEarTagMap = new HashMap<>();
+        if (cattleList.isPresent()) {
+            cattleList.get().forEach(cattle -> {
+                eIdEarTagMap.put(cattle.getCattleId(), cattle.getEarTag());
+            });
+        }
+        return eIdEarTagMap;
+    }
+>>>>>>> Stashed changes
 
 	private AllDataDto getInductionAndTreatmentData() {
 		final List<MedicalCondition> medicalConditions = medicalConditionRepository.findAll();
