@@ -5,5 +5,5 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/filter")
-public class FilterContoller {
+public class FilterController {
 }
