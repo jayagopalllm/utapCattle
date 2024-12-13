@@ -20,6 +20,7 @@ public class DataServiceImpl implements DataService {
     private final BreedRepository breedRepository;
     private final MarketService marketService;
     private final MarketRepository marketRepository;
+    private final SlaughterMarketRepository slaughterMarketRepository;
     private final FilterRepository filterRepository;
     private final SellerMarketRepository sellerMarketRepository;
     private final CategoryRepository categoryRepository;
@@ -74,14 +75,8 @@ public class DataServiceImpl implements DataService {
         final List<Agent> agents = agentRepository.findAll();
         final List<Customer> customers = customerRepository.findAll();
 
-    @Override
-    public AllDataDto getAllData() {
-        final List<Farm> farms = farmRepository.findAll();
-        final List<Breed> breeds = breedRepository.findAll();
-        final List<MarketDto> markets = marketService.getAllMarkets();
-        final List<Category> categories = categoryRepository.findAll();
-        final List<Agent> agents = agentRepository.findAll();
-        final List<Customer> customers = customerRepository.findAll();
+        return new AllDataDto(farms, breeds, markets, categories, agents, customers);
+    }
 
     @Override
     public AllDataDto getMedicalConditionData() {
@@ -97,13 +92,6 @@ public class DataServiceImpl implements DataService {
         final Map<Long, String> eIdEarTagMap = getEidEarTagMapping();
         treatmentData.setEIdEarTagMap(eIdEarTagMap);
         return treatmentData;
-    }
-    @Override
-    public AllDataDto getMedicalConditionData() {
-        final AllDataDto conditionData = getInductionAndTreatmentData();
-        final List<DefaultTreatment> defaultTreatments = defaultTreatmentRepository.findAll();
-        conditionData.setDefaultTreatments(defaultTreatments);
-        return conditionData;
     }
 
     @Override
@@ -111,23 +99,11 @@ public class DataServiceImpl implements DataService {
         final AllDataDto tbTestData = new AllDataDto();
         final Map<Long, String> eIdEarTagMap = getEidEarTagMapping();
         tbTestData.setEIdEarTagMap(eIdEarTagMap);
-    @Override
-    public AllDataDto getTreatmentData() {
-        final AllDataDto treatmentData = getInductionAndTreatmentData();
-        final Map<Long, String> eIdEarTagMap = getEidEarTagMapping();
-        treatmentData.setEIdEarTagMap(eIdEarTagMap);
-        return treatmentData;
-    }
 
         final List<Pen> pens = penRepository.findAll();
         tbTestData.setPens(pens);
         return tbTestData;
     }
-    @Override
-    public AllDataDto getWeightAndTBTestData() {
-        final AllDataDto tbTestData = new AllDataDto();
-        final Map<Long, String> eIdEarTagMap = getEidEarTagMapping();
-        tbTestData.setEIdEarTagMap(eIdEarTagMap);
 
     @Override
     public AllDataDto getSalesData() {
@@ -165,6 +141,24 @@ public class DataServiceImpl implements DataService {
         return salesData;
     }
 
+    //	private Map<Long, String> getEidEarTagMapping() {
+//		final Optional<List<Cattle>> cattleList = cattleRepository.getEIdEartagMap();
+//		final Map<Long, String> eIdEarTagMap = new HashMap<>();
+//		if (cattleList.isPresent()) {
+//			cattleList.get().forEach(cattle -> {
+//				eIdEarTagMap.put(cattle.getCattleId(), cattle.getEarTag());
+//			});
+//		}
+//		return eIdEarTagMap;
+//	}
+    @Override
+    public AllDataDto getSlaughtersHouse() {
+        final AllDataDto slaughterData = new AllDataDto();
+        final List<SlaughterMarket> slaughterMarkets = slaughterMarketRepository.findAll();
+        slaughterData.setSlaughterMarket(slaughterMarkets);
+        return slaughterData;
+    }
+
     private Map<Long, String> getEidEarTagMapping() {
         final Optional<List<Cattle>> cattleList = cattleRepository.getEIdEartagMap();
         final Map<Long, String> eIdEarTagMap = new HashMap<>();
@@ -189,9 +183,6 @@ public class DataServiceImpl implements DataService {
         conditionData.setPens(pens);
         conditionData.setEIdList(eIdList);
         conditionData.setEarTagList(earTagList);
-
-        return conditionData;
-    }
 
         return conditionData;
     }
