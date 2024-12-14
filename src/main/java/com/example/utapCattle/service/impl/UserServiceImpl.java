@@ -18,8 +18,10 @@ public class UserServiceImpl implements UserService {
     PasswordEncoder encoder;
     private final UserRepository userRepository;
 
-    @Autowired
-    UserRepository userRepository;
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
 
     @Override
     public UserDto getByUserId(Long id) {
