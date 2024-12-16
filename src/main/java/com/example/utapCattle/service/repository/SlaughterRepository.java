@@ -6,4 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface SlaughterRepository extends JpaRepository<SlaughterHouse, Long> {}
+public interface SlaughterRepository extends JpaRepository<SlaughterHouse, Long> {
+
+    boolean existsByEarTag1AndCarcassNumber(String earTag1, Integer carcassNumber);
+}

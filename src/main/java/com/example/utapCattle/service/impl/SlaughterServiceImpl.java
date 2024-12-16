@@ -35,6 +35,13 @@ public class SlaughterServiceImpl implements SlaughterService {
         try {
             List<SlaughterHouse> slaughterDataList = parseCsvFile(id, file);
 
+            // Check for duplicates before saving
+            List<String> duplicateRecords = checkForDuplicates(slaughterDataList);
+            if (!duplicateRecords.isEmpty()) {
+                throw new RuntimeException("Duplicate records found: " + String.join(", ", duplicateRecords));
+            }
+
+            // Save the non-duplicate data
             List<SlaughterHouse> savedData = slaughterRepository.saveAll(slaughterDataList);
 
             return (long) savedData.size();
@@ -42,6 +49,22 @@ public class SlaughterServiceImpl implements SlaughterService {
             throw new RuntimeException("Failed to save slaughter data", e);
         }
     }
+    private List<String> checkForDuplicates(List<SlaughterHouse> slaughterDataList) {
+        List<String> duplicateRecords = new ArrayList<>();
+
+        for (SlaughterHouse data : slaughterDataList) {
+            boolean exists = slaughterRepository.existsByEarTag1AndCarcassNumber(
+                    data.getEarTag1(),
+                    data.getCarcassNumber()
+            );
+            if (exists) {
+                duplicateRecords.add(data.getEarTag1()); // Add the identifier to the list
+            }
+        }
+
+        return duplicateRecords;
+    }
+
 
     private List<SlaughterHouse> parseCsvFile(Long id, MultipartFile file) throws Exception {
         List<SlaughterHouse> slaughterDataList = new ArrayList<>();
