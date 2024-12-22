@@ -15,6 +15,8 @@ public interface CattleService {
 
 	CattleDto saveCattle(final Cattle cattle) throws Exception;
 
+//	List<CattleDto> saveCattleBatch(List<Cattle> cattleList) throws Exception;
+
 	CattleDto updateCattle(final Long id,final Cattle cattle) throws Exception;
 
 	List<String> findEarTagsWithIncompleteInduction();

@@ -3,6 +3,7 @@ package com.example.utapCattle.controller;
 import com.example.utapCattle.model.dto.CattleDto;
 import com.example.utapCattle.model.entity.Cattle;
 import com.example.utapCattle.service.CattleService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/cattle")
@@ -91,17 +94,51 @@ public class CattleController extends BaseController {
 	}
 
 	@PostMapping("/save")
-	public ResponseEntity<Long> saveCattle(@RequestBody final Cattle cattle) {
-		logger.info("Saving new cattle: {}", cattle);
+	public ResponseEntity<?> saveCattle(@RequestBody final Object input) {
+		logger.info("Saving cattle: {}", input);
+
 		try {
-			final CattleDto savedCattleDto = cattleService.saveCattle(cattle);
-			logger.info("Saved cattle with ID: {}", savedCattleDto.getId());
-			return new ResponseEntity<>(savedCattleDto.getId(), HttpStatus.CREATED);
-		} catch (final Exception e) {
+			// Check if input is a List
+			if (input instanceof List) {
+				List<Map<String, Object>> cattleList = (List<Map<String, Object>>) input;
+
+				// Use ObjectMapper to convert Map to Cattle entity
+				List<Long> savedIds = cattleList.stream()
+						.map(cattleData -> {
+							try {
+								// Convert Map to Cattle object
+								Cattle cattle = new ObjectMapper().convertValue(cattleData, Cattle.class);
+								return cattleService.saveCattle(cattle).getId();
+							} catch (Exception e) {
+								logger.error("Failed to save cattle: {}", cattleData, e);
+								throw new RuntimeException("Error saving cattle", e);
+							}
+						})
+						.collect(Collectors.toList());
+
+				logger.info("Saved cattle IDs: {}", savedIds);
+				return ResponseEntity.status(HttpStatus.CREATED).body(savedIds);
+
+			} else if (input instanceof Map) {
+				// Single object save
+				Map<String, Object> cattleData = (Map<String, Object>) input;
+				Cattle cattle = new ObjectMapper().convertValue(cattleData, Cattle.class);
+
+				CattleDto savedCattleDto = cattleService.saveCattle(cattle);
+				logger.info("Saved cattle with ID: {}", savedCattleDto.getId());
+
+				return ResponseEntity.status(HttpStatus.CREATED).body(savedCattleDto.getId());
+			} else {
+				// Invalid input type
+				logger.error("Invalid input type. Expected List<Map<String, Object>> or Map<String, Object>.");
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid input format.");
+			}
+		} catch (Exception e) {
 			logger.error("Exception occurred: Unable to save cattle", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
+
 
 	@PutMapping("/update/{cattleId}")
 	public ResponseEntity<Long> saveCattle(@PathVariable Long cattleId ,@RequestBody final Cattle cattle) {

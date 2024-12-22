@@ -14,6 +14,7 @@ import com.example.utapCattle.service.repository.TreatmentHistoryRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -88,14 +89,32 @@ public class CattleServiceImpl implements CattleService {
         return null;
     }
 
+//    @Override
+//    public List<CattleDto> saveCattleBatch(List<Cattle> cattleList) throws Exception {
+//        List<CattleDto> savedCattleDtos = new ArrayList<>();
+//
+//        // Loop through each cattle and save it
+//        for (Cattle cattle : cattleList) {
+//            validateCattleInformation(cattle);
+//            final long nextInductionId = cattleRepository.getNextSequenceValue();
+//            cattle.setId(nextInductionId);
+//            final Cattle savedCattle = cattleRepository.save(cattle);
+//            savedCattleDtos.add(mapToDto(savedCattle));
+//        }
+//
+//        return savedCattleDtos;
+//    }
+
+
     @Override
-    public CattleDto saveCattle(final Cattle cattle) throws Exception { // Return CattleDto
+    public CattleDto saveCattle(final Cattle cattle) throws Exception {
         validateCattleInformation(cattle);
         final long nextInductionId = cattleRepository.getNextSequenceValue();
         cattle.setId(nextInductionId);
         final Cattle savedCattle = cattleRepository.save(cattle);
-        return mapToDto(savedCattle); // Map the saved Cattle to DTO
+        return mapToDto(savedCattle);
     }
+
 
 
     @Override
