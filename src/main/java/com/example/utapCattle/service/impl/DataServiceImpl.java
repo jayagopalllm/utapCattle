@@ -74,8 +74,9 @@ public class DataServiceImpl implements DataService {
         final List<Category> categories = categoryRepository.findAll();
         final List<Agent> agents = agentRepository.findAll();
         final List<Customer> customers = customerRepository.findAll();
+        final List<Pen> pens = penRepository.findAll();
 
-        return new AllDataDto(farms, breeds, markets, categories, agents, customers);
+        return new AllDataDto(farms, breeds, markets, categories, agents, customers,pens);
     }
 
     @Override

@@ -9,6 +9,8 @@ public interface CustomerService {
 
     List<CustomerDto> getAllCustomers();
 
+    List<Object[]> getCustomersApiData(final String id);
+
     CustomerDto getCustomerById(Long id);
 
     CustomerDto saveCustomer(Customer customer);

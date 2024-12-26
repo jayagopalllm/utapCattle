@@ -37,5 +37,9 @@ public interface CattleRepository extends JpaRepository<Cattle, Long> { // Use L
 
 	@Query("SELECT c FROM Cattle c WHERE c.cattleId IS NOT NULL")
 	Optional<List<Cattle>> getEIdEartagMap();
+	
+	@Query(value = "SELECT * FROM cattle_API WHERE customer = :id", nativeQuery = true)
+	List<Object[]> findCattleDataById(@Param("id") String id);
+
 
 }

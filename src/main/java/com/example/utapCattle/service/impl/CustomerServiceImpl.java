@@ -3,6 +3,7 @@ package com.example.utapCattle.service.impl;
 import com.example.utapCattle.model.dto.CustomerDto;
 import com.example.utapCattle.model.entity.Customer;
 import com.example.utapCattle.service.CustomerService;
+import com.example.utapCattle.service.repository.CattleRepository;
 import com.example.utapCattle.service.repository.CustomerRepository;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +15,11 @@ import java.util.stream.Collectors;
 public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
+    private final CattleRepository cattleRepository;
 
-    public CustomerServiceImpl(CustomerRepository customerRepository) {
+    public CustomerServiceImpl(CustomerRepository customerRepository, CattleRepository cattleRepository) {
         this.customerRepository = customerRepository;
+        this.cattleRepository = cattleRepository;
     }
 
     @Override
@@ -24,6 +27,11 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepository.findAll().stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Object[]> getCustomersApiData(final String id) {
+        return cattleRepository.findCattleDataById(id);
     }
 
     @Override

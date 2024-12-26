@@ -65,4 +65,17 @@ public class CustomerController extends BaseController{
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    @GetMapping("/API/{id}")
+    public ResponseEntity<List<Object[]>> getCustomersApiData(@PathVariable("id") String id) {
+        try {
+            List<Object[]> customers = customerService.getCustomersApiData(id);
+            logger.info("Retrieved {} customers", customers.size());
+            return ResponseEntity.ok(customers);
+        } catch (Exception e) {
+            logger.error("Exception occurred: Unable to retrieve all customers", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
 }

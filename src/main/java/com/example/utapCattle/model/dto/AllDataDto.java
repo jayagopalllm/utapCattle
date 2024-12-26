@@ -32,13 +32,15 @@ public class AllDataDto {
 	private Map<Long, String> eIdEarTagMap;
 
 	public AllDataDto(final List<Farm> sourceFarm, final List<Breed> breed, final List<MarketDto> market,
-			final List<Category> category, final List<Agent> agent, final List<Customer> fatteningFor) {
+			final List<Category> category, final List<Agent> agent, final List<Customer> fatteningFor,
+					  final List<Pen> pens) {
 		this.sourceFarm = sourceFarm;
 		this.breed = breed;
 		this.market = market;
 		this.category = category;
 		this.agent = agent;
 		this.fatteningFor = fatteningFor;
+		this.pens = pens;
 	}
 
 	public AllDataDto(final List<MedicalCondition> medicalCondition, final List<Medication> medication,
