@@ -19,6 +19,7 @@ public class AllDataDto {
 	private List<MarketDto> market;
 	private List<SellerMarket> sellerMarket;
 	private List<Category> category;
+	private List<Customer> customers;
 	private List<Agent> agent;
 	private List<Customer> fatteningFor;
 	private List<MedicalCondition> medicalCondition;

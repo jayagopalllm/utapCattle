@@ -156,7 +156,9 @@ public class DataServiceImpl implements DataService {
     public AllDataDto getSlaughtersHouse() {
         final AllDataDto slaughterData = new AllDataDto();
         final List<SlaughterMarket> slaughterMarkets = slaughterMarketRepository.findAll();
+        final List<Customer> customerList = customerRepository.findAll();
         slaughterData.setSlaughterMarket(slaughterMarkets);
+        slaughterData.setCustomers(customerList);
         return slaughterData;
     }
 
