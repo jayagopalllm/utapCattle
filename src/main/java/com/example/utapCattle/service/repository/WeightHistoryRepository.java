@@ -18,4 +18,14 @@ public interface WeightHistoryRepository extends JpaRepository<WeightHistory, Lo
 	@Query("SELECT w FROM WeightHistory w WHERE w.cattleId = :cattleId ORDER BY w.weightHistoryId DESC")
 	List<WeightHistory> findByCattleIdOrderByWeightId(@Param("cattleId") Long cattleId);
 
+	@Query(value = """
+        SELECT c.*, w.* 
+        FROM cattle c
+        INNER JOIN weighthistory w 
+        ON c.cattleid = w.cattleid 
+        WHERE DATE(w.weightdatetime) = CURRENT_DATE
+        ORDER BY w.weighthistoryid DESC
+        """, nativeQuery = true)
+	List<Object[]> findWeightHistoryForToday();
+
 }

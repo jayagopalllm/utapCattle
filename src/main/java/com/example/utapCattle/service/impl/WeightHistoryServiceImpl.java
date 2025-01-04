@@ -152,6 +152,10 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 		return cattleIds.stream().map(this::processWeightHistory).collect(Collectors.toList());
 	}
 
+	public List<Object[]> getWeightHistoryForToday() {
+		return weightHistoryRepository.findWeightHistoryForToday();
+	}
+
 	private WeightHistoryInfo processWeightHistory(final Long cattleId) {
 		final List<WeightHistory> weightHistories = weightHistoryRepository.findByCattleIdOrderByWeightId(cattleId);
 

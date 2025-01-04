@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import com.example.utapCattle.model.dto.TreatmentHistoryResponseDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -29,5 +30,26 @@ public interface TreatmentHistoryRepository extends JpaRepository<TreatmentHisto
 
 	@Query("SELECT AVG(t.conditionScore) FROM TreatmentHistory t WHERE t.cattleId = :cattleId")
 	Double findAverageConditionScoreByCattleId(@Param("cattleId") Long cattleId);
+
+	@Query("""
+        SELECT new com.example.utapCattle.model.dto.TreatmentHistoryResponseDto(
+            t.treatmentHistoryId,
+            t.cattleId,
+            m.conditionDesc,
+            med.medicationDesc,
+            t.batchNumber,
+            t.treatmentDate
+        )
+        FROM TreatmentHistory t
+        INNER JOIN Cattle c ON c.cattleId = t.cattleId
+        INNER JOIN MedicalCondition m ON t.medicalConditionId = m.medicalConditionId
+        INNER JOIN Medication med ON t.medicationId = med.medicationId
+        WHERE t.cattleId = :eid AND c.saleId IS NULL
+        """)
+	List<TreatmentHistoryResponseDto> findTreatmentHistoryByCattleId(@Param("eid") Long eid);
+
+
+
+
 
 }

@@ -79,4 +79,10 @@ public class WeightHistoryController extends BaseController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
+
+	@GetMapping("/today")
+	public ResponseEntity<List<Object[]>> getWeightHistoryForToday() {
+		List<Object[]> result = weightHistoryService.getWeightHistoryForToday();
+		return ResponseEntity.ok(result);
+	}
 }

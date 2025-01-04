@@ -71,4 +71,8 @@ public interface WeightHistoryService {
 	 */
 	List<WeightHistoryInfo> getWeightHistoryByPen(final Long penId);
 
+	List<Object[]> getWeightHistoryForToday();
+
+
+
 }

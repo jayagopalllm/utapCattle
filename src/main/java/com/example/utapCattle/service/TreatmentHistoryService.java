@@ -29,4 +29,5 @@ public interface TreatmentHistoryService {
 	public Map<String, Object> saveTreatmentHistory(final TreatmentHistoryMetadata treatmentHistoryMetadata);
 
 	public Map<String, Object> getCattleDetailsAndAverageConditionScore(final String earTagOrEId) throws Exception;
+
 }

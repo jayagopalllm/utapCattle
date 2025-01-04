@@ -1,9 +1,6 @@
 package com.example.utapCattle.service.impl;
 
-import com.example.utapCattle.model.dto.CattleDto;
-import com.example.utapCattle.model.dto.MovementDto;
-import com.example.utapCattle.model.dto.TreatmentHistoryDto;
-import com.example.utapCattle.model.dto.WeightHistoryDto;
+import com.example.utapCattle.model.dto.*;
 import com.example.utapCattle.model.entity.Comment;
 import com.example.utapCattle.model.entity.Movement;
 import com.example.utapCattle.model.entity.TreatmentHistory;
@@ -103,6 +100,7 @@ public class TreatmentHistoryServiceImpl implements TreatmentHistoryService {
 		return outputMap;
 	}
 
+
 	@Override
 	public Map<String, Object> getCattleDetailsAndAverageConditionScore(String earTagOrEId) throws Exception {
 		final CattleDto cattleDto = cattleService.getCattleByEarTag(earTagOrEId);
@@ -116,10 +114,27 @@ public class TreatmentHistoryServiceImpl implements TreatmentHistoryService {
 		outputMap.put("cattle", cattleDto);
 		final Double averageConditionScore = treatmentHistoryRepository
 				.findAverageConditionScoreByCattleId(cattleDto.getCattleId());
+		final List<TreatmentHistoryResponseDto> treatmentHistoryDtoList = treatmentHistoryRepository
+				.findTreatmentHistoryByCattleId(cattleDto.getCattleId());
 		outputMap.put("avgConditionScore", averageConditionScore);
-
+		outputMap.put("treatmentHistory", treatmentHistoryDtoList);
 		return outputMap;
 	}
+
+
+//	public List<TreatmentHistoryResponseDto> getTreatmentHistoryByCattleId(Long eid) {
+//		List<Object[]> results = treatmentHistoryRepository.findTreatmentHistoryByCattleId(eid);
+//		List<TreatmentHistoryResponseDto> response = new ArrayList<>();
+//		for (Object[] row : results) {
+//			TreatmentHistoryResponseDto dto = new TreatmentHistoryResponseDto();
+//			dto.setTreatmentId(((BigInteger) row[0]).longValue()); // Cast appropriately
+//			dto.setCattleId(((BigInteger) row[1]).longValue());
+//			dto.setConditionDesc((String) row[59]);
+//			dto.setMedicationDesc((String) row[60]);
+//			response.add(dto);
+//		}
+//		return response;
+//	}
 
 	private String getCurrentFormattedDate() {
 		final Date currentDate = new Date();
