@@ -1,7 +1,11 @@
 package com.example.utapCattle.service;
 
+import java.time.LocalDate;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
+import com.example.utapCattle.model.entity.Cattle;
 import com.example.utapCattle.model.entity.TreatmentHistoryMetadata;
 import com.example.utapCattle.model.entity.TreatmentHistory;
 import com.example.utapCattle.service.impl.TreatmentHistoryServiceImpl;
@@ -30,4 +34,6 @@ public interface InductionService {
 	 * @throws IllegalArgumentException if EId or EarTag is missing or invalid.
 	 */
 	public Map<String, Object> saveInduction(final TreatmentHistoryMetadata treatmentHistoryMetadata);
+
+	public List<Cattle> getInductionList(final LocalDate date);
 }

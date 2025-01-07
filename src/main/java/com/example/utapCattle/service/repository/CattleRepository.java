@@ -1,5 +1,7 @@
 package com.example.utapCattle.service.repository;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,6 +42,9 @@ public interface CattleRepository extends JpaRepository<Cattle, Long> { // Use L
 
 	@Query(value = "SELECT * FROM cattle_API WHERE customer = :id", nativeQuery = true)
 	List<Object[]> findCattleDataById(@Param("id") String id);
+
+	@Query("SELECT c FROM Cattle c WHERE c.inductionDate = :inductionDate")
+	List<Cattle> findByInductionDate(@Param("inductionDate") LocalDate inductionDate);
 
 
 }

@@ -1,11 +1,10 @@
 package com.example.utapCattle.model.entity;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -141,8 +140,27 @@ public class Cattle {
 	@Column(name = "numprevmovements")
 	private String numPrevMovements;
 
+	@Column(name = "createdon")
+	private LocalDate createdOn;
+
+	@Column(name = "updatedon")
+	private LocalDate updatedOn;
+
 	@Column(name = "isinductioncompleted")
 	private Boolean isInductionCompleted;
+
+	@Column(name = "inductiondate")
+	private LocalDate inductionDate;
+
+	@PrePersist
+	protected void onCreate() {
+		createdOn = LocalDate.now(); // Store only the current date
+	}
+
+	@PreUpdate
+	protected void onUpdate() {
+		updatedOn = LocalDate.now(); // Update only the date
+	}
 
 	@Override
 	public String toString() {
