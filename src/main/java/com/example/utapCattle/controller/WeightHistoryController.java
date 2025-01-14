@@ -1,11 +1,14 @@
 package com.example.utapCattle.controller;
 
+import com.example.utapCattle.model.dto.LatestWeightDto;
+import com.example.utapCattle.model.dto.WeightHistoryDto;
 import com.example.utapCattle.model.dto.WeightHistoryInfo;
 import com.example.utapCattle.model.dto.WeightHistoryProgressDto;
 import com.example.utapCattle.model.entity.TreatmentHistoryMetadata;
 import com.example.utapCattle.service.WeightHistoryService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -80,9 +84,9 @@ public class WeightHistoryController extends BaseController {
 		}
 	}
 
-	@GetMapping("/today")
-	public ResponseEntity<List<Object[]>> getWeightHistoryForToday() {
-		List<Object[]> result = weightHistoryService.getWeightHistoryForToday();
+	@GetMapping("/history/{date}")
+	public ResponseEntity<?> getWeightHistoryByDate(@PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+		List<LatestWeightDto> result = weightHistoryService.getWeightHistoryForToday(date);
 		return ResponseEntity.ok(result);
 	}
 }

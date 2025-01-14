@@ -1,5 +1,6 @@
 package com.example.utapCattle.service.impl;
 
+import com.example.utapCattle.model.dto.LatestWeightDto;
 import com.example.utapCattle.model.dto.WeightHistoryDto;
 import com.example.utapCattle.model.dto.WeightHistoryInfo;
 import com.example.utapCattle.model.dto.WeightHistoryProgressDto;
@@ -15,8 +16,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.security.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -152,8 +155,20 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 		return cattleIds.stream().map(this::processWeightHistory).collect(Collectors.toList());
 	}
 
-	public List<Object[]> getWeightHistoryForToday() {
-		return weightHistoryRepository.findWeightHistoryForToday();
+	public List<LatestWeightDto> getWeightHistoryForToday(LocalDate date) {
+		List<LatestWeightDto> weightHistoryDTOs = new ArrayList<>();
+		List<Object[]> results = weightHistoryRepository.findWeightHistoryByDate(date);
+		for (Object[] result : results) {
+			String earTag = (String) result[0];
+			Long cattleId = (Long) result[1];
+			String  weightDateTime =  (String) result[2];
+			Double weight = (Double) result[3];
+
+			LatestWeightDto dto = new LatestWeightDto(earTag, cattleId, weightDateTime, weight);
+			weightHistoryDTOs.add(dto);
+		}
+
+		return weightHistoryDTOs;
 	}
 
 	private WeightHistoryInfo processWeightHistory(final Long cattleId) {

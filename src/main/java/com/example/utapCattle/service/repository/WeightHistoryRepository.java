@@ -1,5 +1,6 @@
 package com.example.utapCattle.service.repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,13 +20,20 @@ public interface WeightHistoryRepository extends JpaRepository<WeightHistory, Lo
 	List<WeightHistory> findByCattleIdOrderByWeightId(@Param("cattleId") Long cattleId);
 
 	@Query(value = """
-        SELECT c.*, w.* 
+        SELECT 
+            c.eartag AS earTag, 
+            c.cattleid AS cattleId, 
+            w.weightdatetime AS weightDateTime, 
+            w.weight AS weight 
         FROM cattle c
         INNER JOIN weighthistory w 
-        ON c.cattleid = w.cattleid 
-        WHERE DATE(w.weightdatetime) = CURRENT_DATE
+            ON c.cattleid = w.cattleid 
+            AND w.weightdatetime::DATE = :date
         ORDER BY w.weighthistoryid DESC
         """, nativeQuery = true)
-	List<Object[]> findWeightHistoryForToday();
+	List<Object[]> findWeightHistoryByDate(@Param("date") LocalDate date);
+
+
+
 
 }
