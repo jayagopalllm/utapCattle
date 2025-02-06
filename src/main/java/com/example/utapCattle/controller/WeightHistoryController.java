@@ -1,9 +1,6 @@
 package com.example.utapCattle.controller;
 
-import com.example.utapCattle.model.dto.LatestWeightDto;
-import com.example.utapCattle.model.dto.WeightHistoryDto;
-import com.example.utapCattle.model.dto.WeightHistoryInfo;
-import com.example.utapCattle.model.dto.WeightHistoryProgressDto;
+import com.example.utapCattle.model.dto.*;
 import com.example.utapCattle.model.entity.TreatmentHistoryMetadata;
 import com.example.utapCattle.service.WeightHistoryService;
 import org.apache.commons.collections4.CollectionUtils;
@@ -86,7 +83,7 @@ public class WeightHistoryController extends BaseController {
 
 	@GetMapping("/history/{date}")
 	public ResponseEntity<?> getWeightHistoryByDate(@PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-		List<LatestWeightDto> result = weightHistoryService.getWeightHistoryForToday(date);
+		List<WeightHistDto> result = weightHistoryService.getWeightHistoryForToday(date);
 		return ResponseEntity.ok(result);
 	}
 }

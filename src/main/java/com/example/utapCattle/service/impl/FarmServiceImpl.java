@@ -42,8 +42,8 @@ public class FarmServiceImpl implements FarmService {
     private FarmDto mapToDto(Farm farm) {
         return new FarmDto(
                 farm.getFarmId(),
-                farm.getFarmName(),
                 farm.getFarmContact(),
+                farm.getFarmName(),
                 farm.getAddress(),
                 farm.getHoldingNumber(),
                 farm.getAssuranceNumber(),

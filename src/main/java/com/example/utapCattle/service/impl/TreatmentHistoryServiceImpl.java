@@ -18,6 +18,9 @@ import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -136,11 +139,16 @@ public class TreatmentHistoryServiceImpl implements TreatmentHistoryService {
 //		return response;
 //	}
 
+//	private String getCurrentFormattedDate() {
+//		final LocalDate currentDate = new LocalDate();
+//		final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+//		return formatter.format(currentDate);
+//	}
+
 	private String getCurrentFormattedDate() {
-		final Date currentDate = new Date();
-		final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-		return formatter.format(currentDate);
+		return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 	}
+
 
 	private void updateTreatmentHistories(final List<TreatmentHistory> treatmentHistories, final String formattedDate,
 			final Long cattleId, final Long processId, final Long commentId, final List<Comment> commentList) {

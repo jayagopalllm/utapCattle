@@ -1,9 +1,6 @@
 package com.example.utapCattle.service.impl;
 
-import com.example.utapCattle.model.dto.LatestWeightDto;
-import com.example.utapCattle.model.dto.WeightHistoryDto;
-import com.example.utapCattle.model.dto.WeightHistoryInfo;
-import com.example.utapCattle.model.dto.WeightHistoryProgressDto;
+import com.example.utapCattle.model.dto.*;
 import com.example.utapCattle.model.entity.Cattle;
 import com.example.utapCattle.model.entity.Movement;
 import com.example.utapCattle.model.entity.TreatmentHistoryMetadata;
@@ -21,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -103,7 +101,7 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 		}
 		assert cattle != null;
 		final List<WeightHistory> weightHistories = weightHistoryRepository.findByCattleIdOrderByWeightId(cattle.getCattleId());
-		sortWeightHistoryByDate(weightHistories);
+//		sortWeightHistoryByDate(weightHistories);
 		return deriveWeightHistoryInfo(weightHistories);
 	}
 
@@ -114,14 +112,15 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 		for (final WeightHistory currentWeightHistory : weightHistories) {
 			final WeightHistoryProgressDto info = new WeightHistoryProgressDto();
 
-			info.setDate(currentWeightHistory.getWeightDateTime());
+			info.setDate(parseDate(currentWeightHistory.getWeightDateTime()).toString());
 			info.setWeight(currentWeightHistory.getWeight());
 
 			if (previousWeightHistory != null) {
 				info.setPreviousWeight(previousWeightHistory.getWeight());
 
 				final double weightDiff = currentWeightHistory.getWeight() - previousWeightHistory.getWeight();
-				info.setWeightDiff(weightDiff);
+				info.setWeightDiff(Math.round(weightDiff * 100.0) / 100.0); // Rounds to 2 decimal places
+
 
 				LOGGER.debug("weightDiff = {} ", weightDiff);
 
@@ -148,6 +147,12 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 
 		return weightHistoryInfos;
 	}
+	@Override
+	public WeightHistory getLatestWeightHistory(Long cattleId) {
+		final WeightHistory weightHistory = weightHistoryRepository.findLatestWeightByCattleId(cattleId);
+		return weightHistory;
+	}
+
 
 	@Override
 	public List<WeightHistoryInfo> getWeightHistoryByPen(Long penId) {
@@ -155,21 +160,40 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 		return cattleIds.stream().map(this::processWeightHistory).collect(Collectors.toList());
 	}
 
-	public List<LatestWeightDto> getWeightHistoryForToday(LocalDate date) {
-		List<LatestWeightDto> weightHistoryDTOs = new ArrayList<>();
-		List<Object[]> results = weightHistoryRepository.findWeightHistoryByDate(date);
-		for (Object[] result : results) {
-			String earTag = (String) result[0];
-			Long cattleId = (Long) result[1];
-			String  weightDateTime =  (String) result[2];
-			Double weight = (Double) result[3];
+	public List<WeightHistDto> getWeightHistoryForToday(LocalDate date1) {
+		// Ensure date is in 'YYYY-MM-DD' format
+		String date = date1.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-			LatestWeightDto dto = new LatestWeightDto(earTag, cattleId, weightDateTime, weight);
-			weightHistoryDTOs.add(dto);
+		List<Object[]> results = weightHistoryRepository.findWeightHistoryWithDetails(date);
+		List<WeightHistDto> weightHistDtos = new ArrayList<>();
+
+
+
+		for (Object[] row : results) {
+
+			String dateString = (String) row[2];
+
+			DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+			LocalDate date2;
+			try {
+				date2 = LocalDate.parse(dateString, dateTimeFormatter);
+			} catch (DateTimeParseException e) {
+				date2 = LocalDate.parse(dateString, dateFormatter); // Fallback if no time is present
+			}
+			WeightHistDto dto = new WeightHistDto(
+					(String) row[0],  // earTag
+					((Number) row[1]).longValue(),  // cattleId
+					dateString,
+					((Number) row[3]).doubleValue()   // weight
+			);
+			weightHistDtos.add(dto);
 		}
 
-		return weightHistoryDTOs;
+		return weightHistDtos;
 	}
+
 
 	private WeightHistoryInfo processWeightHistory(final Long cattleId) {
 		final List<WeightHistory> weightHistories = weightHistoryRepository.findByCattleIdOrderByWeightId(cattleId);
@@ -260,19 +284,29 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 		});
 	}
 
+//	private LocalDate parseDate(String dateStr) {
+//		try {
+//			final DateTimeFormatter dateTimeFormatter = dateStr.indexOf('-') >= 0 ? DATE_FORMATTER_1 : DATE_FORMATTER;
+//			return LocalDate.parse(dateStr, dateTimeFormatter);
+//		} catch (final Exception e) {
+//			throw new IllegalArgumentException("Invalid date format: " + dateStr, e);
+//		}
+//	}
+
+
 	private LocalDate parseDate(String dateStr) {
 		try {
-			final DateTimeFormatter dateTimeFormatter = dateStr.indexOf('-') >= 0 ? DATE_FORMATTER_1 : DATE_FORMATTER;
-			return LocalDate.parse(dateStr, dateTimeFormatter);
-		} catch (final Exception e) {
+			DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+			return LocalDateTime.parse(dateStr, dateTimeFormatter).toLocalDate(); // Extract only the date
+		} catch (Exception e) {
 			throw new IllegalArgumentException("Invalid date format: " + dateStr, e);
 		}
 	}
 
+
 	private String getCurrentFormattedDate() {
-		final Date currentDate = new Date();
-		final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-		return formatter.format(currentDate);
+		return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
 	}
 
 }

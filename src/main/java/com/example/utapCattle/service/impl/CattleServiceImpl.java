@@ -2,19 +2,13 @@ package com.example.utapCattle.service.impl;
 
 import com.example.utapCattle.model.dto.CattleDto;
 import com.example.utapCattle.model.entity.Cattle;
-import com.example.utapCattle.service.AgentService;
-import com.example.utapCattle.service.BreedService;
-import com.example.utapCattle.service.CategoryService;
-import com.example.utapCattle.service.CattleService;
-import com.example.utapCattle.service.CustomerService;
-import com.example.utapCattle.service.FarmService;
-import com.example.utapCattle.service.MarketService;
+import com.example.utapCattle.service.*;
 import com.example.utapCattle.service.repository.CattleRepository;
 import com.example.utapCattle.service.repository.TreatmentHistoryRepository;
+import com.example.utapCattle.service.repository.WeightHistoryRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +25,7 @@ public class CattleServiceImpl implements CattleService {
     private final CustomerService customerService;
     private final AgentService agentService;
     private final TreatmentHistoryRepository treatmentHistoryRepository;
+    private final WeightHistoryService weightHistoryService;
 
     public CattleServiceImpl(CattleRepository cattleRepository
             , BreedService breedService
@@ -39,7 +34,8 @@ public class CattleServiceImpl implements CattleService {
             , MarketService marketService
             , CustomerService customerService
             , AgentService agentService
-            , TreatmentHistoryRepository treatmentHistoryRepository) {
+            , TreatmentHistoryRepository treatmentHistoryRepository
+            , WeightHistoryService weightHistoryService) {
         this.cattleRepository = cattleRepository;
         this.breedService = breedService;
         this.categoryService = categoryService;
@@ -48,7 +44,7 @@ public class CattleServiceImpl implements CattleService {
         this.customerService = customerService;
         this.agentService = agentService;
         this.treatmentHistoryRepository = treatmentHistoryRepository;
-
+        this.weightHistoryService = weightHistoryService;
     }
 
     @Override
@@ -123,6 +119,8 @@ public class CattleServiceImpl implements CattleService {
     }
 
     private CattleDto mapToDto(final Cattle cattle) {
+
+        Double weight = getLatestWeight(cattle.getCattleId());
         String cattleName = getCattleMarketName(cattle.getSourceMarketId());
         String breedAbbr = getBreedAbbr(cattle.getBreedId());
         String categoryDesc = getCategoryDesc(cattle.getCategoryId());
@@ -161,7 +159,8 @@ public class CattleServiceImpl implements CattleService {
                 cattle.getConditionScore(),
                 cattle.getHealthScore(),
                 cattle.getWeightAtSale(),
-                cattle.getBodyWeight(),
+                weight.toString(),
+//                cattle.getBodyWeight(),
                 cattle.getExpenses(),
                 cattle.getSireEarTag(),
                 cattle.getSireName(),
@@ -196,6 +195,10 @@ public class CattleServiceImpl implements CattleService {
 
     private Long getCattleTotalTreatmentCount(Long cattleId) {
         return (cattleId != null) ? treatmentHistoryRepository.countByCattleId(cattleId) : null;
+    }
+
+    private Double getLatestWeight(Long cattleId) {
+        return (cattleId != null) ? weightHistoryService.getLatestWeightHistory(cattleId).getWeight() : null;
     }
 
     private String getCattleMarketName(Integer sourceMarketId) {

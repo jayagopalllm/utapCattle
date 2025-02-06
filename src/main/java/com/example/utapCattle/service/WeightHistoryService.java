@@ -3,12 +3,9 @@ package com.example.utapCattle.service;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.example.utapCattle.model.dto.LatestWeightDto;
+import com.example.utapCattle.model.dto.*;
 import org.springframework.dao.DataAccessException;
 
-import com.example.utapCattle.model.dto.WeightHistoryDto;
-import com.example.utapCattle.model.dto.WeightHistoryInfo;
-import com.example.utapCattle.model.dto.WeightHistoryProgressDto;
 import com.example.utapCattle.model.entity.TreatmentHistoryMetadata;
 import com.example.utapCattle.model.entity.WeightHistory;
 
@@ -75,7 +72,9 @@ public interface WeightHistoryService {
 
 
 //	List<Object[]> getWeightHistoryForToday();
-	List<LatestWeightDto> getWeightHistoryForToday(LocalDate date);
+	List<WeightHistDto> getWeightHistoryForToday(LocalDate date);
+
+	WeightHistory getLatestWeightHistory(Long cattleId);
 
 
 }
