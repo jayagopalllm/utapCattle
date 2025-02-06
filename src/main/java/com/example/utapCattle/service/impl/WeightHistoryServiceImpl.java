@@ -101,7 +101,7 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 		}
 		assert cattle != null;
 		final List<WeightHistory> weightHistories = weightHistoryRepository.findByCattleIdOrderByWeightId(cattle.getCattleId());
-//		sortWeightHistoryByDate(weightHistories);
+		sortWeightHistoryByDate(weightHistories);
 		return deriveWeightHistoryInfo(weightHistories);
 	}
 
