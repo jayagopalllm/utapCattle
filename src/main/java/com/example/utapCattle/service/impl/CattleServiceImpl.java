@@ -2,6 +2,7 @@ package com.example.utapCattle.service.impl;
 
 import com.example.utapCattle.model.dto.CattleDto;
 import com.example.utapCattle.model.entity.Cattle;
+import com.example.utapCattle.model.entity.WeightHistory;
 import com.example.utapCattle.service.*;
 import com.example.utapCattle.service.repository.CattleRepository;
 import com.example.utapCattle.service.repository.TreatmentHistoryRepository;
@@ -55,7 +56,7 @@ public class CattleServiceImpl implements CattleService {
 
     @Override
     public CattleDto getCattleById(final Long id) { // Return CattleDto
-        final Optional<Cattle> cattle = cattleRepository.findById(id);
+        final Optional<Cattle> cattle = cattleRepository.findByCattleId(id);
         return cattle.map(this::mapToDto).orElse(null); // Map to DTO if found
     }
 
@@ -198,7 +199,12 @@ public class CattleServiceImpl implements CattleService {
     }
 
     private Double getLatestWeight(Long cattleId) {
-        return (cattleId != null) ? weightHistoryService.getLatestWeightHistory(cattleId).getWeight() : null;
+        if (cattleId == null) {
+            return 0.0;
+        }
+
+        WeightHistory latestWeightHistory = weightHistoryService.getLatestWeightHistory(cattleId);
+        return (latestWeightHistory != null) ? latestWeightHistory.getWeight() : 0.0;
     }
 
     private String getCattleMarketName(Integer sourceMarketId) {
