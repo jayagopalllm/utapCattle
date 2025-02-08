@@ -57,7 +57,8 @@ public class CattleServiceImpl implements CattleService {
     @Override
     public CattleDto getCattleById(final Long id) { // Return CattleDto
         final Optional<Cattle> cattle = cattleRepository.findByCattleId(id);
-        return cattle.map(this::mapToDto).orElse(null); // Map to DTO if found
+        return cattle.map(this::mapToDto).orElse(null);
+        // Map to DTO if found
     }
 
     @Override
