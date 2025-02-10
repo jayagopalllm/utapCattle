@@ -14,6 +14,8 @@ import com.example.utapCattle.service.repository.SellerMarketRepository;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 @Service
@@ -69,6 +71,7 @@ public class SaleServiceImpl implements SaleService {
         sale.setSaleMarketId(saleDto.getSaleMarketId());
 
         final Sale savedSale = saleRepository.save(sale);
+        cattle.setWeightAtSale(saleDto.getWeight());
         cattle.setSaleId(savedSale.getSaleId().intValue());
         cattle  =cattleRepository.save(cattle);
        String name = sellerMarketRepository.findById(sale.getSaleMarketId()).get().getSellerMarketName();
@@ -78,6 +81,7 @@ public class SaleServiceImpl implements SaleService {
         responseDto.setSaleDate(savedSale.getSaleDate());
         responseDto.setSaleMarketId(savedSale.getSaleMarketId());
         responseDto.setSaleMarketName(name);
+        responseDto.setWeight(cattle.getWeightAtSale());
 
         responseDto.setCattleId(cattle.getCattleId());
         responseDto.setPenId(saleDto.getPenId());
@@ -90,9 +94,13 @@ public class SaleServiceImpl implements SaleService {
      *
      * @return The formatted current date.
      */
-    private static String getCurrentFormattedDate() {
-        final Date currentDate = new Date();
-        final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        return formatter.format(currentDate);
+//    private static String getCurrentFormattedDate() {
+//        final Date currentDate = new Date();
+//        final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+//        return formatter.format(currentDate);
+//    }
+    private String getCurrentFormattedDate() {
+        return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
     }
 }

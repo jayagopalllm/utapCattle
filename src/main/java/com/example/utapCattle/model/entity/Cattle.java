@@ -81,7 +81,7 @@ public class Cattle {
 	private String healthScore;
 
 	@Column(name = "weightatsale")
-	private String weightAtSale;
+	private Double weightAtSale;
 
 	@Column(name = "bodyweight")
 	private String bodyWeight;
