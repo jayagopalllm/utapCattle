@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -296,12 +297,28 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 
 	private LocalDate parseDate(String dateStr) {
 		try {
-			DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-			return LocalDateTime.parse(dateStr, dateTimeFormatter).toLocalDate(); // Extract only the date
+			DateTimeFormatter dateTimeFormatter = new DateTimeFormatterBuilder()
+					.appendPattern("yyyy-MM-dd")
+					.optionalStart()
+					.appendPattern(" HH:mm:ss")
+					.optionalEnd()
+					.toFormatter();
+
+			return LocalDate.parse(dateStr, dateTimeFormatter);
 		} catch (Exception e) {
 			throw new IllegalArgumentException("Invalid date format: " + dateStr, e);
 		}
 	}
+
+
+//	private LocalDate parseDate(String dateStr) {
+//		try {
+//			DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+//			return LocalDateTime.parse(dateStr, dateTimeFormatter).toLocalDate(); // Extract only the date
+//		} catch (Exception e) {
+//			throw new IllegalArgumentException("Invalid date format: " + dateStr, e);
+//		}
+//	}
 
 
 	private String getCurrentFormattedDate() {
