@@ -8,10 +8,10 @@ spring:
       settings:
         web-allow-others: true
   datasource:
-    url: jdbc:postgresql://35.178.210.158:5432/qrcode
+    url: jdbc:postgresql://178.128.171.74:5432/gogreenhub
     driverClassName: org.postgresql.Driver
-    username: postgres
-    password: postgres
+    username: admin
+    password: GoGr33nDB347
     initialization-mode: always
   jpa:
     hibernate:

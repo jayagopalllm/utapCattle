@@ -68,7 +68,7 @@ public class Cattle {
 	@Column(name = "previousholding")
 	private String previousHolding;
 
-	@Column(name = "flatteningfor")
+	@Column(name = "fatteningfor")
 	private Integer fatteningFor; // Consider making this a foreign key
 
 	@Column(name = "agentid")
