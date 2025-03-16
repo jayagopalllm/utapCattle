@@ -29,9 +29,6 @@ public class AuthController {
     
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request, HttpSession session) {
-        System.out.println("Inside login ---- request: " + request);
-        System.out.println("Inside login ---- session: " + session);
-
         
         Optional<User> optionalUser = userRepository.findByUserName(request.getUsername());
 
