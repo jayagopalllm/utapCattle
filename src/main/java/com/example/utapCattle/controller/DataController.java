@@ -34,7 +34,8 @@ public class DataController extends BaseController {
 	@PostMapping()
 	public ResponseEntity<AllDataDto> getAllData(@RequestBody LoginRequest request, HttpSession session) {
 		try {
-			final AllDataDto allData = dataService.getAllData();
+			Long user_id = request.getUserId();
+			final AllDataDto allData = dataService.getAllData(user_id);
 			logger.info("Retrieved all data");
 			return ResponseEntity.ok(allData);
 		} catch (final Exception e) {
