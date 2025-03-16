@@ -1,17 +1,23 @@
 package com.example.utapCattle.controller;
 
 import com.example.utapCattle.model.dto.AllDataDto;
+import com.example.utapCattle.model.entity.LoginRequest;
 import com.example.utapCattle.service.DataService;
+
+import jakarta.servlet.http.HttpSession;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/data")
-@CrossOrigin(origins = { "http://localhost:4200", "http://35.178.210.158" })
+@CrossOrigin(origins = { "http://localhost:4200", "http://35.178.210.158" }, allowCredentials = "true")
 public class DataController extends BaseController {
 
 	private final DataService dataService;
@@ -25,8 +31,8 @@ public class DataController extends BaseController {
 	 * 
 	 * @return An {@link AllDataDto} object containing all the required data
 	 */
-	@GetMapping()
-	public ResponseEntity<AllDataDto> getAllData() {
+	@PostMapping()
+	public ResponseEntity<AllDataDto> getAllData(@RequestBody LoginRequest request, HttpSession session) {
 		try {
 			final AllDataDto allData = dataService.getAllData();
 			logger.info("Retrieved all data");
