@@ -3,6 +3,7 @@ package com.example.utapCattle.service.impl;
 import com.example.utapCattle.model.dto.AllDataDto;
 import com.example.utapCattle.model.dto.MarketDto;
 import com.example.utapCattle.model.entity.*;
+import com.example.utapCattle.service.AgentService;
 import com.example.utapCattle.service.CustomerService;
 import com.example.utapCattle.service.DataService;
 import com.example.utapCattle.service.MarketService;
@@ -25,7 +26,6 @@ public class DataServiceImpl implements DataService {
     private final FilterRepository filterRepository;
     private final SellerMarketRepository sellerMarketRepository;
     private final CategoryRepository categoryRepository;
-    private final AgentRepository agentRepository;
     private final CustomerRepository customerRepository;
     private final MedicalConditionRepository medicalConditionRepository;
     private final MedicationRepository medicationRepository;
@@ -33,7 +33,7 @@ public class DataServiceImpl implements DataService {
     private final PenRepository penRepository;
     private final DefaultTreatmentRepository defaultTreatmentRepository;
     private final CustomerService customerService;
-
+    private final AgentService agentService;
 
     public DataServiceImpl(
             FarmRepository farmRepository,
@@ -44,14 +44,14 @@ public class DataServiceImpl implements DataService {
             SlaughterMarketRepository slaughterMarketRepository,
             SellerMarketRepository sellerMarketRepository,
             CategoryRepository categoryRepository,
-            AgentRepository agentRepository,
             CustomerRepository customerRepository,
             MedicalConditionRepository medicalConditionRepository,
             MedicationRepository medicationRepository,
             CattleRepository cattleRepository,
             PenRepository penRepository,
             DefaultTreatmentRepository defaultTreatmentRepository,
-            CustomerService customerService ) {
+            CustomerService customerService,
+            AgentService agentService) {
 
         this.farmRepository = farmRepository;
         this.breedRepository = breedRepository;
@@ -60,7 +60,6 @@ public class DataServiceImpl implements DataService {
         this.slaughterMarketRepository = slaughterMarketRepository;
         this.sellerMarketRepository = sellerMarketRepository;
         this.categoryRepository = categoryRepository;
-        this.agentRepository = agentRepository;
         this.customerRepository = customerRepository;
         this.medicalConditionRepository = medicalConditionRepository;
         this.medicationRepository = medicationRepository;
@@ -69,6 +68,7 @@ public class DataServiceImpl implements DataService {
         this.filterRepository = filterRepository;
         this.defaultTreatmentRepository = defaultTreatmentRepository;
         this.customerService = customerService;
+        this.agentService = agentService;
     }
 
     @Override
@@ -77,8 +77,9 @@ public class DataServiceImpl implements DataService {
         final List<Breed> breeds = breedRepository.findAll();
         final List<MarketDto> markets = marketService.getAllMarkets();
         final List<Category> categories = categoryRepository.findAll();
-        final List<Agent> agents = agentRepository.findAll();
-        //final List<Customer> customers = customerRepository.findAll();
+        // final List<Agent> agents = agentRepository.findAll();
+        final List<Agent> agents = agentService.findAgentForUser(userId);
+        // final List<Customer> customers = customerRepository.findAll();
         final List<Customer> customers = customerService.findCustomerForUser(userId);
         final List<Pen> pens = penRepository.findAll();
 

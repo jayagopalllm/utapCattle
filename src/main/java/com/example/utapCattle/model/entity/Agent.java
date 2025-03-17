@@ -24,6 +24,22 @@ public class Agent {
     @Column(name = "agentname", nullable = false)
     private String agentName;
 
+    public Long getAgentId() {
+        return this.agentId;
+    }
+
+    public void setAgentId(Long agentId) {
+        this.agentId = agentId;
+    }
+
+    public String getAgentName() {
+        return this.agentName;
+    }
+
+    public void setAgentName(String agentName) {
+        this.agentName = agentName;
+    }
+
     @Override
     public String toString() {
         return "Agent{" +
