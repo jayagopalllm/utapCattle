@@ -3,6 +3,7 @@ package com.example.utapCattle.service.impl;
 import com.example.utapCattle.model.dto.AllDataDto;
 import com.example.utapCattle.model.dto.MarketDto;
 import com.example.utapCattle.model.entity.*;
+import com.example.utapCattle.service.CustomerService;
 import com.example.utapCattle.service.DataService;
 import com.example.utapCattle.service.MarketService;
 import com.example.utapCattle.service.repository.*;
@@ -31,6 +32,8 @@ public class DataServiceImpl implements DataService {
     private final CattleRepository cattleRepository;
     private final PenRepository penRepository;
     private final DefaultTreatmentRepository defaultTreatmentRepository;
+    private final CustomerService customerService;
+
 
     public DataServiceImpl(
             FarmRepository farmRepository,
@@ -47,7 +50,8 @@ public class DataServiceImpl implements DataService {
             MedicationRepository medicationRepository,
             CattleRepository cattleRepository,
             PenRepository penRepository,
-            DefaultTreatmentRepository defaultTreatmentRepository) {
+            DefaultTreatmentRepository defaultTreatmentRepository,
+            CustomerService customerService ) {
 
         this.farmRepository = farmRepository;
         this.breedRepository = breedRepository;
@@ -64,16 +68,18 @@ public class DataServiceImpl implements DataService {
         this.penRepository = penRepository;
         this.filterRepository = filterRepository;
         this.defaultTreatmentRepository = defaultTreatmentRepository;
+        this.customerService = customerService;
     }
 
     @Override
-    public AllDataDto getAllData() {
+    public AllDataDto getAllData(Long userId) {
         final List<Farm> farms = farmRepository.findAll();
         final List<Breed> breeds = breedRepository.findAll();
         final List<MarketDto> markets = marketService.getAllMarkets();
         final List<Category> categories = categoryRepository.findAll();
         final List<Agent> agents = agentRepository.findAll();
-        final List<Customer> customers = customerRepository.findAll();
+        //final List<Customer> customers = customerRepository.findAll();
+        final List<Customer> customers = customerService.findCustomerForUser(userId);
         final List<Pen> pens = penRepository.findAll();
 
         return new AllDataDto(farms, breeds, markets, categories, agents, customers,pens);

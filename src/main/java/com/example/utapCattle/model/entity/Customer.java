@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
+//@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -17,7 +17,23 @@ public class Customer {
     private Long customerId;
 
     @Column(name = "customername")
-    private String customerName; 
+    private String customerName;
+
+    public Long getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
 
     // Add getters and setters for all the fields here
     // ...
