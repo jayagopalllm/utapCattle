@@ -9,7 +9,9 @@ public interface MarketService {
 
     List<MarketDto> getAllMarkets();
 
+    List<MarketDto> findAllMarketsByUserId(Long userId);
+
     MarketDto getMarketById(Long id);
 
-    MarketDto saveMarket(Market market); 
+    MarketDto saveMarket(Market market);
 }

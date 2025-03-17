@@ -71,6 +71,7 @@ public class FarmServiceImpl implements FarmService {
                 inner join farm f on f.farmid = sfm.source_farm_id
                 inner join  users usr on usr.farmid=sfm.farmid
                 where usr.id = ?
+                order by farm_name asc
                 """;
         List<Farm> farms = jdbcTemplate.query(query, new RowMapper<Farm>() {
             @Override

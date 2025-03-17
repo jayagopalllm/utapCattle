@@ -79,7 +79,7 @@ public class DataServiceImpl implements DataService {
     public AllDataDto getAllData(Long userId) {
         final List<Farm> farms = farmService.findFarmForUser(userId);;
         final List<Breed> breeds = breedRepository.findAll();
-        final List<MarketDto> markets = marketService.getAllMarkets();
+        final List<MarketDto> markets = marketService.findAllMarketsByUserId(userId);
         final List<Category> categories = categoryRepository.findAll();
         final List<Agent> agents = agentService.findAgentForUser(userId);
         final List<Customer> customers = customerService.findCustomerForUser(userId);

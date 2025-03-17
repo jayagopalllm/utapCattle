@@ -55,6 +55,7 @@ public class AgentServiceImpl implements AgentService {
                 inner join agent a on a.agentid = afm.agentid
                 inner join  users usr on usr.farmid=afm.farmid
                 where usr.id = ?
+                order by agent_name asc
                 """;
         List<Agent> agents = jdbcTemplate.query(query, new RowMapper<Agent>() {
             @Override

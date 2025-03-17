@@ -62,7 +62,7 @@ public class CustomerServiceImpl implements CustomerService {
         String query = "SELECT distinct cust.customerid as customer_id, cust.customername as customer_name from customer_farm_mapping cm " +
                 "inner join customer cust on cust.customerid = cm.customerid " +
                 "inner join  users usr on usr.farmid=cm.farmid " +
-                "where usr.id = ? ";
+                "where usr.id = ? order by customername asc";
 
         List<Customer> customers = jdbcTemplate.query(query, new RowMapper<Customer>() {
             @Override
