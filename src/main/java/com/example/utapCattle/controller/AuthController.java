@@ -57,6 +57,7 @@ public class AuthController {
     @GetMapping("/logout")
     public ResponseEntity<String> logout(HttpSession session) {
         sessionRepository.deleteBySessionId(session.getId());
+        
         session.invalidate();
         return ResponseEntity.ok("Logged out successfully");
     }
