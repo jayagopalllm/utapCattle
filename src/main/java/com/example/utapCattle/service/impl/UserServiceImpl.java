@@ -45,13 +45,13 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByUserName(userDto.getUserName())) {
             throw new IllegalArgumentException("Username already exists: " + userDto.getUserName());
         }
-        Long nextId = userRepository.getNextSequenceValue();
+        //Long nextId = userRepository.getNextSequenceValue();
         user1.setUserName(userDto.getUserName());
         user1.setCustomerId(userDto.getCustomerId());
         user1.setRole(userDto.getRole());
         user1.setFarmId(userDto.getFarmId());
         user1.setPassword(encoder.encode(userDto.getPassword()));
-        user1.setId(nextId);
+        // user1.setId(nextId);
 
         user1 = userRepository.save(user1);
         return mapToDto(user1);
