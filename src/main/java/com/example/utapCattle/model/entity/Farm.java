@@ -46,5 +46,19 @@ public class Farm {
     private String current; // Consider using a boolean or enum if appropriate
 
     // Add getters and setters for all the fields here
-    // ...
+    public Long getFarmId() {
+        return farmId;
+    }
+
+    public void setFarmId(Long farmId) {
+        this.farmId = farmId;
+    }
+
+    public String getFarmName() {
+        return farmName;
+    }
+
+    public void setFarmName(String farmName) {
+        this.farmName = farmName;
+    }
 }

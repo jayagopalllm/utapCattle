@@ -48,7 +48,7 @@ public class AgentServiceImpl implements AgentService {
     }
 
     @Override
-    public List<Agent> findAgentForUser(Long UserId) {
+    public List<Agent> findAgentForUser(Long userId) {
 
         String query = """
                 SELECT distinct afm.agentid  as agent_id, a.agentname as agent_name from agent_farm_mapping afm
@@ -64,7 +64,7 @@ public class AgentServiceImpl implements AgentService {
                 agent.setAgentName(rs.getString("agent_name"));
                 return agent;
             }
-        }, UserId);
+        }, userId);
         return agents;
 
     }

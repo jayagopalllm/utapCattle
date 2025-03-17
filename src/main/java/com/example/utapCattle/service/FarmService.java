@@ -12,4 +12,6 @@ public interface FarmService {
     FarmDto getFarmById(Long id);
 
     FarmDto saveFarm(Farm farm);
+
+    List<Farm> findFarmForUser(Long userId);
 }

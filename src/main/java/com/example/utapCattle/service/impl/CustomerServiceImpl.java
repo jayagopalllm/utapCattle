@@ -59,7 +59,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public List<Customer> findCustomerForUser(Long userid){
-        String query = "SELECT cust.customerid as customer_id, cust.customername as customer_name from customer_farm_mapping cm " +
+        String query = "SELECT distinct cust.customerid as customer_id, cust.customername as customer_name from customer_farm_mapping cm " +
                 "inner join customer cust on cust.customerid = cm.customerid " +
                 "inner join  users usr on usr.farmid=cm.farmid " +
                 "where usr.id = ? ";
