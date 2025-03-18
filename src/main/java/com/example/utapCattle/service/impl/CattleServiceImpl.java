@@ -116,8 +116,8 @@ public class CattleServiceImpl implements CattleService {
 
 
     @Override
-    public List<String> findEarTagsWithIncompleteInduction() {
-        return cattleRepository.findEarTagsWithIncompleteInduction();
+    public List<String> findEarTagsWithIncompleteInduction(Long farmId) {
+        return cattleRepository.findEarTagsWithIncompleteInduction(farmId);
     }
 
     private CattleDto mapToDto(final Cattle cattle) {

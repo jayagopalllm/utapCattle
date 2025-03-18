@@ -4,6 +4,9 @@ import com.example.utapCattle.model.dto.CattleDto;
 import com.example.utapCattle.model.entity.Cattle;
 import com.example.utapCattle.service.CattleService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -61,9 +64,10 @@ public class CattleController extends BaseController {
 	}
 
 	@GetMapping("/eartag")
-	public ResponseEntity<List<String>> findEarTagsWithIncompleteInduction() {
+	public ResponseEntity<List<String>> findEarTagsWithIncompleteInduction(HttpServletRequest request) {
 		try {
-			final List<String> earTagList = cattleService.findEarTagsWithIncompleteInduction();
+			Long farmId = Long.parseLong(request.getHeader("Farm-ID"));
+			final List<String> earTagList = cattleService.findEarTagsWithIncompleteInduction(farmId);
 			if (CollectionUtils.isEmpty(earTagList)) {
 				logger.warn("No cattle ear tags found with incomplete induction");
 				return ResponseEntity.noContent().build();
