@@ -152,6 +152,12 @@ public class Cattle {
 	@Column(name = "inductiondate")
 	private LocalDate inductionDate;
 
+	@Column(name = "ownerfarmid")
+	private Long ownerFarmId;
+
+	@Column(name = "userid")
+	private Long userId;
+
 	@PrePersist
 	protected void onCreate() {
 		createdOn = LocalDate.now(); // Store only the current date

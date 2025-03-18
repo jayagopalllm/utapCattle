@@ -5,15 +5,17 @@ public class AuthResponse {
     private String message;
     private String sessionId;
     private String username;
+    private Long farmId;
 
-    public AuthResponse(String message, String sessionId, Long userId, String username) {
+    public AuthResponse(String message, String sessionId, Long userId, String username, Long farmId) {
         this.message = message;
         this.sessionId = sessionId;
         this.userId = userId;
         this.username = username;
+        this.farmId = farmId;
     }
 
-    
+
     public String getMessage() {
         return message;
     }
@@ -49,5 +51,12 @@ public class AuthResponse {
         this.username = username;
     }
 
-    
+
+    public Long getFarmId() {
+        return farmId;
+    }
+
+    public void setFarmId(Long farmId) {
+        this.farmId = farmId;
+    }
 }

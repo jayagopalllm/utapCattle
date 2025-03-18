@@ -18,8 +18,12 @@ public interface CattleRepository extends JpaRepository<Cattle, Long> { // Use L
 	@Query(value = "SELECT nextval('cattle_seq')", nativeQuery = true)
 	Long getNextSequenceValue();
 
-	@Query(value = "select distinct eartag from cattle where isinductioncompleted is null or isinductioncompleted  = false;", nativeQuery = true)
-	List<String> findEarTagsWithIncompleteInduction();
+	@Query("""
+			SELECT DISTINCT c.earTag FROM Cattle c
+			     WHERE c.ownerFarmId = :ownerFarmId
+			     AND (c.isInductionCompleted IS NULL OR c.isInductionCompleted = FALSE)
+				""")
+	List<String> findEarTagsWithIncompleteInduction(@Param("ownerFarmId") Long ownerFarmId);
 
 	@Query(value = "select distinct cattleid from cattle where cattleid is not null;", nativeQuery = true)
 	List<String> findEIdsWithIncompleteInduction();

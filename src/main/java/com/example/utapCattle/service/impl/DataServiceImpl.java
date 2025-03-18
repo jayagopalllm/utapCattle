@@ -89,16 +89,16 @@ public class DataServiceImpl implements DataService {
     }
 
     @Override
-    public AllDataDto getMedicalConditionData() {
-        final AllDataDto conditionData = getInductionAndTreatmentData();
+    public AllDataDto getMedicalConditionData(Long userId, Long farmId) {
+        final AllDataDto conditionData = getInductionAndTreatmentData(userId,farmId);
         final List<DefaultTreatment> defaultTreatments = defaultTreatmentRepository.findAll();
         conditionData.setDefaultTreatments(defaultTreatments);
         return conditionData;
     }
 
     @Override
-    public AllDataDto getTreatmentData() {
-        final AllDataDto treatmentData = getInductionAndTreatmentData();
+    public AllDataDto getTreatmentData(Long userId, Long farmId) {
+        final AllDataDto treatmentData = getInductionAndTreatmentData(userId,farmId);
         final Map<Long, String> eIdEarTagMap = getEidEarTagMapping();
         treatmentData.setEIdEarTagMap(eIdEarTagMap);
         return treatmentData;
@@ -182,11 +182,11 @@ public class DataServiceImpl implements DataService {
         return eIdEarTagMap;
     }
 
-    private AllDataDto getInductionAndTreatmentData() {
+    private AllDataDto getInductionAndTreatmentData(Long userId, Long farmId) {
         final List<MedicalCondition> medicalConditions = medicalConditionRepository.findAll();
         final List<Medication> medications = medicationRepository.findAll();
         final List<Pen> pens = penRepository.findAll(); // should pick pen based on the select criteria filter
-        final List<String> earTagList = cattleRepository.findEarTagsWithIncompleteInduction();
+        final List<String> earTagList = cattleRepository.findEarTagsWithIncompleteInduction(farmId);
         final List<String> eIdList = cattleRepository.findEIdsWithIncompleteInduction();
 
         final AllDataDto conditionData = new AllDataDto();
