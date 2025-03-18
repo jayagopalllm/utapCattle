@@ -4,6 +4,7 @@ import com.example.utapCattle.model.dto.AllDataDto;
 import com.example.utapCattle.model.entity.LoginRequest;
 import com.example.utapCattle.service.DataService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.http.HttpStatus;
@@ -28,14 +29,14 @@ public class DataController extends BaseController {
 
 	/**
 	 * Endpoint to retrieve all necessary data for the CattleManagement application on startup.
-	 * 
+	 *
 	 * @return An {@link AllDataDto} object containing all the required data
 	 */
 	@PostMapping()
-	public ResponseEntity<AllDataDto> getAllData(@RequestBody LoginRequest request, HttpSession session) {
+	public ResponseEntity<AllDataDto> getAllData(HttpServletRequest request) {
 		try {
-			Long user_id = request.getUserId();
-			final AllDataDto allData = dataService.getAllData(user_id);
+			Long userId = Long.parseLong(request.getHeader("User-ID"));
+			final AllDataDto allData = dataService.getAllData(userId);
 			logger.info("Retrieved all data");
 			return ResponseEntity.ok(allData);
 		} catch (final Exception e) {
@@ -46,13 +47,15 @@ public class DataController extends BaseController {
 
 	/**
 	 * Endpoint to retrieve data required for the medical condition section of the induction page in the CattleManagement application.
-	 * 
+	 *
 	 * @return An {@link AllDataDto} object containing the necessary medical condition data.
 	 */
 	@GetMapping(value = "/condition")
-	public ResponseEntity<AllDataDto> getMedicalConditionData() {
+	public ResponseEntity<AllDataDto> getMedicalConditionData(HttpServletRequest request) {
 		try {
-			final AllDataDto allData = dataService.getMedicalConditionData();
+			Long userId = Long.parseLong(request.getHeader("User-ID"));
+			Long farmId = Long.parseLong(request.getHeader("Farm-ID"));
+			final AllDataDto allData = dataService.getMedicalConditionData(userId, farmId);
 			logger.info("Retrieved medical condition data");
 			return ResponseEntity.ok(allData);
 		} catch (final Exception e) {
@@ -63,13 +66,15 @@ public class DataController extends BaseController {
 
 	/**
 	 * Endpoint to retrieve data required for the treatment page in the CattleManagement application.
-	 * 
+	 *
 	 * @return An {@link AllDataDto} object containing the necessary treatment data.
 	 */
 	@GetMapping(value = "/treatment")
-	public ResponseEntity<AllDataDto> getTreatmentData() {
+	public ResponseEntity<AllDataDto> getTreatmentData(HttpServletRequest request) {
 		try {
-			final AllDataDto allData = dataService.getTreatmentData();
+			Long userId = Long.parseLong(request.getHeader("User-ID"));
+			Long farmId = Long.parseLong(request.getHeader("Farm-ID"));
+			final AllDataDto allData = dataService.getTreatmentData(userId,farmId);
 			logger.info("Retrieved treatment data");
 			return ResponseEntity.ok(allData);
 		} catch (final Exception e) {
@@ -80,7 +85,7 @@ public class DataController extends BaseController {
 
 	/**
 	 * Endpoint to retrieve data required for both the Weight&Sort page and the TBTest page in the CattleManagement application.
-	 * 
+	 *
 	 * @return An {@link AllDataDto} object containing the necessary data for Weight&Sort and TBTest pages.
 	 */
 	@GetMapping(value = "/weight-tb")

@@ -26,38 +26,38 @@ public class AuthController {
 
     @Autowired
     private UserRepository userRepository;
-    
+
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request, HttpSession session) {
-        
+
         Optional<User> optionalUser = userRepository.findByUserName(request.getUsername());
 
         if (optionalUser.isEmpty() || !optionalUser.get().getPassword().equals(request.getPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new AuthResponse("Invalid credentials", null, null));
+                    .body(new AuthResponse("Invalid credentials", null, null,null,null));
         }
 
         User user = optionalUser.get();
 
-       
+
         Optional<UserSession> existingSession = sessionRepository.findByUserId(user.getId());
 
         existingSession.ifPresent(sessionRepository::delete);
 
-       
+
         UserSession userSession = new UserSession(user.getId(), session.getId(), true);
         sessionRepository.save(userSession);
 
         System.out.println("userSession: " + userSession);
 
-        return ResponseEntity.ok(new AuthResponse("Login successful", session.getId(), user.getId()));
+        return ResponseEntity.ok(new AuthResponse("Login successful", session.getId(), user.getId(), user.getUserName(), user.getFarmId()));
     }
 
 
     @GetMapping("/logout")
     public ResponseEntity<String> logout(HttpSession session) {
         sessionRepository.deleteBySessionId(session.getId());
-        
+
         session.invalidate();
         return ResponseEntity.ok("Logged out successfully");
     }

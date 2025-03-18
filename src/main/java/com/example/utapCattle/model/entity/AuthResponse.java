@@ -4,14 +4,18 @@ public class AuthResponse {
     private Long userId;
     private String message;
     private String sessionId;
+    private String username;
+    private Long farmId;
 
-    public AuthResponse(String message, String sessionId, Long userId) {
+    public AuthResponse(String message, String sessionId, Long userId, String username, Long farmId) {
         this.message = message;
         this.sessionId = sessionId;
         this.userId = userId;
+        this.username = username;
+        this.farmId = farmId;
     }
 
-    
+
     public String getMessage() {
         return message;
     }
@@ -36,5 +40,23 @@ public class AuthResponse {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+
+    public Long getFarmId() {
+        return farmId;
+    }
+
+    public void setFarmId(Long farmId) {
+        this.farmId = farmId;
     }
 }
