@@ -34,7 +34,7 @@ public class AuthController {
 
         if (optionalUser.isEmpty() || !optionalUser.get().getPassword().equals(request.getPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new AuthResponse("Invalid credentials", null, null));
+                    .body(new AuthResponse("Invalid credentials", null, null, null));
         }
 
         User user = optionalUser.get();
@@ -50,14 +50,14 @@ public class AuthController {
 
         System.out.println("userSession: " + userSession);
 
-        return ResponseEntity.ok(new AuthResponse("Login successful", session.getId(), user.getId()));
+        return ResponseEntity.ok(new AuthResponse("Login successful", session.getId(), user.getId(), user.getUserName()));
     }
 
 
     @GetMapping("/logout")
     public ResponseEntity<String> logout(HttpSession session) {
         sessionRepository.deleteBySessionId(session.getId());
-        
+
         session.invalidate();
         return ResponseEntity.ok("Logged out successfully");
     }

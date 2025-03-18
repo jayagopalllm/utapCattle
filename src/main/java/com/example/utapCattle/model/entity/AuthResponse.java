@@ -4,11 +4,13 @@ public class AuthResponse {
     private Long userId;
     private String message;
     private String sessionId;
+    private String username;
 
-    public AuthResponse(String message, String sessionId, Long userId) {
+    public AuthResponse(String message, String sessionId, Long userId, String username) {
         this.message = message;
         this.sessionId = sessionId;
         this.userId = userId;
+        this.username = username;
     }
 
     
@@ -37,4 +39,15 @@ public class AuthResponse {
     public void setUserId(Long userId) {
         this.userId = userId;
     }
+
+    public String getUsername() {
+        return username;
+    }
+
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    
 }
