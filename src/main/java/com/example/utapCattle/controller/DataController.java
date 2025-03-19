@@ -1,18 +1,15 @@
 package com.example.utapCattle.controller;
 
 import com.example.utapCattle.model.dto.AllDataDto;
-import com.example.utapCattle.model.entity.LoginRequest;
 import com.example.utapCattle.service.DataService;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -74,7 +71,7 @@ public class DataController extends BaseController {
 		try {
 			Long userId = Long.parseLong(request.getHeader("User-ID"));
 			Long farmId = Long.parseLong(request.getHeader("Farm-ID"));
-			final AllDataDto allData = dataService.getTreatmentData(userId,farmId);
+			final AllDataDto allData = dataService.getTreatmentData(userId, farmId);
 			logger.info("Retrieved treatment data");
 			return ResponseEntity.ok(allData);
 		} catch (final Exception e) {
@@ -89,9 +86,11 @@ public class DataController extends BaseController {
 	 * @return An {@link AllDataDto} object containing the necessary data for Weight&Sort and TBTest pages.
 	 */
 	@GetMapping(value = "/weight-tb")
-	public ResponseEntity<AllDataDto> getTBTestData() {
+	public ResponseEntity<AllDataDto> getTBTestData(HttpServletRequest request) {
 		try {
-			final AllDataDto allData = dataService.getWeightAndTBTestData();
+			Long userId = Long.parseLong(request.getHeader("User-ID"));
+			Long farmId = Long.parseLong(request.getHeader("Farm-ID"));
+			final AllDataDto allData = dataService.getWeightAndTBTestData(userId, farmId);
 			logger.info("Retrieved Weigtht and TB Test pre-data");
 			return ResponseEntity.ok(allData);
 		} catch (final Exception e) {
@@ -101,9 +100,11 @@ public class DataController extends BaseController {
 	}
 
 	@GetMapping(value = "/sales")
-	public AllDataDto getSalesData() {
+	public AllDataDto getSalesData(HttpServletRequest request) {
 		logger.info("Incoming request: Retrieving Sales pre-data");
-		final AllDataDto allData = dataService.getSalesData();
+		Long userId = Long.parseLong(request.getHeader("User-ID"));
+		Long farmId = Long.parseLong(request.getHeader("Farm-ID"));
+		final AllDataDto allData = dataService.getSalesData(userId, farmId);
 		logger.info("Request successful: Retrieved Sales pre-data");
 		return allData;
 	}

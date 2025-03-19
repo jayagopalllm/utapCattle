@@ -10,9 +10,9 @@ public interface DataService {
 
 	public AllDataDto getTreatmentData(Long userId,Long farmId);
 
-	public AllDataDto getWeightAndTBTestData();
+	public AllDataDto getWeightAndTBTestData(Long userId, Long farmId);
 
-	public AllDataDto getSalesData();
+	public AllDataDto getSalesData(Long userId, Long farmId);
 
 	public AllDataDto getRegisterUserData();
 

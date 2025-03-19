@@ -19,7 +19,7 @@ public interface CattleRepository extends JpaRepository<Cattle, Long> { // Use L
 	Long getNextSequenceValue();
 
 	@Query("""
-			SELECT DISTINCT c.earTag FROM Cattle c
+			SELECT c.earTag FROM Cattle c
 			     WHERE c.ownerFarmId = :ownerFarmId
 			     AND (c.isInductionCompleted IS NULL OR c.isInductionCompleted = FALSE)
 				""")
@@ -41,8 +41,12 @@ public interface CattleRepository extends JpaRepository<Cattle, Long> { // Use L
 	@Query(value = "SELECT * FROM cattle WHERE eartag = :earTagOrEid LIMIT 1", nativeQuery = true)
 	Optional<Cattle> findByEarTag(@Param("earTagOrEid") String earTagOrEid);
 
-	@Query("SELECT c FROM Cattle c WHERE c.cattleId IS NOT NULL")
-	Optional<List<Cattle>> getEIdEartagMap();
+	@Query("""
+			SELECT c FROM Cattle c
+			     WHERE c.ownerFarmId = :ownerFarmId AND c.saleId is NULL
+			     AND c.cattleId IS NOT NULL AND c.isInductionCompleted = TRUE
+				""")
+	Optional<List<Cattle>> getEIdEartagMap(@Param("ownerFarmId") Long ownerFarmId);
 
 	@Query(value = "SELECT * FROM cattle_API WHERE customer = :id", nativeQuery = true)
 	List<Object[]> findCattleDataById(@Param("id") String id);
