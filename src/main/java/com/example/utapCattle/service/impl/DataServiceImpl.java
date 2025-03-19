@@ -99,15 +99,15 @@ public class DataServiceImpl implements DataService {
     @Override
     public AllDataDto getTreatmentData(Long userId, Long farmId) {
         final AllDataDto treatmentData = getInductionAndTreatmentData(userId,farmId);
-        final Map<Long, String> eIdEarTagMap = getEidEarTagMapping();
+        final Map<Long, String> eIdEarTagMap = getEidEarTagMapping(farmId);
         treatmentData.setEIdEarTagMap(eIdEarTagMap);
         return treatmentData;
     }
 
     @Override
-    public AllDataDto getWeightAndTBTestData() {
+    public AllDataDto getWeightAndTBTestData(Long userId, Long farmId) {
         final AllDataDto tbTestData = new AllDataDto();
-        final Map<Long, String> eIdEarTagMap = getEidEarTagMapping();
+        final Map<Long, String> eIdEarTagMap = getEidEarTagMapping(farmId);
         tbTestData.setEIdEarTagMap(eIdEarTagMap);
 
         final List<Pen> pens = penRepository.findAll();
@@ -116,10 +116,10 @@ public class DataServiceImpl implements DataService {
     }
 
     @Override
-    public AllDataDto getSalesData() {
+    public AllDataDto getSalesData(Long userId, Long farmId) {
         final AllDataDto salesData = new AllDataDto();
         // EID and Ear tag mapping
-        final Map<Long, String> eIdEarTagMap = getEidEarTagMapping();
+        final Map<Long, String> eIdEarTagMap = getEidEarTagMapping(farmId);
         salesData.setEIdEarTagMap(eIdEarTagMap);
         // Pens
         final List<Pen> pens = penRepository.findAll();
@@ -171,8 +171,8 @@ public class DataServiceImpl implements DataService {
         return slaughterData;
     }
 
-    private Map<Long, String> getEidEarTagMapping() {
-        final Optional<List<Cattle>> cattleList = cattleRepository.getEIdEartagMap();
+    private Map<Long, String> getEidEarTagMapping(Long farmId) {
+        final Optional<List<Cattle>> cattleList = cattleRepository.getEIdEartagMap(farmId);
         final Map<Long, String> eIdEarTagMap = new HashMap<>();
         if (cattleList.isPresent()) {
             cattleList.get().forEach(cattle -> {
