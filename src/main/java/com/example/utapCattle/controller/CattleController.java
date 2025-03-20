@@ -98,11 +98,12 @@ public class CattleController extends BaseController {
 	}
 
 	@PostMapping("/save")
-	public ResponseEntity<?> saveCattle(@RequestBody final Object input) {
+	public ResponseEntity<?> saveCattle(@RequestBody final Object input,HttpServletRequest request) {
 		logger.info("Saving cattle: {}", input);
 
 		try {
 			// Check if input is a List
+			Long farmId = Long.parseLong(request.getHeader("Farm-ID"));
 			if (input instanceof List) {
 				List<Map<String, Object>> cattleList = (List<Map<String, Object>>) input;
 
@@ -112,6 +113,7 @@ public class CattleController extends BaseController {
 							try {
 								// Convert Map to Cattle object
 								Cattle cattle = new ObjectMapper().convertValue(cattleData, Cattle.class);
+								cattle.setOwnerFarmId(farmId);
 								return cattleService.saveCattle(cattle).getId();
 							} catch (Exception e) {
 								logger.error("Failed to save cattle: {}", cattleData, e);
@@ -127,7 +129,7 @@ public class CattleController extends BaseController {
 				// Single object save
 				Map<String, Object> cattleData = (Map<String, Object>) input;
 				Cattle cattle = new ObjectMapper().convertValue(cattleData, Cattle.class);
-
+				cattle.setOwnerFarmId(farmId);
 				CattleDto savedCattleDto = cattleService.saveCattle(cattle);
 				logger.info("Saved cattle with ID: {}", savedCattleDto.getId());
 
