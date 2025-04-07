@@ -65,6 +65,7 @@ public class InductionServiceImpl implements InductionService {
             cattle.setCattleId(Long.valueOf(treatmentHistoryMetadata.getCattleId()));
             cattle.setIsInductionCompleted(true);
             cattle.setInductionDate(LocalDate.now());
+            cattle.setUserId(treatmentHistoryMetadata.getUserId());
             cattleRepository.save(cattle);
         } else {
             throw new IllegalArgumentException("No Cattle record found with the given EarTag: " + earTag);
