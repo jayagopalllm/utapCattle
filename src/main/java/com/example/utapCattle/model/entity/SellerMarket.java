@@ -17,7 +17,7 @@ public class SellerMarket {
 
     @Id
     @Column(name = "sellermarketid")
-    private Integer sellerMarketId;
+    private Long sellerMarketId;
 
     @Column(name = "sellermarketname")
     private String sellerMarketName;

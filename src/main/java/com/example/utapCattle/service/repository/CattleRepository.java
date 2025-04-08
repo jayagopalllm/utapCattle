@@ -54,5 +54,6 @@ public interface CattleRepository extends JpaRepository<Cattle, Long> { // Use L
 	@Query("SELECT c FROM Cattle c WHERE c.inductionDate = :inductionDate")
 	List<Cattle> findByInductionDate(@Param("inductionDate") LocalDate inductionDate);
 
+	List<Cattle> findAllBySaleId(Long saleId);
 
 }

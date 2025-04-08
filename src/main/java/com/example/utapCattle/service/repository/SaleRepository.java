@@ -19,4 +19,8 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
 	List<Sale> findSalesByMarketIdAndDate(@Param("saleMarketId") Long saleMarketId,
 										  @Param("saleDate") String saleDate);
 
+    List<Sale> findAllBySaleMarketId(Long saleMarketId);	
+
+	Sale findBySaleId(Long saleId);
+
 }

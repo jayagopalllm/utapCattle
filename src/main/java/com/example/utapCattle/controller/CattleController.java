@@ -159,4 +159,10 @@ public class CattleController extends BaseController {
 		}
 	}
 
+	@PostMapping("/fetchCattleBySaleId")
+	public ResponseEntity<List<CattleDto>> getAllCattleBySaleId(@RequestBody String saleId) {				
+		List<CattleDto> cattList = cattleService.getAllCattleBySaleId(Long.parseLong(saleId));
+		return new ResponseEntity<>(cattList, HttpStatus.OK);
+	}
+
 }

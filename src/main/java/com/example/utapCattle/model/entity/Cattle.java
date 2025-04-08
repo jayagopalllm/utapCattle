@@ -54,7 +54,7 @@ public class Cattle {
 	private BigDecimal purchasePrice;
 
 	@Column(name = "saleid")
-	private Integer saleId; // Consider making this a foreign key
+	private Long saleId; // Consider making this a foreign key
 
 	@Column(name = "saleprice")
 	private String salePrice; // Consider using BigDecimal if it's a price
