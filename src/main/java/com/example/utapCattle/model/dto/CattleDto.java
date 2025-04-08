@@ -26,7 +26,7 @@ public class CattleDto {
 	private String sourceMarketName;
 	private String datePurchased;
 	private BigDecimal purchasePrice;
-	private Integer saleId;
+	private Long saleId;
 	private String salePrice;
 	private String comments;
 	private String version;
@@ -38,6 +38,7 @@ public class CattleDto {
 	private String conditionScore;
 	private String healthScore;
 	private Double weightAtSale;
+	private Double dlwgRearer;
 	private String bodyWeight;
 	private BigDecimal expenses;
 	private String sireEarTag;

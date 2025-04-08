@@ -1,9 +1,11 @@
 package com.example.utapCattle.service.impl;
 
+import com.example.utapCattle.model.dto.CattleDto;
 import com.example.utapCattle.model.dto.SaleDto;
 import com.example.utapCattle.model.entity.Cattle;
 import com.example.utapCattle.model.entity.Comment;
 import com.example.utapCattle.model.entity.Sale;
+import com.example.utapCattle.model.entity.SaleTotalStats;
 import com.example.utapCattle.model.entity.WeightHistory;
 import com.example.utapCattle.service.SaleService;
 import com.example.utapCattle.service.WeightHistoryService;
@@ -11,15 +13,25 @@ import com.example.utapCattle.service.repository.CattleRepository;
 import com.example.utapCattle.service.repository.CommentRepository;
 import com.example.utapCattle.service.repository.SaleRepository;
 import com.example.utapCattle.service.repository.SellerMarketRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class SaleServiceImpl implements SaleService {
+
+     @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     private final SaleRepository saleRepository;
     private final CattleRepository cattleRepository;
@@ -66,13 +78,18 @@ public class SaleServiceImpl implements SaleService {
             weightHistoryService.saveWeightHistory(weightHistory);
         }
         final Sale sale = new Sale();
-        sale.setSaleId(saleRepository.getNextSequenceValue());
+        if(saleDto.getSaleId() != null) {
+            sale.setSaleId(saleDto.getSaleId());
+        } else {
+            sale.setSaleId(saleRepository.getNextSequenceValue());
+        }
+        
         sale.setSaleDate(saleDto.getSaleDate());
         sale.setSaleMarketId(saleDto.getSaleMarketId());
 
         final Sale savedSale = saleRepository.save(sale);
         cattle.setWeightAtSale(saleDto.getWeight());
-        cattle.setSaleId(savedSale.getSaleId().intValue());
+        cattle.setSaleId(savedSale.getSaleId());
         cattle  =cattleRepository.save(cattle);
        String name = sellerMarketRepository.findById(sale.getSaleMarketId()).get().getSellerMarketName();
         // Prepare response DTO
@@ -89,6 +106,39 @@ public class SaleServiceImpl implements SaleService {
         return responseDto;
     }
 
+    @Override
+    public List<Sale> getExistingSaleDates(Long saleMarketId) {
+        return saleRepository.findAllBySaleMarketId(saleMarketId);        
+    }
+    
+    @Override
+    public Sale getSaleBySaleId(Long saleId) {
+        return saleRepository.findBySaleId(saleId);        
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public SaleTotalStats getSaleTotalStats(Long saleId) {
+        String query = "SELECT "+
+                        "    COUNT(eartag) AS totalCattle, "+
+                        "    sum(case when EXTRACT(MONTH FROM AGE(TO_DATE(c.dateofbirth, 'DD/MM/YYYY'), CURRENT_DATE::date)) + "+
+                        "    EXTRACT(YEAR FROM AGE(TO_DATE(c.dateofbirth, 'DD/MM/YYYY'), CURRENT_DATE::date)) * 12 >= 30 then 1 else 0 end )AS totalOTM, "+
+                        "    SUM(weightatsale) as totalWeight "+
+                        "FROM "+
+                        "    cattle c "+
+                        "WHERE "+
+                        "    saleid = ? ";
+
+        return jdbcTemplate.queryForObject(query, new Object[]{saleId}, (rs, rowNum) -> {
+            SaleTotalStats stats = new SaleTotalStats();
+            stats.setTotalCattle(rs.getInt("totalCattle"));
+            stats.setTotalWeight(rs.getInt("totalWeight"));
+            stats.setTotalOTM(rs.getInt("totalOTM"));
+            return stats;
+        });
+    
+    }
+
     /**
      * Returns the current date formatted as a string in the format "yyyy-MM-dd".
      *
@@ -102,5 +152,5 @@ public class SaleServiceImpl implements SaleService {
     private String getCurrentFormattedDate() {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
-    }
+    }   
 }
