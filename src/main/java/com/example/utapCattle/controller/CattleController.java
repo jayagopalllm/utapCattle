@@ -66,8 +66,8 @@ public class CattleController extends BaseController {
 	@GetMapping("/eartag")
 	public ResponseEntity<List<String>> findEarTagsWithIncompleteInduction(HttpServletRequest request) {
 		try {
-			Long farmId = Long.parseLong(request.getHeader("Farm-ID"));
-			final List<String> earTagList = cattleService.findEarTagsWithIncompleteInduction(farmId);
+			Long userFarmId = Long.parseLong(request.getHeader("Farm-ID"));
+			final List<String> earTagList = cattleService.findEarTagsWithIncompleteInduction(userFarmId);
 			if (CollectionUtils.isEmpty(earTagList)) {
 				logger.warn("No cattle ear tags found with incomplete induction");
 				return ResponseEntity.noContent().build();
@@ -103,7 +103,7 @@ public class CattleController extends BaseController {
 
 		try {
 			// Check if input is a List
-			Long farmId = Long.parseLong(request.getHeader("Farm-ID"));
+			Long userFarmId = Long.parseLong(request.getHeader("Farm-ID"));
 			if (input instanceof List) {
 				List<Map<String, Object>> cattleList = (List<Map<String, Object>>) input;
 
@@ -113,7 +113,7 @@ public class CattleController extends BaseController {
 							try {
 								// Convert Map to Cattle object
 								Cattle cattle = new ObjectMapper().convertValue(cattleData, Cattle.class);
-								cattle.setOwnerFarmId(farmId);
+								cattle.setUserFarmId(userFarmId);
 								return cattleService.saveCattle(cattle).getId();
 							} catch (Exception e) {
 								logger.error("Failed to save cattle: {}", cattleData, e);
@@ -129,7 +129,7 @@ public class CattleController extends BaseController {
 				// Single object save
 				Map<String, Object> cattleData = (Map<String, Object>) input;
 				Cattle cattle = new ObjectMapper().convertValue(cattleData, Cattle.class);
-				cattle.setOwnerFarmId(farmId);
+				cattle.setUserFarmId(userFarmId);
 				CattleDto savedCattleDto = cattleService.saveCattle(cattle);
 				logger.info("Saved cattle with ID: {}", savedCattleDto.getId());
 
@@ -160,7 +160,7 @@ public class CattleController extends BaseController {
 	}
 
 	@PostMapping("/fetchCattleBySaleId")
-	public ResponseEntity<List<CattleDto>> getAllCattleBySaleId(@RequestBody String saleId) {				
+	public ResponseEntity<List<CattleDto>> getAllCattleBySaleId(@RequestBody String saleId) {
 		List<CattleDto> cattList = cattleService.getAllCattleBySaleId(Long.parseLong(saleId));
 		return new ResponseEntity<>(cattList, HttpStatus.OK);
 	}

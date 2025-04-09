@@ -22,7 +22,7 @@ public class User {
     private Long customerId;
 
     @Column(name = "farmid", nullable = false)
-    private Long farmId;
+    private Long userFarmId;
 
     @Column(name = "password", nullable = false)
     private String password;

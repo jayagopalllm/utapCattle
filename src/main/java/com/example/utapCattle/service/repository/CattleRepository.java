@@ -20,10 +20,10 @@ public interface CattleRepository extends JpaRepository<Cattle, Long> { // Use L
 
 	@Query("""
 			SELECT c.earTag FROM Cattle c
-			     WHERE c.ownerFarmId = :ownerFarmId
+			     WHERE c.userFarmId = :userFarmId
 			     AND (c.isInductionCompleted IS NULL OR c.isInductionCompleted = FALSE)
 				""")
-	List<String> findEarTagsWithIncompleteInduction(@Param("ownerFarmId") Long ownerFarmId);
+	List<String> findEarTagsWithIncompleteInduction(@Param("userFarmId") Long userFarmId);
 
 	@Query(value = "select distinct cattleid from cattle where cattleid is not null;", nativeQuery = true)
 	List<String> findEIdsWithIncompleteInduction();
@@ -43,16 +43,16 @@ public interface CattleRepository extends JpaRepository<Cattle, Long> { // Use L
 
 	@Query("""
 			SELECT c FROM Cattle c
-			     WHERE c.ownerFarmId = :ownerFarmId AND c.saleId is NULL
+			     WHERE c.userFarmId = :userFarmId AND c.saleId is NULL
 			     AND c.cattleId IS NOT NULL AND c.isInductionCompleted = TRUE
 				""")
-	Optional<List<Cattle>> getEIdEartagMap(@Param("ownerFarmId") Long ownerFarmId);
+	Optional<List<Cattle>> getEIdEartagMap(@Param("userFarmId") Long userFarmId);
 
 	@Query(value = "SELECT * FROM cattle_API WHERE customer = :id", nativeQuery = true)
 	List<Object[]> findCattleDataById(@Param("id") String id);
 
-	@Query("SELECT c FROM Cattle c WHERE c.inductionDate = :inductionDate")
-	List<Cattle> findByInductionDate(@Param("inductionDate") LocalDate inductionDate);
+	@Query("SELECT c FROM Cattle c WHERE c.inductionDate = :inductionDate and c.userFarmId = :userFarmId")
+	List<Cattle> findByInductionDate(@Param("inductionDate") LocalDate inductionDate,@Param("userFarmId") Long userFarmId);
 
 	List<Cattle> findAllBySaleId(Long saleId);
 

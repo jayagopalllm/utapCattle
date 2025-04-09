@@ -46,10 +46,11 @@ public class InductionController extends BaseController {
 
     @GetMapping("/list/{date}")
     public ResponseEntity<List<Cattle>> getInductedCattleListByDate(
-            @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+            @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,  HttpServletRequest request) {
         logger.info("Fetching induction information for date: {}", date);
         try {
-            final List<Cattle> cattleList = inductionService.getInductionList(date);
+            Long userFarmId = Long.parseLong(request.getHeader("Farm-ID"));
+            final List<Cattle> cattleList = inductionService.getInductionList(date, userFarmId);
             logger.info("Fetched induction information");
             return new ResponseEntity<>(cattleList, HttpStatus.OK);
         } catch (Exception e) {

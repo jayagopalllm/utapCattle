@@ -49,10 +49,11 @@ public class DataController extends BaseController {
 	 */
 	@GetMapping(value = "/condition")
 	public ResponseEntity<AllDataDto> getMedicalConditionData(HttpServletRequest request) {
+
 		try {
 			Long userId = Long.parseLong(request.getHeader("User-ID"));
-			Long farmId = Long.parseLong(request.getHeader("Farm-ID"));
-			final AllDataDto allData = dataService.getMedicalConditionData(userId, farmId);
+			Long userFarmId = Long.parseLong(request.getHeader("Farm-ID"));
+			final AllDataDto allData = dataService.getMedicalConditionData(userId, userFarmId);
 			logger.info("Retrieved medical condition data");
 			return ResponseEntity.ok(allData);
 		} catch (final Exception e) {
@@ -68,10 +69,12 @@ public class DataController extends BaseController {
 	 */
 	@GetMapping(value = "/treatment")
 	public ResponseEntity<AllDataDto> getTreatmentData(HttpServletRequest request) {
+		System.out.println("inside getTreatmentData ");
 		try {
 			Long userId = Long.parseLong(request.getHeader("User-ID"));
-			Long farmId = Long.parseLong(request.getHeader("Farm-ID"));
-			final AllDataDto allData = dataService.getTreatmentData(userId, farmId);
+			Long userFarmId = Long.parseLong(request.getHeader("Farm-ID"));
+			System.out.println("userFarmId : "+userFarmId);
+			final AllDataDto allData = dataService.getTreatmentData(userId, userFarmId);
 			logger.info("Retrieved treatment data");
 			return ResponseEntity.ok(allData);
 		} catch (final Exception e) {
@@ -89,8 +92,8 @@ public class DataController extends BaseController {
 	public ResponseEntity<AllDataDto> getTBTestData(HttpServletRequest request) {
 		try {
 			Long userId = Long.parseLong(request.getHeader("User-ID"));
-			Long farmId = Long.parseLong(request.getHeader("Farm-ID"));
-			final AllDataDto allData = dataService.getWeightAndTBTestData(userId, farmId);
+			Long userFarmId = Long.parseLong(request.getHeader("Farm-ID"));
+			final AllDataDto allData = dataService.getWeightAndTBTestData(userId, userFarmId);
 			logger.info("Retrieved Weigtht and TB Test pre-data");
 			return ResponseEntity.ok(allData);
 		} catch (final Exception e) {
@@ -103,8 +106,8 @@ public class DataController extends BaseController {
 	public AllDataDto getSalesData(HttpServletRequest request) {
 		logger.info("Incoming request: Retrieving Sales pre-data");
 		Long userId = Long.parseLong(request.getHeader("User-ID"));
-		Long farmId = Long.parseLong(request.getHeader("Farm-ID"));
-		final AllDataDto allData = dataService.getSalesData(userId, farmId);
+		Long userFarmId = Long.parseLong(request.getHeader("Farm-ID"));
+		final AllDataDto allData = dataService.getSalesData(userId, userFarmId);
 		logger.info("Request successful: Retrieved Sales pre-data");
 		return allData;
 	}

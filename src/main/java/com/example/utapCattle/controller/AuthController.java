@@ -50,7 +50,7 @@ public class AuthController {
 
         System.out.println("userSession: " + userSession);
 
-        return ResponseEntity.ok(new AuthResponse("Login successful", session.getId(), user.getId(), user.getUserName(), user.getFarmId()));
+        return ResponseEntity.ok(new AuthResponse("Login successful", session.getId(), user.getId(), user.getUserName(), user.getUserFarmId()));
     }
 
 

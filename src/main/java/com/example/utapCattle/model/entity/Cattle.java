@@ -153,7 +153,7 @@ public class Cattle {
 	private LocalDate inductionDate;
 
 	@Column(name = "ownerfarmid")
-	private Long ownerFarmId;
+	private Long userFarmId;
 
 	@Column(name = "userid")
 	private Long userId;

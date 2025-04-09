@@ -27,9 +27,9 @@ public class InductionServiceImpl implements InductionService {
     }
 
     @Override
-    public final List<Cattle> getInductionList(final LocalDate date) {
+    public final List<Cattle> getInductionList(final LocalDate date,final Long userFarmId) {
 
-        List<Cattle> cattleList = cattleRepository.findByInductionDate(date);
+        List<Cattle> cattleList = cattleRepository.findByInductionDate(date,userFarmId);
         return cattleList;
     }
 

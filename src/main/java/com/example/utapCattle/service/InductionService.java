@@ -35,5 +35,5 @@ public interface InductionService {
 	 */
 	public Map<String, Object> saveInduction(final TreatmentHistoryMetadata treatmentHistoryMetadata);
 
-	public List<Cattle> getInductionList(final LocalDate date);
+	public List<Cattle> getInductionList(final LocalDate date,final Long userFarmId);
 }

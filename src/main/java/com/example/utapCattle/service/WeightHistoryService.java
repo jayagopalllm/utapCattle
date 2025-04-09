@@ -22,7 +22,7 @@ public interface WeightHistoryService {
 	/**
 	 * Saves weight history and movement records based on the
 	 * TreatmentHistoryMetadata.
-	 * 
+	 *
 	 * @param treatmentHistoryMetadata The metadata containing the details to save
 	 *                                 weight and movement.
 	 */
@@ -35,7 +35,7 @@ public interface WeightHistoryService {
 	 * require a sequential ID. It executes a native query to fetch the next value
 	 * from a PostgreSQL sequence.
 	 * </p>
-	 * 
+	 *
 	 * @return the next value in the sequence as a {@link Long}.
 	 *                                                the query.
 	 */
@@ -72,7 +72,7 @@ public interface WeightHistoryService {
 
 
 //	List<Object[]> getWeightHistoryForToday();
-	List<WeightHistDto> getWeightHistoryForToday(LocalDate date);
+	List<WeightHistDto> getWeightHistoryForToday(LocalDate date, Long userFarmId);
 
 	WeightHistory getLatestWeightHistory(Long cattleId);
 

@@ -11,7 +11,7 @@ public class UserDto {
 
     private Long id;
     private Long customerId;
-    private Long farmId;
+    private Long userFarmId;
     private String password;
     private String role;
     private String userName;
