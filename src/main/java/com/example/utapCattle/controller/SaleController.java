@@ -5,6 +5,9 @@ import com.example.utapCattle.model.entity.Sale;
 import com.example.utapCattle.model.entity.SaleDateRequest;
 import com.example.utapCattle.model.entity.SaleTotalStats;
 import com.example.utapCattle.service.SaleService;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,8 +29,9 @@ public class SaleController {
 	}
 
 	@PostMapping("/sell")
-	public ResponseEntity<SaleDto> sellCattle(@RequestBody SaleDto saleDto) {
-		SaleDto savedSale = saleService.sellCattle(saleDto);
+	public ResponseEntity<SaleDto> sellCattle(@RequestBody SaleDto saleDto, HttpServletRequest request) {
+		Long userId = Long.parseLong(request.getHeader("User-ID"));
+		SaleDto savedSale = saleService.sellCattle(saleDto, userId);
 		return new ResponseEntity<>(savedSale, HttpStatus.CREATED);
 	}
 
