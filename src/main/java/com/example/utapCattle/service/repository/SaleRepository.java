@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import com.example.utapCattle.model.entity.Sale;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -22,5 +23,8 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
     List<Sale> findAllBySaleMarketId(Long saleMarketId);	
 
 	Sale findBySaleId(Long saleId);
+
+	boolean existsBySaleDateAndSaleMarketId(String saleDate, Long saleMarketId);
+
 
 }
