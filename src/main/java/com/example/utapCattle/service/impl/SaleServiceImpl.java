@@ -1,13 +1,14 @@
 package com.example.utapCattle.service.impl;
 
-import com.example.utapCattle.model.dto.CattleDto;
 import com.example.utapCattle.model.dto.SaleDto;
 import com.example.utapCattle.model.entity.Cattle;
 import com.example.utapCattle.model.entity.Comment;
+import com.example.utapCattle.model.entity.Movement;
 import com.example.utapCattle.model.entity.Sale;
 import com.example.utapCattle.model.entity.SaleDateRequest;
 import com.example.utapCattle.model.entity.SaleTotalStats;
 import com.example.utapCattle.model.entity.WeightHistory;
+import com.example.utapCattle.service.MovementService;
 import com.example.utapCattle.service.SaleService;
 import com.example.utapCattle.service.WeightHistoryService;
 import com.example.utapCattle.service.repository.CattleRepository;
@@ -17,15 +18,11 @@ import com.example.utapCattle.service.repository.SellerMarketRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -39,22 +36,25 @@ public class SaleServiceImpl implements SaleService {
     private final CommentRepository commentRepository;
     private final SellerMarketRepository sellerMarketRepository;
     private final WeightHistoryService weightHistoryService;
+    private final MovementService movementService;
 
     public SaleServiceImpl(
             SaleRepository saleRepository,
             CattleRepository cattleRepository,
             CommentRepository commentRepository,
             SellerMarketRepository sellerMarketRepository,
-            WeightHistoryService weightHistoryService) {
+            WeightHistoryService weightHistoryService,
+            MovementService movementService) {
         this.saleRepository = saleRepository;
         this.cattleRepository = cattleRepository;
         this.commentRepository = commentRepository;
         this.sellerMarketRepository = sellerMarketRepository;
         this.weightHistoryService = weightHistoryService;
+        this.movementService = movementService;
     }
 
     @Override
-    public SaleDto sellCattle(SaleDto saleDto) {
+    public SaleDto sellCattle(SaleDto saleDto, Long userId) {
 
         Cattle cattle = cattleRepository.findByCattleId(saleDto.getCattleId())
                 .orElseThrow(() -> new RuntimeException("Cattle not found"));
@@ -78,6 +78,13 @@ public class SaleServiceImpl implements SaleService {
             weightHistory.setWeight(saleDto.getWeight());
             weightHistoryService.saveWeightHistory(weightHistory);
         }
+        final Movement movement = new Movement();
+        movement.setCattleId(saleDto.getCattleId());
+        movement.setPenId(Integer.parseInt(saleDto.getPenId()+""));
+        movement.setMovementDate(getCurrentFormattedDate());
+        movement.setMovementId(userId);
+        movement.setUserId(userId);
+        movementService.saveMovement(movement);
         final Sale sale = new Sale();
         if(saleDto.getSaleId() != null) {
             sale.setSaleId(saleDto.getSaleId());
@@ -157,6 +164,6 @@ public class SaleServiceImpl implements SaleService {
 
     @Override
     public Boolean checkForValidSaleDate(SaleDateRequest request) {
-        return saleRepository.existsBySaleDateAndSaleMarketId(request.getNewDate(), request.getSellerMarketId());        
+        return !saleRepository.existsBySaleDateAndSaleMarketId(request.getNewDate(), request.getSellerMarketId());        
     }
 }
