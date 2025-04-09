@@ -26,9 +26,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -36,8 +34,6 @@ import java.util.stream.Collectors;
 public class WeightHistoryServiceImpl implements WeightHistoryService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(WeightHistoryServiceImpl.class);
-	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-	private static final DateTimeFormatter DATE_FORMATTER_1 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 	private final WeightHistoryRepository weightHistoryRepository;
 	private final MovementService movementService;
@@ -108,6 +104,7 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 		}
 		assert cattle != null;
 		final List<WeightHistory> weightHistories = weightHistoryRepository.findByCattleIdOrderByWeightId(cattle.getCattleId());
+		//Sort the weight history in the ascending order of date for the calcualtion of prev weight, dlwg etc
 		sortWeightHistoryByDate(weightHistories);
 		return deriveWeightHistoryInfo(weightHistories);
 	}
@@ -119,7 +116,7 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 		for (final WeightHistory currentWeightHistory : weightHistories) {
 			final WeightHistoryProgressDto info = new WeightHistoryProgressDto();
 
-			info.setDate(parseDate(currentWeightHistory.getWeightDateTime()).toString());
+			info.setDate(DateUtils.formatToReadableDate(currentWeightHistory.getWeightDateTime()));
 			info.setWeight(currentWeightHistory.getWeight());
 
 			if (previousWeightHistory != null) {
@@ -151,7 +148,8 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 			weightHistoryInfos.add(info);
 			previousWeightHistory = currentWeightHistory;
 		}
-
+		//Arrange the weight history in the descending order of date for displaying in the
+		Collections.reverse(weightHistoryInfos);
 		return weightHistoryInfos;
 	}
 	@Override
@@ -261,8 +259,8 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 	}
 
 	private long calculateDaysBetween(final String previousDateStr, final String currentDateStr) {
-		final LocalDate previousDate = parseDate(previousDateStr);
-		final LocalDate currentDate = parseDate(currentDateStr);
+		final LocalDate previousDate = DateUtils.parseToDate(previousDateStr);
+		final LocalDate currentDate = DateUtils.parseToDate(currentDateStr);
 
 		return ChronoUnit.DAYS.between(previousDate, currentDate);
 	}
@@ -276,48 +274,12 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 		Collections.sort(weightHistories, new Comparator<WeightHistory>() {
 			@Override
 			public int compare(WeightHistory wh1, WeightHistory wh2) {
-				final LocalDate date1 = parseDate(wh1.getWeightDateTime());
-				final LocalDate date2 = parseDate(wh2.getWeightDateTime());
+				final LocalDate date1 = DateUtils.parseToDate(wh1.getWeightDateTime());
+				final LocalDate date2 = DateUtils.parseToDate(wh2.getWeightDateTime());
 				return date1.compareTo(date2);
 			}
 		});
 	}
-
-//	private LocalDate parseDate(String dateStr) {
-//		try {
-//			final DateTimeFormatter dateTimeFormatter = dateStr.indexOf('-') >= 0 ? DATE_FORMATTER_1 : DATE_FORMATTER;
-//			return LocalDate.parse(dateStr, dateTimeFormatter);
-//		} catch (final Exception e) {
-//			throw new IllegalArgumentException("Invalid date format: " + dateStr, e);
-//		}
-//	}
-
-
-	private LocalDate parseDate(String dateStr) {
-		try {
-			DateTimeFormatter dateTimeFormatter = new DateTimeFormatterBuilder()
-					.appendPattern("yyyy-MM-dd")
-					.optionalStart()
-					.appendPattern(" HH:mm:ss")
-					.optionalEnd()
-					.toFormatter();
-
-			return LocalDate.parse(dateStr, dateTimeFormatter);
-		} catch (Exception e) {
-			throw new IllegalArgumentException("Invalid date format: " + dateStr, e);
-		}
-	}
-
-
-//	private LocalDate parseDate(String dateStr) {
-//		try {
-//			DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-//			return LocalDateTime.parse(dateStr, dateTimeFormatter).toLocalDate(); // Extract only the date
-//		} catch (Exception e) {
-//			throw new IllegalArgumentException("Invalid date format: " + dateStr, e);
-//		}
-//	}
-
 
 	private String getCurrentFormattedDate() {
 		return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));

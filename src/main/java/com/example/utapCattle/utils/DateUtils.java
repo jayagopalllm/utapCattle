@@ -1,5 +1,6 @@
 package com.example.utapCattle.utils;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
@@ -65,8 +66,7 @@ public class DateUtils {
 
             return dateTime.format(outputFormatter);
         } catch (DateTimeParseException e) {
-            // Optionally log or rethrow the exception with a custom message
-            return dateString;  // You can log the error here as well
+            return dateString;
         }
     }
 
@@ -78,10 +78,30 @@ public class DateUtils {
      * @throws DateTimeParseException if the input string can't be parsed
      */
     public static LocalDateTime parseToDateTime(String dateString) {
+        if (dateString == null || dateString.isEmpty()) {
+            throw new DateTimeParseException("Date string cannot be null or empty", dateString, 0);
+        }
         try {
             return LocalDateTime.parse(dateString, INPUT_FORMATTER);
         } catch (DateTimeParseException e) {
-            // Optionally log or rethrow the exception with a custom message
+            throw new DateTimeParseException("Invalid date format: " + dateString, dateString, e.getErrorIndex());
+        }
+    }
+
+    /**
+     * Converts a date string to a LocalDate object.
+     *
+     * @param dateString the input date string (e.g., "2025-04-08 18:43:52")
+     * @return LocalDate object parsed from the input string
+     * @throws DateTimeParseException if the input string can't be parsed
+     */
+    public static LocalDate parseToDate(String dateString) {
+        if (dateString == null || dateString.isEmpty()) {
+            throw new DateTimeParseException("Date string cannot be null or empty", dateString, 0);
+        }
+        try {
+            return LocalDate.parse(dateString, INPUT_FORMATTER);
+        } catch (DateTimeParseException e) {
             throw new DateTimeParseException("Invalid date format: " + dateString, dateString, e.getErrorIndex());
         }
     }
