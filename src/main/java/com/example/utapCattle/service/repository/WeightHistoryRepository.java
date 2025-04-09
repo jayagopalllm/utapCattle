@@ -50,9 +50,10 @@ public interface WeightHistoryRepository extends JpaRepository<WeightHistory, Lo
    INNER JOIN weighthistory w
        ON c.cattleid = w.cattleid
    WHERE TO_DATE(w.weightdatetime, 'YYYY-MM-DD') = TO_DATE(:date, 'YYYY-MM-DD')
+   AND  c.ownerfarmid= :userFarmId
    ORDER BY w.weightdatetime DESC
    """, nativeQuery = true)
-	List<Object[]> findWeightHistoryWithDetails(@Param("date") String date);
+	List<Object[]> findWeightHistoryWithDetails(@Param("date") String date, Long userFarmId);
 
 
 

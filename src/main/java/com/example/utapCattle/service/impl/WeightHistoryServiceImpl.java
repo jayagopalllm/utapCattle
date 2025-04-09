@@ -9,6 +9,8 @@ import com.example.utapCattle.service.MovementService;
 import com.example.utapCattle.service.WeightHistoryService;
 import com.example.utapCattle.service.repository.CattleRepository;
 import com.example.utapCattle.service.repository.WeightHistoryRepository;
+import com.example.utapCattle.utils.DateUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -64,6 +67,7 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 		validateCattle(treatmentHistoryMetadata.getEarTag());
 
 		final Long cattleId = treatmentHistoryMetadata.getCattleId();
+		final Long userId= treatmentHistoryMetadata.getUserId();
 		final String formattedDate = getCurrentFormattedDate();
 
 		if (Boolean.TRUE.equals(treatmentHistoryMetadata.getRecordWeight())) {
@@ -75,6 +79,7 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 			weightHistory.setCattleId(cattleId);
 			weightHistory.setWeightDateTime(formattedDate);
 			weightHistory.setWeight(weight);
+			weightHistory.setUserId(userId);
 
 			saveWeightHistory(weightHistory);
 		}
@@ -88,6 +93,7 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 			movement.setCattleId(cattleId);
 			movement.setPenId(pen);
 			movement.setMovementDate(formattedDate);
+			movement.setUserId(userId);
 
 			movementService.saveMovement(movement);
 		}
@@ -161,11 +167,11 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 		return cattleIds.stream().map(this::processWeightHistory).collect(Collectors.toList());
 	}
 
-	public List<WeightHistDto> getWeightHistoryForToday(LocalDate date1) {
+	public List<WeightHistDto> getWeightHistoryForToday(LocalDate date1, Long userFarmId) {
 		// Ensure date is in 'YYYY-MM-DD' format
 		String date = date1.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-		List<Object[]> results = weightHistoryRepository.findWeightHistoryWithDetails(date);
+		List<Object[]> results = weightHistoryRepository.findWeightHistoryWithDetails(date,userFarmId);
 		List<WeightHistDto> weightHistDtos = new ArrayList<>();
 
 
@@ -173,20 +179,12 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 		for (Object[] row : results) {
 
 			String dateString = (String) row[2];
+			String formattedDate = DateUtils.formatToReadableDate(dateString);
 
-			DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-			DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
-			LocalDate date2;
-			try {
-				date2 = LocalDate.parse(dateString, dateTimeFormatter);
-			} catch (DateTimeParseException e) {
-				date2 = LocalDate.parse(dateString, dateFormatter); // Fallback if no time is present
-			}
 			WeightHistDto dto = new WeightHistDto(
 					(String) row[0],  // earTag
 					((Number) row[1]).longValue(),  // cattleId
-					dateString,
+					formattedDate,
 					((Number) row[3]).doubleValue()   // weight
 			);
 			weightHistDtos.add(dto);
