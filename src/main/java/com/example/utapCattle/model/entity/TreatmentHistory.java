@@ -23,7 +23,7 @@ public class TreatmentHistory {
 	private Long cattleId;
 
 	@Column(name = "userid")
-	private String userId;
+	private Long userId;
 
 	@Column(name = "treatmentdate")
 	private String treatmentDate;

@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
         user1.setUserName(userDto.getUserName());
         user1.setCustomerId(userDto.getCustomerId());
         user1.setRole(userDto.getRole());
-        user1.setFarmId(userDto.getFarmId());
+        user1.setUserFarmId(userDto.getUserFarmId());
         user1.setPassword(encoder.encode(userDto.getPassword()));
         // user1.setId(nextId);
 
@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
         UserDto userDto = new UserDto();
         userDto.setId(user.getId());
         userDto.setCustomerId(user.getCustomerId());
-        userDto.setFarmId(user.getFarmId()); // Avoid sending raw passwords; use hashed password or omit
+        userDto.setUserFarmId(user.getUserFarmId()); // Avoid sending raw passwords; use hashed password or omit
         userDto.setRole(user.getRole());
         userDto.setUserName(user.getUserName());
         return userDto;

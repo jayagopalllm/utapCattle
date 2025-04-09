@@ -69,11 +69,11 @@ public class CattleServiceImpl implements CattleService {
         return cattleRepository.findAll().stream().map(this::mapToDto) // Map each Cattle to CattleDto
                 .collect(Collectors.toList());
     }
-    
+
     @Override
     public List<CattleDto> getAllCattleBySaleId(Long saleId) { // Return List<CattleDto>
-        
-        
+
+
         String query = "SELECT  "+
                         "    cat.cattleid,  "+
                         "    cat.eartag, "+
@@ -128,7 +128,7 @@ public class CattleServiceImpl implements CattleService {
             }
         },saleId);
         return cattleData;
-        
+
         // return cattleRepository.findAllBySaleId(saleId).stream().map(this::mapToDto) // Map each Cattle to CattleDto
         //         .collect(Collectors.toList());
     }
@@ -195,11 +195,11 @@ public class CattleServiceImpl implements CattleService {
 
 
     @Override
-    public List<String> findEarTagsWithIncompleteInduction(Long farmId) {
-        return cattleRepository.findEarTagsWithIncompleteInduction(farmId);
+    public List<String> findEarTagsWithIncompleteInduction(Long userFarmId) {
+        return cattleRepository.findEarTagsWithIncompleteInduction(userFarmId);
     }
 
-    private CattleDto mapToDto(final Cattle cattle) {        
+    private CattleDto mapToDto(final Cattle cattle) {
         Double weight = getLatestWeight(cattle.getCattleId());
         String cattleName = getCattleMarketName(cattle.getSaleId());
         String breedAbbr = getBreedAbbr(cattle.getBreedId());

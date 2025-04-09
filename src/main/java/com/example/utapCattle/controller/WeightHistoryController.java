@@ -3,6 +3,9 @@ package com.example.utapCattle.controller;
 import com.example.utapCattle.model.dto.*;
 import com.example.utapCattle.model.entity.TreatmentHistoryMetadata;
 import com.example.utapCattle.service.WeightHistoryService;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -53,9 +56,11 @@ public class WeightHistoryController extends BaseController {
 
 	@PostMapping("/save")
 	public ResponseEntity<?> saveWeightAndMovement(
-			@RequestBody final TreatmentHistoryMetadata treatmentHistoryMetadata) {
+			@RequestBody final TreatmentHistoryMetadata treatmentHistoryMetadata, HttpServletRequest request) {
 		logger.info("Saving weight and movement data: {}", treatmentHistoryMetadata);
 		try {
+			Long userId = Long.parseLong(request.getHeader("User-ID"));
+			treatmentHistoryMetadata.setUserId(userId);
 			weightHistoryService.saveWeightAndMovement(treatmentHistoryMetadata);
 			logger.info("Saved weight and movement data");
 			return new ResponseEntity<>(treatmentHistoryMetadata, HttpStatus.CREATED);
@@ -82,8 +87,9 @@ public class WeightHistoryController extends BaseController {
 	}
 
 	@GetMapping("/history/{date}")
-	public ResponseEntity<?> getWeightHistoryByDate(@PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-		List<WeightHistDto> result = weightHistoryService.getWeightHistoryForToday(date);
+	public ResponseEntity<?> getWeightHistoryByDate(@PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,HttpServletRequest request) {
+		Long userFarmId = Long.parseLong(request.getHeader("Farm-ID"));
+		List<WeightHistDto> result = weightHistoryService.getWeightHistoryForToday(date,userFarmId);
 		return ResponseEntity.ok(result);
 	}
 }

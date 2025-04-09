@@ -27,9 +27,9 @@ public class InductionServiceImpl implements InductionService {
     }
 
     @Override
-    public final List<Cattle> getInductionList(final LocalDate date) {
+    public final List<Cattle> getInductionList(final LocalDate date,final Long userFarmId) {
 
-        List<Cattle> cattleList = cattleRepository.findByInductionDate(date);
+        List<Cattle> cattleList = cattleRepository.findByInductionDate(date,userFarmId);
         return cattleList;
     }
 
@@ -65,6 +65,7 @@ public class InductionServiceImpl implements InductionService {
             cattle.setCattleId(Long.valueOf(treatmentHistoryMetadata.getCattleId()));
             cattle.setIsInductionCompleted(true);
             cattle.setInductionDate(LocalDate.now());
+            cattle.setUserId(treatmentHistoryMetadata.getUserId());
             cattleRepository.save(cattle);
         } else {
             throw new IllegalArgumentException("No Cattle record found with the given EarTag: " + earTag);

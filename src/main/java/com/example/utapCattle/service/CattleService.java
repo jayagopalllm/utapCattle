@@ -21,5 +21,5 @@ public interface CattleService {
 
 	CattleDto updateCattle(final Long id,final Cattle cattle) throws Exception;
 
-	List<String> findEarTagsWithIncompleteInduction(Long farmId);
+	List<String> findEarTagsWithIncompleteInduction(Long userFarmId);
 }

@@ -31,4 +31,6 @@ public class TreatmentHistoryMetadata {
 
 	private Integer pen;
 
+	private Long userId;
+
 }

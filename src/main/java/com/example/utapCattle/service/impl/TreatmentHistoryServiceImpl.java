@@ -70,12 +70,13 @@ public class TreatmentHistoryServiceImpl implements TreatmentHistoryService {
 
 		final Long cattleId = treatmentHistoryMetadata.getCattleId();
 		final Long processId = treatmentHistoryMetadata.getProcessId();
+		final Long userId = treatmentHistoryMetadata.getUserId();
 
 		final List<Comment> commentList = new ArrayList<>();
 		final Long commentId = createTreatmentComment(treatmentHistoryMetadata.getComment(), cattleId, processId, null,
-				formattedDate, commentList);
+				formattedDate, commentList,userId);
 
-		updateTreatmentHistories(treatmentHistories, formattedDate, cattleId, processId, commentId, commentList);
+		updateTreatmentHistories(treatmentHistories, formattedDate, cattleId, processId, commentId, commentList,userId);
 
 		final List<TreatmentHistory> savedTreatmentHistory = treatmentHistoryRepository.saveAll(treatmentHistories);
 
@@ -91,12 +92,12 @@ public class TreatmentHistoryServiceImpl implements TreatmentHistoryService {
 
 		if (Boolean.TRUE.equals(treatmentHistoryMetadata.getRecordWeight())) {
 			final WeightHistoryDto weightHistoryDto = saveWeightHistory(cattleId, formattedDate,
-					treatmentHistoryMetadata.getWeight());
+					treatmentHistoryMetadata.getWeight(),userId);
 			outputMap.put("weightHistories", weightHistoryDto);
 		}
 
 		if (Boolean.TRUE.equals(treatmentHistoryMetadata.getRecordMovement())) {
-			final MovementDto movementDto = saveMovement(cattleId, treatmentHistoryMetadata.getPen(), formattedDate);
+			final MovementDto movementDto = saveMovement(cattleId, treatmentHistoryMetadata.getPen(), formattedDate,userId);
 			outputMap.put("movements", movementDto);
 		}
 
@@ -151,7 +152,7 @@ public class TreatmentHistoryServiceImpl implements TreatmentHistoryService {
 
 
 	private void updateTreatmentHistories(final List<TreatmentHistory> treatmentHistories, final String formattedDate,
-			final Long cattleId, final Long processId, final Long commentId, final List<Comment> commentList) {
+			final Long cattleId, final Long processId, final Long commentId, final List<Comment> commentList,final Long userId) {
 		for (final TreatmentHistory treatmentHistory : treatmentHistories) {
 			final Long id = treatmentHistoryRepository.getNextSequenceValue();
 			treatmentHistory.setTreatmentHistoryId(id);
@@ -159,41 +160,44 @@ public class TreatmentHistoryServiceImpl implements TreatmentHistoryService {
 			treatmentHistory.setCattleId(cattleId);
 			treatmentHistory.setProcessId(processId);
 			treatmentHistory.setCommentId(commentId);
+			treatmentHistory.setUserId(userId);
 
 			final Long conditionCommentId = createTreatmentComment(treatmentHistory.getConditionComment(), cattleId,
-					processId, id, formattedDate, commentList);
+					processId, id, formattedDate, commentList,userId);
 			treatmentHistory.setConditionCommentId(conditionCommentId);
 		}
 	}
 
 	private Long createTreatmentComment(final String comment, final Long cattleId, final Long processId,
-			final Long entityId, final String formattedDate, final List<Comment> commentList) {
+			final Long entityId, final String formattedDate, final List<Comment> commentList, Long userId) {
 		if (StringUtils.isEmpty(comment)) {
 			return null;
 		}
 		final Long commentId = commentService.getNextSequenceValue();
 
-		final Comment treatmentComment = new Comment(commentId, comment, processId, cattleId, null, entityId,
+		final Comment treatmentComment = new Comment(commentId, comment, processId, cattleId, userId, entityId,
 				formattedDate);
 
 		commentList.add(treatmentComment);
 		return commentId;
 	}
 
-	private WeightHistoryDto saveWeightHistory(final Long cattleId, final String formattedDate, final Double weight) {
+	private WeightHistoryDto saveWeightHistory(final Long cattleId, final String formattedDate, final Double weight ,final Long userId) {
 		final WeightHistory weightHistory = new WeightHistory();
 		weightHistory.setCattleId(cattleId);
 		weightHistory.setWeightDateTime(formattedDate);
 		weightHistory.setWeight(weight);
+		weightHistory.setUserId(userId);
 
 		return weightHistoryService.saveWeightHistory(weightHistory);
 	}
 
-	private MovementDto saveMovement(final Long cattleId, final Integer penId, final String formattedDate) {
+	private MovementDto saveMovement(final Long cattleId, final Integer penId, final String formattedDate, final Long userId) {
 		final Movement movement = new Movement();
 		movement.setCattleId(cattleId);
 		movement.setPenId(penId);
 		movement.setMovementDate(formattedDate);
+		movement.setUserId(userId);
 
 		return movementService.saveMovement(movement);
 	}

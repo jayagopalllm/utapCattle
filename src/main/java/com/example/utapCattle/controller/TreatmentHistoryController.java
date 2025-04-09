@@ -3,6 +3,9 @@ package com.example.utapCattle.controller;
 import com.example.utapCattle.model.dto.TreatmentHistoryDto;
 import com.example.utapCattle.model.entity.TreatmentHistoryMetadata;
 import com.example.utapCattle.service.TreatmentHistoryService;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
@@ -32,9 +35,11 @@ public class TreatmentHistoryController extends BaseController {
 
 	@PostMapping("/save")
 	public ResponseEntity<?> saveTreatmentHistory(
-			@RequestBody final TreatmentHistoryMetadata treatmentHistoryMetadata) {
+			@RequestBody final TreatmentHistoryMetadata treatmentHistoryMetadata, HttpServletRequest request) {
 		logger.info("Saving treatment history information: {}", treatmentHistoryMetadata);
 		try {
+			Long userId = Long.parseLong(request.getHeader("User-ID"));
+			treatmentHistoryMetadata.setUserId(userId);
 			treatmentHistoryMetadata.setProcessId(new SecureRandom().nextLong());
 			final Map<String, Object> savedTreatmentHistoryDto = treatmentHistoryService
 					.saveTreatmentHistory(treatmentHistoryMetadata);
