@@ -2,11 +2,10 @@ package com.example.utapCattle.controller;
 
 import com.example.utapCattle.model.dto.SaleDto;
 import com.example.utapCattle.model.entity.Sale;
+import com.example.utapCattle.model.entity.SaleDateRequest;
 import com.example.utapCattle.model.entity.SaleTotalStats;
 import com.example.utapCattle.service.SaleService;
-
 import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -22,8 +21,8 @@ public class SaleController {
 
 	private final SaleService saleService;
 
-	public SaleController(SaleService saleService) {
-		this.saleService = saleService;
+	public SaleController(SaleService saleService ) {
+		this.saleService = saleService;		
 	}
 
 	@PostMapping("/sell")
@@ -42,5 +41,11 @@ public class SaleController {
 	public ResponseEntity<SaleTotalStats> getSaleTotalStats(@RequestBody String saleId) {
 		SaleTotalStats saleTotalStats = saleService.getSaleTotalStats(Long.parseLong(saleId));
 		return new ResponseEntity<>(saleTotalStats, HttpStatus.OK);
+	}
+	
+	@PostMapping("/checkForValidSaleDate")
+	public ResponseEntity<Boolean> checkForValidSaleDate(@RequestBody SaleDateRequest request) {		
+		boolean isvalidSaleDate = saleService.checkForValidSaleDate(request);
+		return new ResponseEntity<>(isvalidSaleDate, HttpStatus.OK);
 	}
 }

@@ -5,6 +5,7 @@ import com.example.utapCattle.model.dto.SaleDto;
 import com.example.utapCattle.model.entity.Cattle;
 import com.example.utapCattle.model.entity.Comment;
 import com.example.utapCattle.model.entity.Sale;
+import com.example.utapCattle.model.entity.SaleDateRequest;
 import com.example.utapCattle.model.entity.SaleTotalStats;
 import com.example.utapCattle.model.entity.WeightHistory;
 import com.example.utapCattle.service.SaleService;
@@ -153,4 +154,9 @@ public class SaleServiceImpl implements SaleService {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
     }   
+
+    @Override
+    public Boolean checkForValidSaleDate(SaleDateRequest request) {
+        return saleRepository.existsBySaleDateAndSaleMarketId(request.getNewDate(), request.getSellerMarketId());        
+    }
 }
