@@ -1,11 +1,11 @@
 package com.example.utapCattle.service.impl;
 
+import com.example.utapCattle.model.dto.SaleDateRequest;
 import com.example.utapCattle.model.dto.SaleDto;
 import com.example.utapCattle.model.entity.Cattle;
 import com.example.utapCattle.model.entity.Comment;
 import com.example.utapCattle.model.entity.Movement;
 import com.example.utapCattle.model.entity.Sale;
-import com.example.utapCattle.model.entity.SaleDateRequest;
 import com.example.utapCattle.model.entity.SaleTotalStats;
 import com.example.utapCattle.model.entity.WeightHistory;
 import com.example.utapCattle.service.MovementService;
@@ -76,6 +76,7 @@ public class SaleServiceImpl implements SaleService {
             weightHistory.setCattleId(saleDto.getCattleId());
             weightHistory.setWeightDateTime(getCurrentFormattedDate());
             weightHistory.setWeight(saleDto.getWeight());
+            weightHistory.setUserId(userId);
             weightHistoryService.saveWeightHistory(weightHistory);
         }
         final Movement movement = new Movement();
@@ -91,11 +92,14 @@ public class SaleServiceImpl implements SaleService {
         } else {
             sale.setSaleId(saleRepository.getNextSequenceValue());
         }
-        
+
+        // Save to sale table
         sale.setSaleDate(saleDto.getSaleDate());
         sale.setSaleMarketId(saleDto.getSaleMarketId());
+        sale.setUserId(userId);
 
         final Sale savedSale = saleRepository.save(sale);
+
         cattle.setWeightAtSale(saleDto.getWeight());
         cattle.setSaleId(savedSale.getSaleId());
         cattle  =cattleRepository.save(cattle);
@@ -116,12 +120,12 @@ public class SaleServiceImpl implements SaleService {
 
     @Override
     public List<Sale> getExistingSaleDates(Long saleMarketId) {
-        return saleRepository.findAllBySaleMarketId(saleMarketId);        
+        return saleRepository.findAllBySaleMarketId(saleMarketId);
     }
-    
+
     @Override
     public Sale getSaleBySaleId(Long saleId) {
-        return saleRepository.findBySaleId(saleId);        
+        return saleRepository.findBySaleId(saleId);
     }
 
     @SuppressWarnings("deprecation")
@@ -144,7 +148,7 @@ public class SaleServiceImpl implements SaleService {
             stats.setTotalOTM(rs.getInt("totalOTM"));
             return stats;
         });
-    
+
     }
 
     /**
@@ -160,10 +164,10 @@ public class SaleServiceImpl implements SaleService {
     private String getCurrentFormattedDate() {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
-    }   
+    }
 
     @Override
     public Boolean checkForValidSaleDate(SaleDateRequest request) {
-        return !saleRepository.existsBySaleDateAndSaleMarketId(request.getNewDate(), request.getSellerMarketId());        
+        return !saleRepository.existsBySaleDateAndSaleMarketId(request.getNewDate(), request.getSellerMarketId());
     }
 }

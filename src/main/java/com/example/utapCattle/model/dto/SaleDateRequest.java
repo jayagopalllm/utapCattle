@@ -1,4 +1,4 @@
-package com.example.utapCattle.model.entity;
+package com.example.utapCattle.model.dto;
 
 
 import lombok.AllArgsConstructor;
@@ -10,10 +10,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SaleDateRequest {
-    
+
     private String newDate;
 
     private Long sellerMarketId;
-   
+
 }
 
