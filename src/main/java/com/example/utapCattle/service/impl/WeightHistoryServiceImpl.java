@@ -274,8 +274,8 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 		Collections.sort(weightHistories, new Comparator<WeightHistory>() {
 			@Override
 			public int compare(WeightHistory wh1, WeightHistory wh2) {
-				final LocalDate date1 = DateUtils.parseToDate(wh1.getWeightDateTime());
-				final LocalDate date2 = DateUtils.parseToDate(wh2.getWeightDateTime());
+				final LocalDateTime  date1 = DateUtils.parseToDateTime(wh1.getWeightDateTime());
+				final LocalDateTime  date2 = DateUtils.parseToDateTime(wh2.getWeightDateTime());
 				return date1.compareTo(date2);
 			}
 		});
