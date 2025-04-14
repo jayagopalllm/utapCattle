@@ -37,6 +37,13 @@ public class SaleController extends BaseController {
 		return new ResponseEntity<>(savedSale, HttpStatus.CREATED);
 	}
 
+	@PostMapping("/keep")
+	public ResponseEntity<SaleDto> keepCattle(@RequestBody SaleDto saleDto, HttpServletRequest request) {
+		Long userId = Long.parseLong(request.getHeader("User-ID"));
+		SaleDto savedSale = saleService.keepCattle(saleDto, userId);
+		return new ResponseEntity<>(savedSale, HttpStatus.CREATED);
+	}
+
 	@GetMapping("/existing-sale-dates/{saleMarketId}")
 	public ResponseEntity<Object> getExistingSaleDates(@PathVariable String saleMarketId) {
 		try {

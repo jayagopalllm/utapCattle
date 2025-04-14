@@ -178,4 +178,31 @@ public class SaleServiceImpl implements SaleService {
     public Boolean checkForValidSaleDate(SaleDateRequest request) {
         return !saleRepository.existsBySaleDateAndSaleMarketId(request.getNewDate(), request.getSellerMarketId());
     }
+
+    @Override
+    public SaleDto keepCattle(SaleDto saleDto, Long userId) {
+
+        Cattle cattle = cattleRepository.findByCattleId(saleDto.getCattleId())
+                .orElseThrow(() -> new RuntimeException("Cattle not found"));
+        /*  New Entry into weight history table */
+        if (saleDto.getWeight() != null) {
+            final WeightHistory weightHistory = new WeightHistory();
+            weightHistory.setCattleId(saleDto.getCattleId());
+            weightHistory.setWeightDateTime(getCurrentFormattedDate());
+            weightHistory.setWeight(saleDto.getWeight());
+            weightHistory.setUserId(userId);
+            weightHistoryService.saveWeightHistory(weightHistory);
+        }
+
+        /*  New Entry into Movement table */
+        final Movement movement = new Movement();
+        movement.setCattleId(saleDto.getCattleId());
+        movement.setPenId(Integer.parseInt(saleDto.getPenId()+""));
+        movement.setMovementDate(getCurrentFormattedDate());
+        movement.setMovementId(userId);
+        movement.setUserId(userId);
+        movementService.saveMovement(movement);
+
+        return saleDto;
+    }
 }

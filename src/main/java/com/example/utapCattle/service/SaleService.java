@@ -9,6 +9,8 @@ import com.example.utapCattle.model.entity.SaleTotalStats;
 
 public interface SaleService {
     SaleDto sellCattle(final SaleDto saleDto, Long userId);
+    
+    SaleDto keepCattle(final SaleDto saleDto, Long userId);
 
     List<Sale> getExistingSaleDates(Long saleMarketId);
 
