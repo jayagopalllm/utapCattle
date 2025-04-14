@@ -15,6 +15,7 @@ import com.example.utapCattle.service.repository.CattleRepository;
 import com.example.utapCattle.service.repository.CommentRepository;
 import com.example.utapCattle.service.repository.SaleRepository;
 import com.example.utapCattle.service.repository.SellerMarketRepository;
+import com.example.utapCattle.utils.DateUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -120,7 +121,14 @@ public class SaleServiceImpl implements SaleService {
 
     @Override
     public List<Sale> getExistingSaleDates(Long saleMarketId) {
-        return saleRepository.findAllBySaleMarketId(saleMarketId);
+        List<Sale> existingSales = saleRepository.findAllBySaleMarketIdOrderBySaleDateDesc(saleMarketId);
+        existingSales.forEach(sale -> {
+            String originalDate = sale.getSaleDate();
+            if (originalDate != null && !originalDate.isEmpty()) {
+                sale.setSaleDate(DateUtils.formatToReadableDate(originalDate));
+            }
+        });
+        return existingSales;
     }
 
     @Override
