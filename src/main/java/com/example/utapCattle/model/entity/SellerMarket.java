@@ -28,4 +28,7 @@ public class SellerMarket {
     @Column(name = "sellercurrent")
     private String sellerCurrent; // Consider using a boolean or enum if appropriate
 
+    @Column(name = "userfarmid")
+    private Long userFarmId;
+
 }

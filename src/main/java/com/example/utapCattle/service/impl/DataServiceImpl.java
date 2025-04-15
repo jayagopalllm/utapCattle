@@ -125,7 +125,7 @@ public class DataServiceImpl implements DataService {
         final List<Pen> pens = penRepository.findAll();
         salesData.setPens(pens);
         // Market
-        final List<SellerMarket> sellerMarkets = sellerMarketRepository.findAll();
+        final List<SellerMarket> sellerMarkets = sellerMarketRepository.findByUserFarmIdOrderBySellerMarketNameAsc(userFarmId);
 //		final List<Market> markets = marketRepository.findAll();
         salesData.setSellerMarket(sellerMarkets);
 //		salesData.setMarket(markets);
