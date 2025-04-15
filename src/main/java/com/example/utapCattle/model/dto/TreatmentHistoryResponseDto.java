@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
@@ -16,4 +15,5 @@ public class TreatmentHistoryResponseDto {
     private String medicationDesc;
     private String batchNumber;
     private String treatmentDate;
+    private String withdrawalDate;
 }

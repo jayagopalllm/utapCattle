@@ -12,6 +12,8 @@ import com.example.utapCattle.service.MovementService;
 import com.example.utapCattle.service.TreatmentHistoryService;
 import com.example.utapCattle.service.WeightHistoryService;
 import com.example.utapCattle.service.repository.TreatmentHistoryRepository;
+import com.example.utapCattle.utils.DateUtils;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.coyote.BadRequestException;
@@ -120,31 +122,20 @@ public class TreatmentHistoryServiceImpl implements TreatmentHistoryService {
 				.findAverageConditionScoreByCattleId(cattleDto.getCattleId());
 		final List<TreatmentHistoryResponseDto> treatmentHistoryDtoList = treatmentHistoryRepository
 				.findTreatmentHistoryByCattleId(cattleDto.getCattleId());
+
+		treatmentHistoryDtoList.forEach(dto -> {
+			if (dto.getTreatmentDate() != null) {
+				dto.setTreatmentDate(DateUtils.formatToReadableDate(dto.getTreatmentDate()));
+			}
+			if (dto.getWithdrawalDate() != null) {
+				dto.setWithdrawalDate(DateUtils.formatToReadableDate(dto.getWithdrawalDate()));
+				System.out.println(dto.getWithdrawalDate());
+			});
+
 		outputMap.put("avgConditionScore", averageConditionScore);
 		outputMap.put("treatmentHistory", treatmentHistoryDtoList);
 		return outputMap;
 	}
-
-
-//	public List<TreatmentHistoryResponseDto> getTreatmentHistoryByCattleId(Long eid) {
-//		List<Object[]> results = treatmentHistoryRepository.findTreatmentHistoryByCattleId(eid);
-//		List<TreatmentHistoryResponseDto> response = new ArrayList<>();
-//		for (Object[] row : results) {
-//			TreatmentHistoryResponseDto dto = new TreatmentHistoryResponseDto();
-//			dto.setTreatmentId(((BigInteger) row[0]).longValue()); // Cast appropriately
-//			dto.setCattleId(((BigInteger) row[1]).longValue());
-//			dto.setConditionDesc((String) row[59]);
-//			dto.setMedicationDesc((String) row[60]);
-//			response.add(dto);
-//		}
-//		return response;
-//	}
-
-//	private String getCurrentFormattedDate() {
-//		final LocalDate currentDate = new LocalDate();
-//		final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-//		return formatter.format(currentDate);
-//	}
 
 	private String getCurrentFormattedDate() {
 		return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));

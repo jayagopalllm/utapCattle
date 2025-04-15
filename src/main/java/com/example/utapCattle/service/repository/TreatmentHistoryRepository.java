@@ -38,14 +38,15 @@ public interface TreatmentHistoryRepository extends JpaRepository<TreatmentHisto
             m.conditionDesc,
             med.medicationDesc,
             t.batchNumber,
-            t.treatmentDate
+            t.treatmentDate,
+            t.withdrawalDate
         )
         FROM TreatmentHistory t
         INNER JOIN Cattle c ON c.cattleId = t.cattleId
         INNER JOIN MedicalCondition m ON t.medicalConditionId = m.medicalConditionId
         INNER JOIN Medication med ON t.medicationId = med.medicationId
         WHERE t.cattleId = :eid AND c.saleId IS NULL
-        order by t.treatmentHistoryId desc
+        order by t.treatmentDate desc
         """)
 	List<TreatmentHistoryResponseDto> findTreatmentHistoryByCattleId(@Param("eid") Long eid);
 

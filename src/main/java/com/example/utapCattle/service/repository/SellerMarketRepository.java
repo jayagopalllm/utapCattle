@@ -9,6 +9,8 @@ import java.util.List;
 
 @Repository
 public interface SellerMarketRepository extends JpaRepository<SellerMarket, Long> {
-    
+
     SellerMarket findBySellerMarketId(Long sellerMarketId);
+
+    List<SellerMarket> findByUserFarmIdOrderBySellerMarketNameAsc(Long userFarmId);
 }
