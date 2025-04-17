@@ -141,10 +141,10 @@ public class Cattle {
 	private String numPrevMovements;
 
 	@Column(name = "createdon")
-	private LocalDate createdOn;
+	private LocalDateTime createdOn;
 
 	@Column(name = "updatedon")
-	private LocalDate updatedOn;
+	private LocalDateTime updatedOn;
 
 	@Column(name = "isinductioncompleted")
 	private Boolean isInductionCompleted;
@@ -160,12 +160,12 @@ public class Cattle {
 
 	@PrePersist
 	protected void onCreate() {
-		createdOn = LocalDate.now(); // Store only the current date
+		createdOn = LocalDateTime.now(); // Store only the current date
 	}
 
 	@PreUpdate
 	protected void onUpdate() {
-		updatedOn = LocalDate.now(); // Update only the date
+		updatedOn = LocalDateTime.now(); // Update only the date
 	}
 
 	@Override
