@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-//@Data
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -18,6 +18,9 @@ public class Customer {
 
     @Column(name = "customername")
     private String customerName;
+
+    @Column(name = "userfarmid")
+    private Long userFarmId;
 
     public Long getCustomerId() {
         return customerId;

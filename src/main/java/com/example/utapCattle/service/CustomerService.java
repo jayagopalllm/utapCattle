@@ -15,6 +15,4 @@ public interface CustomerService {
 
     CustomerDto saveCustomer(Customer customer);
 
-    List<Customer> findCustomerForUser(Long userId);
-
 }
