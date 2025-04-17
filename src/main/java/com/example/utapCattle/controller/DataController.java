@@ -32,8 +32,8 @@ public class DataController extends BaseController {
 	@PostMapping()
 	public ResponseEntity<AllDataDto> getAllData(HttpServletRequest request) {
 		try {
-			Long userId = Long.parseLong(request.getHeader("User-ID"));
-			final AllDataDto allData = dataService.getAllData(userId);
+			Long userFarmId = Long.parseLong(request.getHeader("Farm-ID"));
+			final AllDataDto allData = dataService.getAllData(userFarmId);
 			logger.info("Retrieved all data");
 			return ResponseEntity.ok(allData);
 		} catch (final Exception e) {
@@ -129,9 +129,10 @@ public class DataController extends BaseController {
 	}
 
 	@GetMapping(value = "/slaughter-market")
-	public AllDataDto getSlaughtersHouse() {
+	public AllDataDto getSlaughtersHouse(HttpServletRequest request) {
 		logger.info("Incoming request: Retrieving Slaughter House pre-data");
-		final AllDataDto allData = dataService.getSlaughtersHouse();
+		Long userFarmId = Long.parseLong(request.getHeader("Farm-ID"));
+		final AllDataDto allData = dataService.getSlaughtersHouse(userFarmId);
 		logger.info("Request successful: Retrieved Sales pre-data");
 		return allData;
 	}

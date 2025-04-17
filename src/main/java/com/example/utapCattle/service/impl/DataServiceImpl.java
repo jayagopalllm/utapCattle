@@ -3,8 +3,6 @@ package com.example.utapCattle.service.impl;
 import com.example.utapCattle.model.dto.AllDataDto;
 import com.example.utapCattle.model.dto.MarketDto;
 import com.example.utapCattle.model.entity.*;
-import com.example.utapCattle.service.AgentService;
-import com.example.utapCattle.service.CustomerService;
 import com.example.utapCattle.service.DataService;
 import com.example.utapCattle.service.FarmService;
 import com.example.utapCattle.service.MarketService;
@@ -33,8 +31,7 @@ public class DataServiceImpl implements DataService {
     private final CattleRepository cattleRepository;
     private final PenRepository penRepository;
     private final DefaultTreatmentRepository defaultTreatmentRepository;
-    private final CustomerService customerService;
-    private final AgentService agentService;
+    private final AgentRepository agentRepository;
     private final FarmService farmService;
 
     public DataServiceImpl(
@@ -52,8 +49,7 @@ public class DataServiceImpl implements DataService {
             CattleRepository cattleRepository,
             PenRepository penRepository,
             DefaultTreatmentRepository defaultTreatmentRepository,
-            CustomerService customerService,
-            AgentService agentService,
+            AgentRepository agentRepository,
             FarmService farmService) {
 
         this.farmRepository = farmRepository;
@@ -70,19 +66,18 @@ public class DataServiceImpl implements DataService {
         this.penRepository = penRepository;
         this.filterRepository = filterRepository;
         this.defaultTreatmentRepository = defaultTreatmentRepository;
-        this.customerService = customerService;
-        this.agentService = agentService;
+        this.agentRepository = agentRepository;
         this.farmService = farmService;
     }
 
     @Override
-    public AllDataDto getAllData(Long userId) {
-        final List<Farm> farms = farmService.findFarmForUser(userId);;
+    public AllDataDto getAllData(Long userFarmId) {
+        final List<Farm> farms = farmRepository.findByUserFarmIdOrderByFarmNameAsc(userFarmId);;
         final List<Breed> breeds = breedRepository.findAll();
-        final List<MarketDto> markets = marketService.findAllMarketsByUserId(userId);
+        final List<MarketDto> markets = marketService.findAllMarketsByUserId(userFarmId);
         final List<Category> categories = categoryRepository.findAll();
-        final List<Agent> agents = agentService.findAgentForUser(userId);
-        final List<Customer> customers = customerService.findCustomerForUser(userId);
+        final List<Agent> agents = agentRepository.findByUserFarmIdOrderByAgentNameAsc(userFarmId);
+        final List<Customer> customers = customerRepository.findByUserFarmIdOrderByCustomerNameAsc(userFarmId);
         final List<Pen> pens = penRepository.findAll();
 
         return new AllDataDto(farms, breeds, markets, categories, agents, customers,pens);
@@ -162,10 +157,10 @@ public class DataServiceImpl implements DataService {
 //		return eIdEarTagMap;
 //	}
     @Override
-    public AllDataDto getSlaughtersHouse() {
+    public AllDataDto getSlaughtersHouse(Long userFarmId) {
         final AllDataDto slaughterData = new AllDataDto();
-        final List<SlaughterMarket> slaughterMarkets = slaughterMarketRepository.findAll();
-        final List<Customer> customerList = customerRepository.findAll();
+        final List<SlaughterMarket> slaughterMarkets = slaughterMarketRepository.findByUserFarmIdOrderByMarketNameAsc(userFarmId);
+        final List<Customer> customerList = customerRepository.findByUserFarmIdOrderByCustomerNameAsc(userFarmId);
         slaughterData.setSlaughterMarket(slaughterMarkets);
         slaughterData.setCustomers(customerList);
         return slaughterData;

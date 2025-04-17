@@ -4,7 +4,7 @@ import com.example.utapCattle.model.dto.AllDataDto;
 
 public interface DataService {
 
-	public AllDataDto getAllData(Long userId);
+	public AllDataDto getAllData(Long userFarmId);
 
 	public AllDataDto getMedicalConditionData(Long userId, Long userFarmId);
 
@@ -18,6 +18,6 @@ public interface DataService {
 
 	public AllDataDto getFilterData();
 
-	public AllDataDto getSlaughtersHouse();
+	public AllDataDto getSlaughtersHouse(Long userFarmId);
 
 }

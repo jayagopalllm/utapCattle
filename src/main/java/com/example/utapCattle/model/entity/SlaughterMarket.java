@@ -28,4 +28,7 @@ public class SlaughterMarket {
 
     @Column(name = "current")
     private String current;
+
+    @Column(name = "userfarmid")
+    private Long userFarmId;
 }
