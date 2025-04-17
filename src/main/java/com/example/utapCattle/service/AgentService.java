@@ -13,5 +13,4 @@ public interface AgentService {
 
     AgentDto saveAgent(Agent agent);
 
-    List<Agent> findAgentForUser(Long userId);
 }

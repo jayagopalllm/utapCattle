@@ -24,6 +24,9 @@ public class Agent {
     @Column(name = "agentname", nullable = false)
     private String agentName;
 
+    @Column(name = "userfarmid")
+    private Long userFarmId;
+
     public Long getAgentId() {
         return this.agentId;
     }
