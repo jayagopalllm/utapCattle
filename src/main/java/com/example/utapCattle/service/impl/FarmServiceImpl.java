@@ -5,22 +5,14 @@ import com.example.utapCattle.model.entity.Farm;
 import com.example.utapCattle.service.FarmService;
 import com.example.utapCattle.service.repository.FarmRepository;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class FarmServiceImpl implements FarmService {
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
 
     private final FarmRepository farmRepository;
 
@@ -64,25 +56,4 @@ public class FarmServiceImpl implements FarmService {
         );
     }
 
-    @Override
-    public List<Farm> findFarmForUser(Long userId) {
-        String query = """
-                SELECT distinct f.farmid  as farm_id, f.farmname as farm_name from source_farm_mapping sfm
-                inner join farm f on f.farmid = sfm.source_farm_id
-                inner join  users usr on usr.farmid=sfm.farmid
-                where usr.id = ?
-                order by farm_name asc
-                """;
-        List<Farm> farms = jdbcTemplate.query(query, new RowMapper<Farm>() {
-            @Override
-            public Farm mapRow(ResultSet rs, int rowNum) throws SQLException {
-                Farm farm = new Farm();
-                farm.setFarmId(rs.getLong("farm_id"));
-                farm.setFarmName(rs.getString("farm_name"));
-                return farm;
-            }
-        }, userId);
-
-        return farms;
-    }
 }

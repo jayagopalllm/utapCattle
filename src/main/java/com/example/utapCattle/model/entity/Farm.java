@@ -45,6 +45,9 @@ public class Farm {
     @Column(name = "current")
     private String current; // Consider using a boolean or enum if appropriate
 
+    @Column(name = "userfarmid")
+    private Long userFarmId;
+
     // Add getters and setters for all the fields here
     public Long getFarmId() {
         return farmId;
