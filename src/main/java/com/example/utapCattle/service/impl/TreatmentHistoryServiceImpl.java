@@ -130,7 +130,8 @@ public class TreatmentHistoryServiceImpl implements TreatmentHistoryService {
 			if (dto.getWithdrawalDate() != null) {
 				dto.setWithdrawalDate(DateUtils.formatToReadableDate(dto.getWithdrawalDate()));
 				System.out.println(dto.getWithdrawalDate());
-			});
+			}
+		});
 
 		outputMap.put("avgConditionScore", averageConditionScore);
 		outputMap.put("treatmentHistory", treatmentHistoryDtoList);
