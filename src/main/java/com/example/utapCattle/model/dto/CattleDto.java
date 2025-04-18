@@ -20,6 +20,7 @@ public class CattleDto {
 	private Integer categoryId;
 	private String breedName;
 	private String categoryName;
+	private String sex;
 	private Integer farmId;
 	private String farmName;
 	private Integer sourceMarketId;

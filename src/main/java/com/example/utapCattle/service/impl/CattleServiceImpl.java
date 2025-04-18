@@ -204,6 +204,7 @@ public class CattleServiceImpl implements CattleService {
         String cattleName = getCattleMarketName(cattle.getSaleId());
         String breedAbbr = getBreedAbbr(cattle.getBreedId());
         String categoryDesc = getCategoryDesc(cattle.getCategoryId());
+        String sex = getSex(cattle.getCategoryId());
         String farmName = getFarmName(cattle.getFarmId());
         String agentName = getAgentName(cattle.getAgentId());
         Long treatmentCount = getCattleTotalTreatmentCount(cattle.getCattleId());
@@ -221,6 +222,7 @@ public class CattleServiceImpl implements CattleService {
                 cattle.getCategoryId(),
                 breedAbbr,
                 categoryDesc,
+                sex,
                 cattle.getFarmId(),
                 farmName,
                 cattle.getSourceMarketId(),
@@ -309,6 +311,12 @@ public class CattleServiceImpl implements CattleService {
     private String getCategoryDesc(Integer categoryId) {
         return (categoryId != null)
                 ? categoryService.getCategoryById(categoryId.longValue()).getCategoryDesc()
+                : "";
+    }
+
+    private String getSex(Integer categoryId) {
+        return (categoryId != null)
+                ? categoryService.getCategoryById(categoryId.longValue()).getSex()
                 : "";
     }
 
