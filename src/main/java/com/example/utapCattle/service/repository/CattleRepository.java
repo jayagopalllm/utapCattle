@@ -56,4 +56,6 @@ public interface CattleRepository extends JpaRepository<Cattle, Long> { // Use L
 
 	List<Cattle> findAllBySaleId(Long saleId);
 
+    boolean existsByCattleId(Long cattleId);
+
 }

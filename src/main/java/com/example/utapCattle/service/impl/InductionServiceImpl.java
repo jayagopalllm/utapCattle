@@ -1,5 +1,6 @@
 package com.example.utapCattle.service.impl;
 
+import com.example.utapCattle.exception.DuplicateCattleException;
 import com.example.utapCattle.model.entity.Cattle;
 import com.example.utapCattle.model.entity.TreatmentHistoryMetadata;
 import com.example.utapCattle.service.InductionService;
@@ -27,9 +28,9 @@ public class InductionServiceImpl implements InductionService {
     }
 
     @Override
-    public final List<Cattle> getInductionList(final LocalDate date,final Long userFarmId) {
+    public final List<Cattle> getInductionList(final LocalDate date, final Long userFarmId) {
 
-        List<Cattle> cattleList = cattleRepository.findByInductionDate(date,userFarmId);
+        List<Cattle> cattleList = cattleRepository.findByInductionDate(date, userFarmId);
         return cattleList;
     }
 
@@ -46,7 +47,6 @@ public class InductionServiceImpl implements InductionService {
                 .saveTreatmentHistory(treatmentHistoryMetadata);
     }
 
-
     private void validateInduction(final TreatmentHistoryMetadata treatmentHistoryMetadata) {
         if (treatmentHistoryMetadata.getCattleId() == null) {
             throw new IllegalArgumentException("EId is a mandatory field and cannot be null or empty.");
@@ -59,10 +59,15 @@ public class InductionServiceImpl implements InductionService {
     private void updateCattleDetails(final TreatmentHistoryMetadata treatmentHistoryMetadata) {
         final String earTag = treatmentHistoryMetadata.getEarTag();
         final Optional<Cattle> existingCattle = cattleRepository.findByEarTag(earTag);
+        Long cattleId = Long.valueOf(treatmentHistoryMetadata.getCattleId());
+
+        if (cattleRepository.existsByCattleId(cattleId)) {
+            throw new DuplicateCattleException("Cattle with ID " + cattleId + " already exists.");
+        }
 
         if (existingCattle.isPresent()) {
             final Cattle cattle = existingCattle.get();
-            cattle.setCattleId(Long.valueOf(treatmentHistoryMetadata.getCattleId()));
+            cattle.setCattleId(cattleId);
             cattle.setIsInductionCompleted(true);
             cattle.setInductionDate(LocalDate.now());
             cattle.setUserId(treatmentHistoryMetadata.getUserId());
@@ -71,6 +76,5 @@ public class InductionServiceImpl implements InductionService {
             throw new IllegalArgumentException("No Cattle record found with the given EarTag: " + earTag);
         }
     }
-
 
 }

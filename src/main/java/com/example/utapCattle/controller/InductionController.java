@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -39,8 +40,12 @@ public class InductionController extends BaseController {
             logger.info("Saved induction information");
             return new ResponseEntity<>(savedTreatmentHistoryDto, HttpStatus.CREATED);
         } catch (final Exception e) {
+            //Log and rethrow exception , exception handled in GlobalExceptionHandler
             logger.error("Exception occurred: Unable to save induction information", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            System.out.println(e.getClass().getSimpleName());
+            throw e;
+            //return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            //return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
