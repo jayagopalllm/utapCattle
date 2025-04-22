@@ -211,61 +211,61 @@ public class CattleServiceImpl implements CattleService {
         String fatteningForName = getFatteningFor(cattle.getFatteningFor());
         String lastTreatment = getLastWithdrawalDate(cattle.getCattleId());
         Double dlwgRearer = 0D;
-        return new CattleDto(
-                cattle.getId(),
-                cattle.getCattleId(),
-                cattle.getPrefix(),
-                cattle.getEarTag(),
-                cattle.getDateOfBirth(),
-                cattle.getMotherEarTag(),
-                cattle.getBreedId(),
-                cattle.getCategoryId(),
-                breedAbbr,
-                categoryDesc,
-                sex,
-                cattle.getFarmId(),
-                farmName,
-                cattle.getSourceMarketId(),
-                cattleName,
-                cattle.getDatePurchased(),
-                cattle.getPurchasePrice(),
-                cattle.getSaleId(),
-                cattle.getSalePrice(),
-                cattle.getComments(),
-                cattle.getVersion(),
-                cattle.getPreviousHolding(),
-                cattle.getFatteningFor(),
-                fatteningForName,
-                cattle.getAgentId(),
-                agentName,
-                cattle.getConditionScore(),
-                cattle.getHealthScore(),
-                cattle.getWeightAtSale(),
-                dlwgRearer,
-                weight.toString(),
-//                cattle.getBodyWeight(),
-                cattle.getExpenses(),
-                cattle.getSireEarTag(),
-                cattle.getSireName(),
-                cattle.getPoundPerKgGain(),
-                cattle.getHdDayFeeders(),
-                cattle.getTagOrdered(),
-                cattle.getTagHere(),
-                cattle.getCoopOpening(),
-                cattle.getCoopClosing(),
-                cattle.getResidencies(),
-                cattle.getNewtagreq(),
-                cattle.getTagId(),
-                cattle.getNewTagReqd(),
-                cattle.getCattleGroupId(),
-                cattle.getConformationId(),
-                cattle.getFatCoverId(),
-                cattle.getWeightAtPurchase(),
-                cattle.getNumPrevMovements(),
-                treatmentCount,
-                lastTreatment,
-                cattle.getIsInductionCompleted()
-        );
+        CattleDto cattleData = new CattleDto();
+        cattleData.setId(cattle.getId());
+        cattleData.setCattleId(cattle.getCattleId());
+        cattleData.setPrefix(cattle.getPrefix());
+        cattleData.setEarTag(cattle.getEarTag());
+        cattleData.setDateOfBirth(cattle.getDateOfBirth());
+        cattleData.setMotherEarTag(cattle.getMotherEarTag());
+        cattleData.setBreedId(cattle.getBreedId());
+        cattleData.setCategoryId(cattle.getCategoryId());
+        cattleData.setBreedName(breedAbbr);
+        cattleData.setCategoryName(categoryDesc);
+        cattleData.setSex(sex);
+        cattleData.setFarmId(cattle.getFarmId());
+        cattleData.setFarmName(farmName);
+        cattleData.setSourceMarketId(cattle.getSourceMarketId());
+        cattleData.setSourceMarketName(cattleName);
+        cattleData.setDatePurchased(cattle.getDatePurchased());
+        cattleData.setPurchasePrice(cattle.getPurchasePrice());
+        cattleData.setSaleId(cattle.getSaleId());
+        cattleData.setSalePrice(cattle.getSalePrice());
+        cattleData.setComments(cattle.getComments());
+        cattleData.setVersion(cattle.getVersion());
+        cattleData.setPreviousHolding(cattle.getPreviousHolding());
+        cattleData.setFatteningFor(cattle.getFatteningFor());
+        cattleData.setFatteningForName(fatteningForName);
+        cattleData.setAgentId(cattle.getAgentId());
+        cattleData.setAgentName(agentName);
+        cattleData.setConditionScore(cattle.getConditionScore());
+        cattleData.setHealthScore(cattle.getHealthScore());
+        cattleData.setWeightAtSale(cattle.getWeightAtSale());
+        cattleData.setDlwgRearer(dlwgRearer);
+        cattleData.setBodyWeight(weight.toString());
+        cattleData.setExpenses(cattle.getExpenses());
+        cattleData.setSireEarTag(cattle.getSireEarTag());
+        cattleData.setSireName(cattle.getSireName());
+        cattleData.setPoundPerKgGain(cattle.getPoundPerKgGain());
+        cattleData.setHdDayFeeders(cattle.getHdDayFeeders());
+        cattleData.setTagOrdered(cattle.getTagOrdered());
+        cattleData.setTagHere(cattle.getTagHere());
+        cattleData.setCoopOpening(cattle.getCoopOpening());
+        cattleData.setCoopClosing(cattle.getCoopClosing());
+        cattleData.setResidencies(cattle.getResidencies());
+        cattleData.setNewtagreq(cattle.getNewtagreq());
+        cattleData.setTagId(cattle.getTagId());
+        cattleData.setNewTagReqd(cattle.getNewTagReqd());
+        cattleData.setCattleGroupId(cattle.getCattleGroupId());
+        cattleData.setConformationId(cattle.getConformationId());
+        cattleData.setFatCoverId(cattle.getFatCoverId());
+        cattleData.setWeightAtPurchase(cattle.getWeightAtPurchase());
+        cattleData.setNumPrevMovements(cattle.getNumPrevMovements());
+        cattleData.setTotalTreatments(treatmentCount);
+        cattleData.setLastWithdraw(lastTreatment);
+        cattleData.setIsInductionCompleted(cattle.getIsInductionCompleted());
+
+        return cattleData;
     }
 
     public String getLastWithdrawalDate(Long cattleId) {

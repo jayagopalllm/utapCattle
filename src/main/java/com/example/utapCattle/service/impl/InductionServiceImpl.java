@@ -1,16 +1,24 @@
 package com.example.utapCattle.service.impl;
 
 import com.example.utapCattle.exception.DuplicateCattleException;
+import com.example.utapCattle.model.dto.CattleDto;
 import com.example.utapCattle.model.entity.Cattle;
 import com.example.utapCattle.model.entity.TreatmentHistoryMetadata;
 import com.example.utapCattle.service.InductionService;
 import com.example.utapCattle.service.TreatmentHistoryService;
 import com.example.utapCattle.service.repository.CattleRepository;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +26,9 @@ import java.util.Optional;
 
 @Service
 public class InductionServiceImpl implements InductionService {
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     private final CattleRepository cattleRepository;
     private final TreatmentHistoryService treatmentHistoryService;
@@ -28,10 +39,42 @@ public class InductionServiceImpl implements InductionService {
     }
 
     @Override
-    public final List<Cattle> getInductionList(final LocalDate date, final Long userFarmId) {
+    public final List<CattleDto> getInductionList(final LocalDate date, final Long userFarmId) {
 
-        List<Cattle> cattleList = cattleRepository.findByInductionDate(date, userFarmId);
-        return cattleList;
+        String query = """
+                WITH latest_weights AS (
+                  SELECT DISTINCT ON (cattleid) cattleid, weight
+                  FROM weighthistory
+                  ORDER BY cattleid, weightdatetime DESC
+                )
+                SELECT
+                  c.id,
+                  c.cattleid,
+                  c.eartag,
+                  c.dateofbirth,
+                  c.breedid,
+                  c.comments,
+                  coalesce(lw.weight,0) AS bodyweight
+                FROM cattle c
+                LEFT JOIN latest_weights lw ON lw.cattleid = c.cattleid
+                WHERE c.inductiondate = ? AND c.ownerfarmid = ?
+                ORDER BY c.updatedon DESC
+                              """;
+        List<CattleDto> cattleData = jdbcTemplate.query(query, new RowMapper<CattleDto>() {
+            @Override
+            public CattleDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+                CattleDto cattleData = new CattleDto();
+                cattleData.setCattleId(rs.getLong("cattleid"));
+                cattleData.setEarTag(rs.getString("eartag"));
+                cattleData.setDateOfBirth(rs.getString("dateofbirth"));
+                cattleData.setBreedId(rs.getInt("breedid"));
+                cattleData.setComments(rs.getString("comments"));
+                cattleData.setBodyWeight(rs.getString("bodyweight"));
+                return cattleData;
+            }
+        },date,userFarmId);
+
+        return cattleData;
     }
 
     @Override
@@ -76,5 +119,6 @@ public class InductionServiceImpl implements InductionService {
             throw new IllegalArgumentException("No Cattle record found with the given EarTag: " + earTag);
         }
     }
+
 
 }

@@ -1,6 +1,6 @@
 package com.example.utapCattle.controller;
 
-import com.example.utapCattle.model.entity.Cattle;
+import com.example.utapCattle.model.dto.CattleDto;
 import com.example.utapCattle.model.entity.TreatmentHistoryMetadata;
 import com.example.utapCattle.service.InductionService;
 
@@ -50,12 +50,12 @@ public class InductionController extends BaseController {
     }
 
     @GetMapping("/list/{date}")
-    public ResponseEntity<List<Cattle>> getInductedCattleListByDate(
+    public ResponseEntity<List<CattleDto>> getInductedCattleListByDate(
             @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,  HttpServletRequest request) {
         logger.info("Fetching induction information for date: {}", date);
         try {
             Long userFarmId = Long.parseLong(request.getHeader("Farm-ID"));
-            final List<Cattle> cattleList = inductionService.getInductionList(date, userFarmId);
+            final List<CattleDto> cattleList = inductionService.getInductionList(date, userFarmId);
             logger.info("Fetched induction information");
             return new ResponseEntity<>(cattleList, HttpStatus.OK);
         } catch (Exception e) {
