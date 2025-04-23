@@ -142,12 +142,8 @@ public class CattleServiceImpl implements CattleService {
 
     @Override
     public CattleDto getCattleByEarTag(String earTag) {
-        try {
-            final Optional<Cattle> cattle = cattleRepository.findByEarTag(earTag);
+        final Optional<Cattle> cattle = cattleRepository.findByEarTag(earTag);
             return cattle.map(this::mapToDto).orElse(null);
-        } catch (final Exception e) {
-            return null;
-        }
     }
 
     @Override
@@ -200,6 +196,7 @@ public class CattleServiceImpl implements CattleService {
     }
 
     private CattleDto mapToDto(final Cattle cattle) {
+        System.out.println("cattleData-----"+cattle);
         Double weight = getLatestWeight(cattle.getCattleId());
         String cattleName = getCattleMarketName(cattle.getSaleId());
         String breedAbbr = getBreedAbbr(cattle.getBreedId());
@@ -264,14 +261,14 @@ public class CattleServiceImpl implements CattleService {
         cattleData.setTotalTreatments(treatmentCount);
         cattleData.setLastWithdraw(lastTreatment);
         cattleData.setIsInductionCompleted(cattle.getIsInductionCompleted());
-
+        System.out.println("cattleData-----"+cattleData);
         return cattleData;
     }
 
     public String getLastWithdrawalDate(Long cattleId) {
         return (cattleId != null)
                 ? treatmentHistoryRepository.findLatestWithdrawalDateByCattleId(cattleId)
-                .map(Date::toString)
+                //.map(Date::toString)
                 .orElse(null)
                 : null;
     }
