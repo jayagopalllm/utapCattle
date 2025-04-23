@@ -45,7 +45,7 @@ public class InductionServiceImpl implements InductionService {
                 WITH latest_weights AS (
                   SELECT DISTINCT ON (cattleid) cattleid, weight
                   FROM weighthistory
-                  ORDER BY cattleid, weightdatetime DESC
+                  ORDER BY cattleid, TO_DATE(weightdatetime, 'YYYY-MM-DD') DESC
                 )
                 SELECT
                   c.id,
