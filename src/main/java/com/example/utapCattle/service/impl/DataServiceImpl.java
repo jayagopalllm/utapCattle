@@ -182,7 +182,7 @@ public class DataServiceImpl implements DataService {
         final List<Medication> medications = medicationRepository.findAll();
         final List<Pen> pens = penRepository.findAll(); // should pick pen based on the select criteria filter
         final List<String> earTagList = cattleRepository.findEarTagsWithIncompleteInduction(userFarmId);
-        final List<String> eIdList = cattleRepository.findEIdsWithIncompleteInduction();
+        final List<String> eIdList = cattleRepository.findEIdsWithIncompleteInduction(userFarmId);
 
         final AllDataDto conditionData = new AllDataDto();
         conditionData.setMedicalCondition(medicalConditions);
