@@ -14,10 +14,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "breed", schema = "public")
+@Table(name = "breed")
 public class Breed {
 
-    @Id // This designates 'breedid' as the primary key 
+    @Id // This designates 'breedid' as the primary key
     @Column(name = "breedid")
     private Long breedid;
 

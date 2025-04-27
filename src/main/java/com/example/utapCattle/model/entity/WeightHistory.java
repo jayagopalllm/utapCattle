@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "weighthistory", schema = "public")
+@Table(name = "weighthistory")
 public class WeightHistory {
 
 	@Id

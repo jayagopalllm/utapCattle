@@ -8,7 +8,7 @@ spring:
       settings:
         web-allow-others: true
   datasource:
-    url: jdbc:postgresql://178.128.171.74:5432/gogreenhub
+    url: jdbc:postgresql://178.128.171.74:5432/gogreenhub?currentSchema=public
     driverClassName: org.postgresql.Driver
     username: admin
     password: GoGr33nDB347
