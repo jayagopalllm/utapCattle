@@ -17,6 +17,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -207,7 +208,7 @@ public class CattleServiceImpl implements CattleService {
         Long treatmentCount = getCattleTotalTreatmentCount(cattle.getCattleId());
         String fatteningForName = getFatteningFor(cattle.getFatteningFor());
         String lastTreatment = getLastWithdrawalDate(cattle.getCattleId());
-        Double dlwgRearer = 0D;
+        Double dlwgFarm = getDlwgFarm(cattle.getCattleId());
         CattleDto cattleData = new CattleDto();
         cattleData.setId(cattle.getId());
         cattleData.setCattleId(cattle.getCattleId());
@@ -238,7 +239,7 @@ public class CattleServiceImpl implements CattleService {
         cattleData.setConditionScore(cattle.getConditionScore());
         cattleData.setHealthScore(cattle.getHealthScore());
         cattleData.setWeightAtSale(cattle.getWeightAtSale());
-        cattleData.setDlwgFarm(dlwgRearer);
+        cattleData.setDlwgFarm(dlwgFarm);
         cattleData.setBodyWeight(weight.toString());
         cattleData.setExpenses(cattle.getExpenses());
         cattleData.setSireEarTag(cattle.getSireEarTag());
@@ -284,6 +285,42 @@ public class CattleServiceImpl implements CattleService {
 
         WeightHistory latestWeightHistory = weightHistoryService.getLatestWeightHistory(cattleId);
         return (latestWeightHistory != null) ? latestWeightHistory.getWeight() : 0.0;
+    }
+
+    private Double getDlwgFarm(Long cattleId) {
+        if (cattleId == null) {
+            return 0.0;
+        }
+
+        String query = """
+                with WeightRanked as
+                	(
+                    select
+                        cattleid,weight,
+                        TO_DATE(weightdatetime, 'YYYY-MM-DD HH24:MI:SS') as date_weighted,
+                        row_number() over (partition by cattleid order by TO_DATE(weightdatetime, 'YYYY-MM-DD HH24:MI:SS') asc) as min_rank,
+                        row_number() over (partition by cattleid order by TO_DATE(weightdatetime, 'YYYY-MM-DD HH24:MI:SS') desc) as max_rank
+                    from
+                        weighthistory
+                    where
+                        weight > 25
+                	)
+
+                select
+                	(w_max.weight-w_min.weight) / nullif((w_max.date_weighted - w_min.date_weighted), 0) as dlwgfarm
+                from
+                	cattle c
+                left join WeightRanked w_min on	c.cattleid = w_min.cattleid	and w_min.min_rank = 1
+                left join WeightRanked w_max on	c.cattleid = w_max.cattleid	and w_max.max_rank = 1
+                where
+                	c.cattleid = ?
+                                """;
+
+        Map<String, Object> result = jdbcTemplate.queryForMap(query, cattleId);
+        Double dlwgFarm =(Double) result.get("dlwgfarm");
+
+        // Round to 2 decimal places using String.format and then convert back to double
+        return (dlwgFarm!=null) ? Double.parseDouble(String.format("%.2f", dlwgFarm)) : 0.0;
     }
 
     private String getCattleMarketName(Long saleId) {
