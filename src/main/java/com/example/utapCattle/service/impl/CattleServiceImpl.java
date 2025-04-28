@@ -8,6 +8,8 @@ import com.example.utapCattle.service.repository.CattleRepository;
 import com.example.utapCattle.service.repository.SellerMarketRepository;
 import com.example.utapCattle.service.repository.TreatmentHistoryRepository;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -23,6 +25,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class CattleServiceImpl implements CattleService {
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private SellerMarketRepository sellerMarketRepository;
@@ -108,27 +112,32 @@ public class CattleServiceImpl implements CattleService {
                 order by cat.updatedon DESC;
                                 """;
 
-        List<CattleDto> cattleData = jdbcTemplate.query(query, new RowMapper<CattleDto>() {
-            @Override
-            public CattleDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                CattleDto cattleData = new CattleDto();
-                cattleData.setCattleId(rs.getLong("cattleid"));
-                cattleData.setEarTag(rs.getString("eartag"));
-                cattleData.setCategoryId(rs.getInt("categoryid"));
-                cattleData.setCategoryName(rs.getString("categorydesc"));
-                cattleData.setSaleId(rs.getLong("saleid"));
-                cattleData.setWeightAtPurchase(rs.getString("weightatpurchase"));
-                cattleData.setWeightAtSale(Double.parseDouble(rs.getString("weightatsale")));
-                cattleData.setDlwgFarm(Double.parseDouble(rs.getString("dlwgfarm")));
-                cattleData.setBreedId(rs.getInt("breedid"));
-                cattleData.setBreedName(rs.getString("breeddesc"));
+        try {
+            List<CattleDto> cattleData = jdbcTemplate.query(query, new RowMapper<CattleDto>() {
+                @Override
+                public CattleDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    CattleDto cattleData = new CattleDto();
+                    cattleData.setCattleId(rs.getLong("cattleid"));
+                    cattleData.setEarTag(rs.getString("eartag"));
+                    cattleData.setCategoryId(rs.getInt("categoryid"));
+                    cattleData.setCategoryName(rs.getString("categorydesc"));
+                    cattleData.setSaleId(rs.getLong("saleid"));
+                    cattleData.setWeightAtPurchase(rs.getString("weightatpurchase"));
+                    cattleData.setWeightAtSale(rs.getDouble("weightatsale"));
+                    cattleData.setDlwgFarm(rs.getDouble("dlwgfarm"));
+                    cattleData.setBreedId(rs.getInt("breedid"));
+                    cattleData.setBreedName(rs.getString("breeddesc"));
 
-                // customer.setCustomerId(rs.getLong("customer_id"));
-                // customer.setCustomerName(rs.getString("customer_name"));
-                return cattleData;
-            }
-        },saleId);
-        return cattleData;
+                    // customer.setCustomerId(rs.getLong("customer_id"));
+                    // customer.setCustomerName(rs.getString("customer_name"));
+                    return cattleData;
+                }
+            },saleId);
+            return cattleData;
+        } catch (Exception e) {
+            logger.error("Exception while quering sale data: ", e);
+            throw e;
+        }
 
         // return cattleRepository.findAllBySaleId(saleId).stream().map(this::mapToDto) // Map each Cattle to CattleDto
         //         .collect(Collectors.toList());
