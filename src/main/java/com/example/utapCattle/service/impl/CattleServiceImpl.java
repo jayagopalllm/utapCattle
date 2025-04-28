@@ -2,13 +2,11 @@ package com.example.utapCattle.service.impl;
 
 import com.example.utapCattle.model.dto.CattleDto;
 import com.example.utapCattle.model.entity.Cattle;
-import com.example.utapCattle.model.entity.Customer;
 import com.example.utapCattle.model.entity.WeightHistory;
 import com.example.utapCattle.service.*;
 import com.example.utapCattle.service.repository.CattleRepository;
 import com.example.utapCattle.service.repository.SellerMarketRepository;
 import com.example.utapCattle.service.repository.TreatmentHistoryRepository;
-import com.example.utapCattle.service.repository.WeightHistoryRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -74,38 +72,40 @@ public class CattleServiceImpl implements CattleService {
     public List<CattleDto> getAllCattleBySaleId(Long saleId) { // Return List<CattleDto>
 
 
-        String query = "SELECT  "+
-                        "    cat.cattleid,  "+
-                        "    cat.eartag, "+
-                        "    cat.categoryid, "+
-                        "    c.categorydesc, "+
-                        "    cat.saleid, "+
-                        "    cat.saleprice, "+
-                        "    b.breedid, " +
-                        "    b.breeddesc, " +
-                        "    COALESCE(w_min.weight, 0) AS weightatpurchase, " +
-                        "    COALESCE(w_max.weight, 0) AS weightatsale," +
-                        "   (CASE  " +
-                        "       WHEN COALESCE(w_min.weight, 0) > 40 THEN COALESCE(w_min.weight, 0) - 40 " +
-                        "       ELSE 0 " +
-                        "   END) / NULLIF(w_min.date_weighted - TO_DATE(cat.dateofbirth, 'DD/MM/YYYY'), 0) AS dlwgrearer " +
-                        "FROM CATTLE cat "+
-                        "INNER JOIN category c ON cat.categoryid = c.categoryid "+
-                        "INNER JOIN breed b ON cat.breedid = b.breedid "+
-                        "LEFT JOIN ( "+
-                        "    SELECT cattleid, weight,  "+
-                        "           TO_DATE(weightdatetime, 'YYYY-MM-DD HH24:MI:SS') AS date_weighted, "+
-                        "           ROW_NUMBER() OVER (PARTITION BY cattleid ORDER BY TO_DATE(weightdatetime, 'YYYY-MM-DD HH24:MI:SS') ASC) AS rank "+
-                        "    FROM weighthistory "+
-                        "    WHERE weight > 25 "+
-                        ") w_min ON cat.cattleid = w_min.cattleid AND w_min.rank = 1 "+
-                        "LEFT JOIN ( "+
-                        "    SELECT cattleid, weight,  "+
-                        "           ROW_NUMBER() OVER (PARTITION BY cattleid ORDER BY TO_DATE(weightdatetime, 'YYYY-MM-DD HH24:MI:SS') DESC) AS rank "+
-                        "    FROM weighthistory "+
-                        "    WHERE weight > 25 "+
-                        ") w_max ON cat.cattleid = w_max.cattleid AND w_max.rank = 1 "+
-                        "WHERE cat.saleid = ? ";
+        String query = """
+                SELECT
+                    cat.cattleid,
+                    cat.eartag,
+                    cat.categoryid,
+                    c.categorydesc,
+                    cat.saleid,
+                    cat.saleprice,
+                    b.breedid,
+                    b.breeddesc,
+                    COALESCE(w_min.weight, 0) AS weightatpurchase,
+                    COALESCE(w_max.weight, 0) AS weightatsale,
+                    (w_max.weight-w_min.weight) / NULLIF(w_max.date_weighted - w_min.date_weighted, 0) AS dlwgfarm
+                FROM CATTLE cat
+                INNER JOIN category c ON cat.categoryid = c.categoryid
+                INNER JOIN breed b ON cat.breedid = b.breedid
+                inner join sale s on s.saleid = cat.saleid
+                LEFT JOIN (
+                    SELECT cattleid, weight,
+                           TO_DATE(weightdatetime, 'YYYY-MM-DD HH24:MI:SS') AS date_weighted,
+                           ROW_NUMBER() OVER (PARTITION BY cattleid ORDER BY TO_DATE(weightdatetime, 'YYYY-MM-DD HH24:MI:SS') ASC) AS rank
+                    FROM weighthistory
+                    WHERE weight > 25
+                ) w_min ON cat.cattleid = w_min.cattleid AND w_min.rank = 1
+                LEFT JOIN (
+                    SELECT cattleid, weight,
+                           TO_DATE(weightdatetime, 'YYYY-MM-DD HH24:MI:SS') AS date_weighted,
+                           ROW_NUMBER() OVER (PARTITION BY cattleid ORDER BY TO_DATE(weightdatetime, 'YYYY-MM-DD HH24:MI:SS') DESC) AS rank
+                    FROM weighthistory
+                    WHERE weight > 25
+                ) w_max ON cat.cattleid = w_max.cattleid AND w_max.rank = 1
+                WHERE cat.saleid = ?
+                order by cat.updatedon DESC;
+                                """;
 
         List<CattleDto> cattleData = jdbcTemplate.query(query, new RowMapper<CattleDto>() {
             @Override
@@ -118,7 +118,7 @@ public class CattleServiceImpl implements CattleService {
                 cattleData.setSaleId(rs.getLong("saleid"));
                 cattleData.setWeightAtPurchase(rs.getString("weightatpurchase"));
                 cattleData.setWeightAtSale(Double.parseDouble(rs.getString("weightatsale")));
-                cattleData.setDlwgRearer(Double.parseDouble(rs.getString("dlwgrearer")));
+                cattleData.setDlwgFarm(Double.parseDouble(rs.getString("dlwgfarm")));
                 cattleData.setBreedId(rs.getInt("breedid"));
                 cattleData.setBreedName(rs.getString("breeddesc"));
 
@@ -238,7 +238,7 @@ public class CattleServiceImpl implements CattleService {
         cattleData.setConditionScore(cattle.getConditionScore());
         cattleData.setHealthScore(cattle.getHealthScore());
         cattleData.setWeightAtSale(cattle.getWeightAtSale());
-        cattleData.setDlwgRearer(dlwgRearer);
+        cattleData.setDlwgFarm(dlwgRearer);
         cattleData.setBodyWeight(weight.toString());
         cattleData.setExpenses(cattle.getExpenses());
         cattleData.setSireEarTag(cattle.getSireEarTag());

@@ -39,7 +39,7 @@ public class CattleDto {
 	private String conditionScore;
 	private String healthScore;
 	private Double weightAtSale;
-	private Double dlwgRearer;
+	private Double dlwgFarm;
 	private String bodyWeight;
 	private BigDecimal expenses;
 	private String sireEarTag;
