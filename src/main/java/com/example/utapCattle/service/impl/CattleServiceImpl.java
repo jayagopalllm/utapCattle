@@ -12,12 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -71,76 +67,6 @@ public class CattleServiceImpl implements CattleService {
     public List<CattleDto> getAllCattle() { // Return List<CattleDto>
         return cattleRepository.findAll().stream().map(this::mapToDto) // Map each Cattle to CattleDto
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<CattleDto> getAllCattleBySaleId(Long saleId) { // Return List<CattleDto>
-
-
-        String query = """
-                SELECT
-                    cat.cattleid,
-                    cat.eartag,
-                    cat.categoryid,
-                    c.categorydesc,
-                    cat.saleid,
-                    cat.saleprice,
-                    b.breedid,
-                    b.breeddesc,
-                    COALESCE(w_min.weight, 0) AS weightatpurchase,
-                    COALESCE(w_max.weight, 0) AS weightatsale,
-                    (w_max.weight-w_min.weight) / NULLIF(w_max.date_weighted - w_min.date_weighted, 0) AS dlwgfarm
-                FROM CATTLE cat
-                INNER JOIN category c ON cat.categoryid = c.categoryid
-                INNER JOIN breed b ON cat.breedid = b.breedid
-                inner join sale s on s.saleid = cat.saleid
-                LEFT JOIN (
-                    SELECT cattleid, weight,
-                           TO_DATE(weightdatetime, 'YYYY-MM-DD HH24:MI:SS') AS date_weighted,
-                           ROW_NUMBER() OVER (PARTITION BY cattleid ORDER BY TO_DATE(weightdatetime, 'YYYY-MM-DD HH24:MI:SS') ASC) AS rank
-                    FROM weighthistory
-                    WHERE weight > 25
-                ) w_min ON cat.cattleid = w_min.cattleid AND w_min.rank = 1
-                LEFT JOIN (
-                    SELECT cattleid, weight,
-                           TO_DATE(weightdatetime, 'YYYY-MM-DD HH24:MI:SS') AS date_weighted,
-                           ROW_NUMBER() OVER (PARTITION BY cattleid ORDER BY TO_DATE(weightdatetime, 'YYYY-MM-DD HH24:MI:SS') DESC) AS rank
-                    FROM weighthistory
-                    WHERE weight > 25
-                ) w_max ON cat.cattleid = w_max.cattleid AND w_max.rank = 1
-                WHERE cat.saleid = ?
-                order by cat.updatedon DESC;
-                                """;
-
-        try {
-            List<CattleDto> cattleData = jdbcTemplate.query(query, new RowMapper<CattleDto>() {
-                @Override
-                public CattleDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                    CattleDto cattleData = new CattleDto();
-                    cattleData.setCattleId(rs.getLong("cattleid"));
-                    cattleData.setEarTag(rs.getString("eartag"));
-                    cattleData.setCategoryId(rs.getInt("categoryid"));
-                    cattleData.setCategoryName(rs.getString("categorydesc"));
-                    cattleData.setSaleId(rs.getLong("saleid"));
-                    cattleData.setWeightAtPurchase(rs.getString("weightatpurchase"));
-                    cattleData.setWeightAtSale(rs.getDouble("weightatsale"));
-                    cattleData.setDlwgFarm(rs.getDouble("dlwgfarm"));
-                    cattleData.setBreedId(rs.getInt("breedid"));
-                    cattleData.setBreedName(rs.getString("breeddesc"));
-
-                    // customer.setCustomerId(rs.getLong("customer_id"));
-                    // customer.setCustomerName(rs.getString("customer_name"));
-                    return cattleData;
-                }
-            },saleId);
-            return cattleData;
-        } catch (Exception e) {
-            logger.error("Exception while quering sale data: ", e);
-            throw e;
-        }
-
-        // return cattleRepository.findAllBySaleId(saleId).stream().map(this::mapToDto) // Map each Cattle to CattleDto
-        //         .collect(Collectors.toList());
     }
 
     @Override
