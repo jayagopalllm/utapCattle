@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "movement", schema = "public")
+@Table(name = "movement")
 public class Movement {
 
 	@Id

@@ -2,28 +2,27 @@ package com.example.utapCattle.service.impl;
 
 import com.example.utapCattle.model.dto.CattleDto;
 import com.example.utapCattle.model.entity.Cattle;
-import com.example.utapCattle.model.entity.Customer;
 import com.example.utapCattle.model.entity.WeightHistory;
 import com.example.utapCattle.service.*;
 import com.example.utapCattle.service.repository.CattleRepository;
 import com.example.utapCattle.service.repository.SellerMarketRepository;
 import com.example.utapCattle.service.repository.TreatmentHistoryRepository;
-import com.example.utapCattle.service.repository.WeightHistoryRepository;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class CattleServiceImpl implements CattleService {
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private SellerMarketRepository sellerMarketRepository;
@@ -68,69 +67,6 @@ public class CattleServiceImpl implements CattleService {
     public List<CattleDto> getAllCattle() { // Return List<CattleDto>
         return cattleRepository.findAll().stream().map(this::mapToDto) // Map each Cattle to CattleDto
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<CattleDto> getAllCattleBySaleId(Long saleId) { // Return List<CattleDto>
-
-
-        String query = "SELECT  "+
-                        "    cat.cattleid,  "+
-                        "    cat.eartag, "+
-                        "    cat.categoryid, "+
-                        "    c.categorydesc, "+
-                        "    cat.saleid, "+
-                        "    cat.saleprice, "+
-                        "    b.breedid, " +
-                        "    b.breeddesc, " +
-                        "    COALESCE(w_min.weight, 0) AS weightatpurchase, " +
-                        "    COALESCE(w_max.weight, 0) AS weightatsale," +
-                        "   (CASE  " +
-                        "       WHEN COALESCE(w_min.weight, 0) > 40 THEN COALESCE(w_min.weight, 0) - 40 " +
-                        "       ELSE 0 " +
-                        "   END) / NULLIF(w_min.date_weighted - TO_DATE(cat.dateofbirth, 'DD/MM/YYYY'), 0) AS dlwgrearer " +
-                        "FROM CATTLE cat "+
-                        "INNER JOIN category c ON cat.categoryid = c.categoryid "+
-                        "INNER JOIN breed b ON cat.breedid = b.breedid "+
-                        "LEFT JOIN ( "+
-                        "    SELECT cattleid, weight,  "+
-                        "           TO_DATE(weightdatetime, 'YYYY-MM-DD HH24:MI:SS') AS date_weighted, "+
-                        "           ROW_NUMBER() OVER (PARTITION BY cattleid ORDER BY TO_DATE(weightdatetime, 'YYYY-MM-DD HH24:MI:SS') ASC) AS rank "+
-                        "    FROM weighthistory "+
-                        "    WHERE weight > 25 "+
-                        ") w_min ON cat.cattleid = w_min.cattleid AND w_min.rank = 1 "+
-                        "LEFT JOIN ( "+
-                        "    SELECT cattleid, weight,  "+
-                        "           ROW_NUMBER() OVER (PARTITION BY cattleid ORDER BY TO_DATE(weightdatetime, 'YYYY-MM-DD HH24:MI:SS') DESC) AS rank "+
-                        "    FROM weighthistory "+
-                        "    WHERE weight > 25 "+
-                        ") w_max ON cat.cattleid = w_max.cattleid AND w_max.rank = 1 "+
-                        "WHERE cat.saleid = ? ";
-
-        List<CattleDto> cattleData = jdbcTemplate.query(query, new RowMapper<CattleDto>() {
-            @Override
-            public CattleDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                CattleDto cattleData = new CattleDto();
-                cattleData.setCattleId(rs.getLong("cattleid"));
-                cattleData.setEarTag(rs.getString("eartag"));
-                cattleData.setCategoryId(rs.getInt("categoryid"));
-                cattleData.setCategoryName(rs.getString("categorydesc"));
-                cattleData.setSaleId(rs.getLong("saleid"));
-                cattleData.setWeightAtPurchase(rs.getString("weightatpurchase"));
-                cattleData.setWeightAtSale(Double.parseDouble(rs.getString("weightatsale")));
-                cattleData.setDlwgRearer(Double.parseDouble(rs.getString("dlwgrearer")));
-                cattleData.setBreedId(rs.getInt("breedid"));
-                cattleData.setBreedName(rs.getString("breeddesc"));
-
-                // customer.setCustomerId(rs.getLong("customer_id"));
-                // customer.setCustomerName(rs.getString("customer_name"));
-                return cattleData;
-            }
-        },saleId);
-        return cattleData;
-
-        // return cattleRepository.findAllBySaleId(saleId).stream().map(this::mapToDto) // Map each Cattle to CattleDto
-        //         .collect(Collectors.toList());
     }
 
     @Override
@@ -207,7 +143,7 @@ public class CattleServiceImpl implements CattleService {
         Long treatmentCount = getCattleTotalTreatmentCount(cattle.getCattleId());
         String fatteningForName = getFatteningFor(cattle.getFatteningFor());
         String lastTreatment = getLastWithdrawalDate(cattle.getCattleId());
-        Double dlwgRearer = 0D;
+        Double dlwgFarm = getDlwgFarm(cattle.getCattleId());
         CattleDto cattleData = new CattleDto();
         cattleData.setId(cattle.getId());
         cattleData.setCattleId(cattle.getCattleId());
@@ -238,7 +174,7 @@ public class CattleServiceImpl implements CattleService {
         cattleData.setConditionScore(cattle.getConditionScore());
         cattleData.setHealthScore(cattle.getHealthScore());
         cattleData.setWeightAtSale(cattle.getWeightAtSale());
-        cattleData.setDlwgRearer(dlwgRearer);
+        cattleData.setDlwgFarm(dlwgFarm);
         cattleData.setBodyWeight(weight.toString());
         cattleData.setExpenses(cattle.getExpenses());
         cattleData.setSireEarTag(cattle.getSireEarTag());
@@ -284,6 +220,42 @@ public class CattleServiceImpl implements CattleService {
 
         WeightHistory latestWeightHistory = weightHistoryService.getLatestWeightHistory(cattleId);
         return (latestWeightHistory != null) ? latestWeightHistory.getWeight() : 0.0;
+    }
+
+    private Double getDlwgFarm(Long cattleId) {
+        if (cattleId == null) {
+            return 0.0;
+        }
+
+        String query = """
+                with WeightRanked as
+                	(
+                    select
+                        cattleid,weight,
+                        TO_DATE(weightdatetime, 'YYYY-MM-DD HH24:MI:SS') as date_weighted,
+                        row_number() over (partition by cattleid order by TO_DATE(weightdatetime, 'YYYY-MM-DD HH24:MI:SS') asc) as min_rank,
+                        row_number() over (partition by cattleid order by TO_DATE(weightdatetime, 'YYYY-MM-DD HH24:MI:SS') desc) as max_rank
+                    from
+                        weighthistory
+                    where
+                        weight > 25
+                	)
+
+                select
+                	(w_max.weight-w_min.weight) / nullif((w_max.date_weighted - w_min.date_weighted), 0) as dlwgfarm
+                from
+                	cattle c
+                left join WeightRanked w_min on	c.cattleid = w_min.cattleid	and w_min.min_rank = 1
+                left join WeightRanked w_max on	c.cattleid = w_max.cattleid	and w_max.max_rank = 1
+                where
+                	c.cattleid = ?
+                                """;
+
+        Map<String, Object> result = jdbcTemplate.queryForMap(query, cattleId);
+        Double dlwgFarm =(Double) result.get("dlwgfarm");
+
+        // Round to 2 decimal places using String.format and then convert back to double
+        return (dlwgFarm!=null) ? Double.parseDouble(String.format("%.2f", dlwgFarm)) : 0.0;
     }
 
     private String getCattleMarketName(Long saleId) {

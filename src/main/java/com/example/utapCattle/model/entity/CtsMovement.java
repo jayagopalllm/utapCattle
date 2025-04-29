@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "cts_movement", schema = "public")
+@Table(name = "cts_movement")
 public class CtsMovement {
 
     @Id

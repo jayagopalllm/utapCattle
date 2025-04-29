@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "treatmenthistory", schema = "public")
+@Table(name = "treatmenthistory")
 public class TreatmentHistory {
 	@Id
 	@Column(name = "treatmenthistoryid")

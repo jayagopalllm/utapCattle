@@ -42,7 +42,6 @@ public class InductionController extends BaseController {
         } catch (final Exception e) {
             //Log and rethrow exception , exception handled in GlobalExceptionHandler
             logger.error("Exception occurred: Unable to save induction information", e);
-            System.out.println(e.getClass().getSimpleName());
             throw e;
             //return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             //return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);

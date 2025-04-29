@@ -9,8 +9,6 @@ public interface CattleService {
 
 	List<CattleDto> getAllCattle();
 
-	List<CattleDto> getAllCattleBySaleId(Long saleId);
-
 	CattleDto getCattleById(final Long id); // Use Long as the ID type
 
 	CattleDto getCattleByEarTag(final String earTag);

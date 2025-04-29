@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "farm", schema = "public") // Explicitly specify the table name
+@Table(name = "farm") // Explicitly specify the table name
 public class Farm {
 
     @Id

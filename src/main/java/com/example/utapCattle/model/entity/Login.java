@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "block_users", schema = "public")
+@Table(name = "block_users")
 public class Login {
     @Id
     @Column(name = "username", nullable = false)

@@ -70,7 +70,7 @@ public class WeightHistoryController extends BaseController {
 		}
 	}
 
-	@GetMapping("/cattles-{penId}")
+	@GetMapping("/cattle-{penId}")
 	public ResponseEntity<List<WeightHistoryInfo>> getCattleInfoByPenId(@PathVariable Long penId) {
 		try {
 			final List<WeightHistoryInfo> cattleWeightInfo = weightHistoryService.getWeightHistoryByPen(penId);

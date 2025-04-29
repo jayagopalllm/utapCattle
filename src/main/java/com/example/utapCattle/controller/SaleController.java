@@ -2,6 +2,7 @@ package com.example.utapCattle.controller;
 
 import com.example.utapCattle.model.dto.SaleDateRequest;
 import com.example.utapCattle.model.dto.SaleDto;
+import com.example.utapCattle.model.dto.CattleDto;
 import com.example.utapCattle.model.entity.Sale;
 import com.example.utapCattle.model.entity.SaleTotalStats;
 import com.example.utapCattle.service.SaleService;
@@ -44,7 +45,7 @@ public class SaleController extends BaseController {
 		return new ResponseEntity<>(savedSale, HttpStatus.CREATED);
 	}
 
-	@GetMapping("/existing-sale-dates/{saleMarketId}")
+	@GetMapping("/{saleMarketId}/existing-sale-dates")
 	public ResponseEntity<Object> getExistingSaleDates(@PathVariable String saleMarketId) {
 		try {
 			List<Sale> saleList = saleService.getExistingSaleDates(Long.parseLong(saleMarketId));
@@ -55,7 +56,7 @@ public class SaleController extends BaseController {
 		}
 	}
 
-	@GetMapping("/total-stats/{saleId}")
+	@GetMapping("/{saleId}/total-stats")
 	public ResponseEntity<Object> getSaleTotalStats(@PathVariable String saleId) {
 		try {
 			SaleTotalStats saleTotalStats = saleService.getSaleTotalStats(Long.parseLong(saleId));
@@ -70,5 +71,12 @@ public class SaleController extends BaseController {
 	public ResponseEntity<Boolean> checkForValidSaleDate(@RequestBody SaleDateRequest request) {
 		boolean isvalidSaleDate = saleService.checkForValidSaleDate(request);
 		return new ResponseEntity<>(isvalidSaleDate, HttpStatus.OK);
+	}
+
+
+	@GetMapping("/{saleId}/cattle-info")
+	public ResponseEntity<List<CattleDto>> getAllCattleBySaleId(@PathVariable String saleId) {
+		List<CattleDto> cattList = saleService.getAllCattleBySaleId(Long.parseLong(saleId));
+		return new ResponseEntity<>(cattList, HttpStatus.OK);
 	}
 }

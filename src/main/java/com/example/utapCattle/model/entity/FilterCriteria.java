@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "filtercriteria", schema = "public")
+@Table(name = "filtercriteria")
 public class FilterCriteria {
     @Id
     @Column(name = "id")
