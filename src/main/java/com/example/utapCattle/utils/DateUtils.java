@@ -85,7 +85,7 @@ public class DateUtils {
 
             return parseDate(dateString).format(outputFormatter);
         } catch (DateTimeParseException e) {
-            return dateString;
+            throw e;
         }
     }
 
