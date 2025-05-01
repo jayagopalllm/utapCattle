@@ -11,17 +11,15 @@ import com.example.utapCattle.service.repository.CattleRepository;
 import com.example.utapCattle.service.repository.WeightHistoryRepository;
 import com.example.utapCattle.utils.DateUtils;
 
+import jakarta.persistence.Tuple;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.security.Timestamp;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
-import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -169,23 +167,21 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 		// Ensure date is in 'YYYY-MM-DD' format
 		String date = date1.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-		List<Object[]> results = weightHistoryRepository.findWeightHistoryWithDetails(date,userFarmId);
+		List<Tuple> weightHistories = weightHistoryRepository.findWeightHistoryWithDetails(date,userFarmId);
 		List<WeightHistDto> weightHistDtos = new ArrayList<>();
 
 
-
-		for (Object[] row : results) {
-
-			String dateString = (String) row[2];
-			String formattedDate = DateUtils.formatToReadableDate(dateString);
-
-			WeightHistDto dto = new WeightHistDto(
-					(String) row[0],  // earTag
-					((Number) row[1]).longValue(),  // cattleId
-					formattedDate,
-					((Number) row[3]).doubleValue()   // weight
-			);
+		for (Tuple hist : weightHistories) {
+			WeightHistDto dto =new WeightHistDto();
+			dto.setEarTag(hist.get("eartag", String.class));
+			dto.setCattleId(hist.get("cattleid", Long.class));
+			dto.setWeight(hist.get("weight", Double.class));
+			dto.setWeightDateTime(DateUtils.formatToReadableDate(hist.get("weightdatetime", String.class)));
+			Double dlwgFarm= hist.get("dlwgfarm", Double.class);
+			dlwgFarm=(dlwgFarm!=null) ? Double.parseDouble(String.format("%.2f", dlwgFarm)) : 0.0;
+			dto.setDlwgFarm(dlwgFarm);
 			weightHistDtos.add(dto);
+
 		}
 
 		return weightHistDtos;
