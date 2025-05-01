@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -15,4 +13,5 @@ public class WeightHistDto {
     private Long cattleId;
     private String weightDateTime;
     private Double weight;
+    private Double dlwgFarm;
 }
