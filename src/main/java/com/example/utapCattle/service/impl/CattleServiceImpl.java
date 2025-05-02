@@ -132,7 +132,6 @@ public class CattleServiceImpl implements CattleService {
     }
 
     private CattleDto mapToDto(final Cattle cattle) {
-        System.out.println("cattleData-----"+cattle);
         Double weight = getLatestWeight(cattle.getCattleId());
         String cattleName = getCattleMarketName(cattle.getSaleId());
         String breedAbbr = getBreedAbbr(cattle.getBreedId());
@@ -197,7 +196,6 @@ public class CattleServiceImpl implements CattleService {
         cattleData.setTotalTreatments(treatmentCount);
         cattleData.setLastWithdraw(lastTreatment);
         cattleData.setIsInductionCompleted(cattle.getIsInductionCompleted());
-        System.out.println("cattleData-----"+cattleData);
         return cattleData;
     }
 
