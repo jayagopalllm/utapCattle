@@ -124,7 +124,6 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 				info.setWeightDiff(Math.round(weightDiff * 100.0) / 100.0); // Rounds to 2 decimal places
 
 
-				LOGGER.debug("weightDiff = {} ", weightDiff);
 
 				long daysBetween = calculateDaysBetween(previousWeightHistory.getWeightDateTime(),
 						currentWeightHistory.getWeightDateTime());
@@ -133,12 +132,10 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 					daysBetween = 1;
 				}
 
-				LOGGER.debug("daysBetween = {} ", daysBetween);
 
 				final double dlwg = weightDiff / daysBetween;
 				final double roundedDlwg = Math.round(dlwg * 100.0) / 100.0;
 
-				LOGGER.debug("dlwg = {} ", dlwg);
 
 				info.setDlwg(roundedDlwg);
 			}
@@ -222,11 +219,9 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 			final long totalDays = calculateDaysBetween(firstWeightHistory.getWeightDateTime(),
 					lastWeightHistory.getWeightDateTime());
 
-			LOGGER.debug("totalDays = {}", totalDays);
 
 			if (totalDays > 0) {
 				final double totalWeightDifference = lastWeightHistory.getWeight() - firstWeightHistory.getWeight();
-				LOGGER.debug("totalWeightDifference = {}", totalWeightDifference);
 				overallDLWG = totalWeightDifference / totalDays;
 			}
 		}
