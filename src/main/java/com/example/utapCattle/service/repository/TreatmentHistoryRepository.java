@@ -24,7 +24,7 @@ public interface TreatmentHistoryRepository extends JpaRepository<TreatmentHisto
 	@Query("SELECT COUNT(t) FROM TreatmentHistory t WHERE t.cattleId = :cattleId")
 	Long countByCattleId(@Param("cattleId") Long cattleId);
 
-	@Query("SELECT t.withdrawalDate FROM TreatmentHistory t WHERE t.cattleId = :cattleId ORDER BY t.withdrawalDate DESC LIMIT 1")
+    @Query(value = "SELECT TO_CHAR(t.withdrawaldate::date, 'DD/MM/YYYY') as withdrawalDate FROM treatmenthistory t WHERE t.cattleid = :cattleId ORDER BY t.withdrawaldate DESC LIMIT 1", nativeQuery = true)
 	Optional<String> findLatestWithdrawalDateByCattleId(@Param("cattleId") Long cattleId);
 
 
