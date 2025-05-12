@@ -69,7 +69,6 @@ public class DataController extends BaseController {
 	 */
 	@GetMapping(value = "/treatment")
 	public ResponseEntity<AllDataDto> getTreatmentData(HttpServletRequest request) {
-		System.out.println("inside getTreatmentData ");
 		try {
 			Long userId = Long.parseLong(request.getHeader("User-ID"));
 			Long userFarmId = Long.parseLong(request.getHeader("Farm-ID"));
