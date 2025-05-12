@@ -7,6 +7,8 @@ import com.example.utapCattle.service.*;
 import com.example.utapCattle.service.repository.CattleRepository;
 import com.example.utapCattle.service.repository.SellerMarketRepository;
 import com.example.utapCattle.service.repository.TreatmentHistoryRepository;
+import com.example.utapCattle.utils.DateUtils;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -148,7 +150,7 @@ public class CattleServiceImpl implements CattleService {
         cattleData.setCattleId(cattle.getCattleId());
         cattleData.setPrefix(cattle.getPrefix());
         cattleData.setEarTag(cattle.getEarTag());
-        cattleData.setDateOfBirth(cattle.getDateOfBirth());
+        cattleData.setDateOfBirth(DateUtils.formatToReadableDate(cattle.getDateOfBirth(),"dd/MM/yyyy"));
         cattleData.setMotherEarTag(cattle.getMotherEarTag());
         cattleData.setBreedId(cattle.getBreedId());
         cattleData.setCategoryId(cattle.getCategoryId());
