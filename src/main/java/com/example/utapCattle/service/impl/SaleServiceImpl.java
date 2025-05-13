@@ -219,8 +219,8 @@ public class SaleServiceImpl implements SaleService {
     public SaleTotalStats getSaleTotalStats(Long saleId) {
         String query = "SELECT "+
                         "    COUNT(eartag) AS totalCattle, "+
-                        "    sum(case when EXTRACT(MONTH FROM AGE(TO_DATE(c.dateofbirth, 'DD/MM/YYYY'), CURRENT_DATE::date)) + "+
-                        "    EXTRACT(YEAR FROM AGE(TO_DATE(c.dateofbirth, 'DD/MM/YYYY'), CURRENT_DATE::date)) * 12 >= 30 then 1 else 0 end )AS totalOTM, "+
+                        "    sum(case when EXTRACT(MONTH FROM AGE(c.dateofbirth::date, CURRENT_DATE::date)) + "+
+                        "    EXTRACT(YEAR FROM AGE(c.dateofbirth::date, CURRENT_DATE::date)) * 12 >= 30 then 1 else 0 end )AS totalOTM, "+
                         "    SUM(weightatsale) as totalWeight "+
                         "FROM "+
                         "    cattle c "+
