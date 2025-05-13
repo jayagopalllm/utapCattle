@@ -24,19 +24,6 @@ public interface WeightHistoryRepository extends JpaRepository<WeightHistory, Lo
 	WeightHistory findLatestWeightByCattleId(@Param("cattleId") Long cattleId);
 
 
-//	@Query(value = """
-//    SELECT
-//        c.eartag AS earTag,
-//        c.cattleid AS cattleId,
-//        w.weightdatetime AS weightDateTime,
-//        w.weight AS weight
-//    FROM cattle c
-//    INNER JOIN weighthistory w
-//        ON c.cattleid = w.cattleid
-//        AND TO_DATE(w.weightdatetime, 'DD/MM/YYYY') = TO_DATE(:date, 'YYYY-MM-DD')
-//    ORDER BY w.weighthistoryid DESC
-//    """, nativeQuery = true)
-//List<WeightHistory> findByWegAndWeightDateTime(@Param("formattedDate") String formattedDate);
 
 
    @Query(value = """
@@ -69,36 +56,6 @@ public interface WeightHistoryRepository extends JpaRepository<WeightHistory, Lo
             ORDER BY w_max.date_weighted::timestamp DESC
       """, nativeQuery = true)
    List<Tuple> findWeightHistoryWithDetails(@Param("date") String date, Long userFarmId);
-
-
-
-//	@Query(value ="""
-//    SELECT
-//       c.eartag AS earTag,
-//       c.cattleid AS cattleId,
-//       w.weightdatetime AS weightDateTime,
-//       w.weight AS weight
-//    FROM cattle c
-//    INNER JOIN weighthistory w
-//        ON c.cattleid = w.cattleid
-//    WHERE TO_DATE(w.weightdatetime, 'DD/MM/YYYY') = TO_DATE(:date, 'DD/MM/YYYY')
-//    """, nativeQuery = true)
-//	List<WeightHistDto> findWeightHistoryWithDetails(@Param("date") String date);
-
-
-//	@Query(value ="""
-//    SELECT
-//       c.eartag AS earTag,
-//       c.cattleid AS cattleId,
-//       w.weightdatetime AS weightDateTime,
-//       w.weight AS weight
-//    FROM cattle c
-//    INNER JOIN weighthistory w
-//        ON c.cattleid = w.cattleid
-//    WHERE TO_DATE(w.weightdatetime, 'DD-MM-YYYY') = TO_DATE(:date, 'YYYY-MM-DD')
-//""", nativeQuery = true)
-//	List<WeightHistDto> findWeightHistoryWithDetails(@Param("date") String date);
-
 
 
 }
