@@ -79,8 +79,19 @@ public class DataServiceImpl implements DataService {
         final List<Agent> agents = agentRepository.findByUserFarmIdOrderByAgentNameAsc(userFarmId);
         final List<Customer> customers = customerRepository.findByUserFarmIdOrderByCustomerNameAsc(userFarmId);
         final List<Pen> pens = penRepository.findAll();
+        final Map<Long, String> eIdEarTagMap = getEidEarTagMapping(userFarmId);
 
-        return new AllDataDto(farms, breeds, markets, categories, agents, customers,pens);
+        final AllDataDto allData = new AllDataDto();
+        allData.setEIdEarTagMap(eIdEarTagMap);
+        allData.setSourceFarm(farms);
+        allData.setBreed(breeds);
+        allData.setMarket(markets);
+        allData.setCategory(categories);
+        allData.setAgent(agents);
+        allData.setFatteningFor(customers);
+        allData.setPens(pens);
+
+        return allData;
     }
 
     @Override
