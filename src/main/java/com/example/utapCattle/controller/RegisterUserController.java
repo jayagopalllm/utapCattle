@@ -2,6 +2,9 @@ package com.example.utapCattle.controller;
 
 import com.example.utapCattle.model.dto.UserDto;
 import com.example.utapCattle.service.UserService;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -52,16 +55,19 @@ public class RegisterUserController extends BaseController{
         }
     }
 
-    @PostMapping("/save") 
-    public ResponseEntity<Long> saveUser(@RequestBody UserDto user) {
+    @PostMapping("/save")
+    public ResponseEntity<Long> saveUser(@RequestBody UserDto user, HttpServletRequest request) {
         logger.info("Saving new User: {}", user);
         try {
+            Long userFarmId = Long.parseLong(request.getHeader("Farm-ID"));
+            user.setUserFarmId(userFarmId);
             UserDto savedUserDto = userService.saveUser(user);
             logger.info("Saved Agent with ID: {}", savedUserDto.getId());
             return new ResponseEntity<>(savedUserDto.getId(), HttpStatus.CREATED);
         } catch (Exception e) {
+            //Log and rethrow exception , exception handled in GlobalExceptionHandler
             logger.error("Exception occurred: Unable to save Agent", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            throw e;
         }
     }
 

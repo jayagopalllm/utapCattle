@@ -18,7 +18,7 @@ public class User {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "customerid", nullable = false)
+    @Column(name = "customerid")
     private Long customerId;
 
     @Column(name = "farmid", nullable = false)

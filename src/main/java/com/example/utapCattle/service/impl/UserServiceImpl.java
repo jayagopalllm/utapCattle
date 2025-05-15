@@ -1,5 +1,6 @@
 package com.example.utapCattle.service.impl;
 
+import com.example.utapCattle.exception.ResourceAlreadyExistsException;
 import com.example.utapCattle.model.dto.UserDto;
 import com.example.utapCattle.model.entity.User;
 import com.example.utapCattle.service.UserService;
@@ -43,7 +44,7 @@ public class UserServiceImpl implements UserService {
     public UserDto saveUser(UserDto userDto) {
         User user1 = new User();
         if (userRepository.existsByUserName(userDto.getUserName())) {
-            throw new IllegalArgumentException("Username already exists: " + userDto.getUserName());
+            throw new ResourceAlreadyExistsException("Username already exists..!!");
         }
         //Long nextId = userRepository.getNextSequenceValue();
         user1.setUserName(userDto.getUserName());

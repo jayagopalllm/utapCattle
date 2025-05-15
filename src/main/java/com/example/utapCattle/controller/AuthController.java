@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.utapCattle.model.entity.AuthResponse;
@@ -22,6 +23,9 @@ import com.example.utapCattle.service.repository.UserRepository;
 public class AuthController {
 
     @Autowired
+    PasswordEncoder encoder;
+
+    @Autowired
     private UserSessionRepository sessionRepository;
 
     @Autowired
@@ -31,8 +35,7 @@ public class AuthController {
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request, HttpSession session) {
 
         Optional<User> optionalUser = userRepository.findByUserName(request.getUsername());
-
-        if (optionalUser.isEmpty() || !optionalUser.get().getPassword().equals(request.getPassword())) {
+        if (optionalUser.isEmpty() || !encoder.matches(request.getPassword(), optionalUser.get().getPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new AuthResponse("Invalid credentials", null, null,null,null));
         }
@@ -48,7 +51,6 @@ public class AuthController {
         UserSession userSession = new UserSession(user.getId(), session.getId(), true);
         sessionRepository.save(userSession);
 
-        System.out.println("userSession: " + userSession);
 
         return ResponseEntity.ok(new AuthResponse("Login successful", session.getId(), user.getId(), user.getUserName(), user.getUserFarmId()));
     }
