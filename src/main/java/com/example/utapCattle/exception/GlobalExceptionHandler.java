@@ -23,6 +23,12 @@ public class GlobalExceptionHandler {
                 .body(Collections.singletonMap("message", ex.getMessage()));
     }
 
+    @ExceptionHandler(ResourceAlreadyExistsException.class)
+    public ResponseEntity<Map<String, String>> handleDuplicateUser(ResourceAlreadyExistsException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(Collections.singletonMap("message", ex.getMessage()));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleGenericException(Exception ex) {
         logger.error("Exception occurred: ", ex);
