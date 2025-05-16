@@ -6,13 +6,16 @@ public class AuthResponse {
     private String sessionId;
     private String username;
     private Long farmId;
+    private String role;
+    
 
-    public AuthResponse(String message, String sessionId, Long userId, String username, Long userFarmId) {
+    public AuthResponse(String message, String sessionId, Long userId, String username, Long userFarmId, String role) {
         this.message = message;
         this.sessionId = sessionId;
         this.userId = userId;
         this.username = username;
         this.farmId = userFarmId;
+        this.role = role;
     }
 
 
@@ -59,4 +62,16 @@ public class AuthResponse {
     public void setFarmId(Long userFarmId) {
         this.farmId = userFarmId;
     }
+
+
+    public String getRole() {
+        return role;
+    }
+
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    
 }
