@@ -12,7 +12,7 @@ public class TreatmentHistoryDto {
 	private Long treatmentHistoryId;
 	private Long cattleId;
 	private Long userId;
-	private String medicalConditionId;
+	private Long medicalConditionId;
 	private Long medicationId;
 	private String batchNumber;
 	private String treatmentDate;

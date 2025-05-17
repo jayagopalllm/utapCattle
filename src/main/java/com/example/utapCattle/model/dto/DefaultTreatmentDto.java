@@ -17,4 +17,9 @@ public class DefaultTreatmentDto {
     private Long medicalConditionId;
 
     private Long medicationId;
+
+    private String conditionDesc;
+
+    private String medicationDesc;
+
 }

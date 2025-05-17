@@ -29,7 +29,7 @@ public class TreatmentHistory {
 	private String treatmentDate;
 
 	@Column(name = "medicalconditionid")
-	private String medicalConditionId;
+	private Long medicalConditionId;
 
 	@Column(name = "medicationid")
 	private Long medicationId;

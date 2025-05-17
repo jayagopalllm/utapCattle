@@ -17,7 +17,7 @@ public class Pen {
 
 	@Id
 	@Column(name = "penid")
-	private int penId;
+	private Long penId;
 
 	@Column(name = "penname")
 	private String penName;

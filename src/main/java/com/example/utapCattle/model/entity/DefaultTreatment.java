@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,4 +28,10 @@ public class DefaultTreatment {
 
 	@Column(name = "medicationid")
 	private Long medicationId;
+
+	@Transient
+    private String conditionDesc;
+
+    @Transient
+    private String medicationDesc;
 }

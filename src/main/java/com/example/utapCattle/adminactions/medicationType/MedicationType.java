@@ -1,4 +1,4 @@
-package com.example.utapCattle.model.entity;
+package com.example.utapCattle.adminactions.medicationType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,15 +14,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "medicalcondition")
-public class MedicalCondition {
-
-	@Id
+@Table(name = "medicationtype")
+public class MedicationType {
+    @Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "medicalconditionid")
-	private Long medicalConditionId;
+	@Column(name = "medicationtypeid")
+	private Long medicationTypeId;
 
-	@Column(name = "conditiondesc")
-	private String conditionDesc;
-
+	@Column(name = "medicationtypedesc")
+	private String medicationTypeDesc;
 }
