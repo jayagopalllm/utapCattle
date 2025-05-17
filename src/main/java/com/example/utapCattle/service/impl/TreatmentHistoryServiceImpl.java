@@ -198,7 +198,7 @@ public class TreatmentHistoryServiceImpl implements TreatmentHistoryService {
 			throw new IllegalArgumentException("treatmentHistories is a mandatory field and cannot be null or empty.");
 		}
 		for (final TreatmentHistory treatmentHistory : treatmentHistories) {
-			if (StringUtils.isEmpty(treatmentHistory.getMedicalConditionId())) {
+			if (treatmentHistory.getMedicalConditionId() == null) {
 				throw new IllegalArgumentException(
 						"MedicalConditionId is a mandatory field and cannot be null or empty.");
 			}

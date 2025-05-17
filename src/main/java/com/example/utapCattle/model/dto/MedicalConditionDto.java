@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MedicalConditionDto {
 
-	private String medicalConditionId;
+	private Long medicalConditionId;
 
 	private String conditionDesc;
 

@@ -9,15 +9,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MedicationDto {
 
-	private int medicationId;
+	private Long medicationId;
 
 	private String medicationDesc;
 
-	private int medicationSupplierId;
+	private Long medicationSupplierId;
 
 	private int withdrawalPeriod;
 
-	private int medicationTypeId;
+	private Long medicationTypeId;
 
 	private String batchNumber;
 

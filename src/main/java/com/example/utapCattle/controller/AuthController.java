@@ -35,8 +35,6 @@ public class AuthController {
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request, HttpSession session) {
 
         Optional<User> optionalUser = userRepository.findByUserName(request.getUsername());
-        System.out.println("request.getPassword()----------->"+request.getPassword());
-        System.out.println("optionalUser.get().getPassword()----------->"+optionalUser.get().getPassword());
         if (optionalUser.isEmpty() || !encoder.matches(request.getPassword(), optionalUser.get().getPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new AuthResponse("Invalid credentials", null, null,null, null,null));
