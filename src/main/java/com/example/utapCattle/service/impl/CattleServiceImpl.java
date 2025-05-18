@@ -43,15 +43,10 @@ public class CattleServiceImpl implements CattleService {
     private final WeightHistoryService weightHistoryService;
     private final SaleService saleService;
 
-    public CattleServiceImpl(CattleRepository cattleRepository
-            , BreedService breedService
-            , CategoryService categoryService
-            , FarmService farmService
-            , MarketService marketService
-            , CustomerService customerService
-            , AgentService agentService
-            , TreatmentHistoryRepository treatmentHistoryRepository
-            , WeightHistoryService weightHistoryService,
+    public CattleServiceImpl(CattleRepository cattleRepository, BreedService breedService,
+            CategoryService categoryService, FarmService farmService, MarketService marketService,
+            CustomerService customerService, AgentService agentService,
+            TreatmentHistoryRepository treatmentHistoryRepository, WeightHistoryService weightHistoryService,
             SaleService saleService) {
         this.cattleRepository = cattleRepository;
         this.breedService = breedService;
@@ -81,12 +76,12 @@ public class CattleServiceImpl implements CattleService {
     @Override
     public CattleDto getCattleByEarTag(String earTag) {
         final Optional<Cattle> cattle = cattleRepository.findByEarTag(earTag);
-            return cattle.map(this::mapToDto).orElse(null);
+        return cattle.map(this::mapToDto).orElse(null);
     }
 
     @Override
     public CattleDto updateCattle(final Long id, final Cattle cattle) throws Exception { // Return CattleDto
-//        validateCattleInformation(cattle);
+        // validateCattleInformation(cattle);
         Optional<Cattle> cattleOptional = cattleRepository.findByCattleIdAndEarTag(id, cattle.getEarTag());
         if (cattleOptional.isPresent()) {
             Cattle cattle1 = cattleOptional.get();
@@ -100,22 +95,22 @@ public class CattleServiceImpl implements CattleService {
         return null;
     }
 
-//    @Override
-//    public List<CattleDto> saveCattleBatch(List<Cattle> cattleList) throws Exception {
-//        List<CattleDto> savedCattleDtos = new ArrayList<>();
-//
-//        // Loop through each cattle and save it
-//        for (Cattle cattle : cattleList) {
-//            validateCattleInformation(cattle);
-//            final long nextInductionId = cattleRepository.getNextSequenceValue();
-//            cattle.setId(nextInductionId);
-//            final Cattle savedCattle = cattleRepository.save(cattle);
-//            savedCattleDtos.add(mapToDto(savedCattle));
-//        }
-//
-//        return savedCattleDtos;
-//    }
-
+    // @Override
+    // public List<CattleDto> saveCattleBatch(List<Cattle> cattleList) throws
+    // Exception {
+    // List<CattleDto> savedCattleDtos = new ArrayList<>();
+    //
+    // // Loop through each cattle and save it
+    // for (Cattle cattle : cattleList) {
+    // validateCattleInformation(cattle);
+    // final long nextInductionId = cattleRepository.getNextSequenceValue();
+    // cattle.setId(nextInductionId);
+    // final Cattle savedCattle = cattleRepository.save(cattle);
+    // savedCattleDtos.add(mapToDto(savedCattle));
+    // }
+    //
+    // return savedCattleDtos;
+    // }
 
     @Override
     public CattleDto saveCattle(final Cattle cattle) throws Exception {
@@ -125,8 +120,6 @@ public class CattleServiceImpl implements CattleService {
         final Cattle savedCattle = cattleRepository.save(cattle);
         return mapToDto(savedCattle);
     }
-
-
 
     @Override
     public List<String> findEarTagsWithIncompleteInduction(Long userFarmId) {
@@ -150,7 +143,7 @@ public class CattleServiceImpl implements CattleService {
         cattleData.setCattleId(cattle.getCattleId());
         cattleData.setPrefix(cattle.getPrefix());
         cattleData.setEarTag(cattle.getEarTag());
-        cattleData.setDateOfBirth(DateUtils.formatToReadableDate(cattle.getDateOfBirth(),"dd/MM/yyyy"));
+        cattleData.setDateOfBirth(DateUtils.formatToReadableDate(cattle.getDateOfBirth(), "dd/MM/yyyy"));
         cattleData.setMotherEarTag(cattle.getMotherEarTag());
         cattleData.setBreedId(cattle.getBreedId());
         cattleData.setCategoryId(cattle.getCategoryId());
@@ -204,8 +197,8 @@ public class CattleServiceImpl implements CattleService {
     public String getLastWithdrawalDate(Long cattleId) {
         return (cattleId != null)
                 ? treatmentHistoryRepository.findLatestWithdrawalDateByCattleId(cattleId)
-                //.map(Date::toString)
-                .orElse(null)
+                        // .map(Date::toString)
+                        .orElse(null)
                 : null;
     }
 
@@ -252,15 +245,16 @@ public class CattleServiceImpl implements CattleService {
                                 """;
 
         Map<String, Object> result = jdbcTemplate.queryForMap(query, cattleId);
-        Double dlwgFarm =(Double) result.get("dlwgfarm");
+        Double dlwgFarm = (Double) result.get("dlwgfarm");
 
         // Round to 2 decimal places using String.format and then convert back to double
-        return (dlwgFarm!=null) ? Double.parseDouble(String.format("%.2f", dlwgFarm)) : 0.0;
+        return (dlwgFarm != null) ? Double.parseDouble(String.format("%.2f", dlwgFarm)) : 0.0;
     }
 
     private String getCattleMarketName(Long saleId) {
         return (saleId != null)
-                ? sellerMarketRepository.findBySellerMarketId(saleService.getSaleBySaleId(saleId).getSaleMarketId()).getSellerMarketName()
+                ? sellerMarketRepository.findBySellerMarketId(saleService.getSaleBySaleId(saleId).getSaleMarketId())
+                        .getSellerMarketName()
                 // marketService.getMarketById(sourceMarketId.longValue()).getMarketName()
                 : null;
     }

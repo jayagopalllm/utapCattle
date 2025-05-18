@@ -129,10 +129,10 @@ public class Cattle {
 	private String cattleGroupId;
 
 	@Column(name = "conformationid")
-	private String conformationId;
+	private Long conformationId;
 
 	@Column(name = "fatcoverid")
-	private String fatCoverId;
+	private Long fatCoverId;
 
 	@Column(name = "weightatpurchase")
 	private String weightAtPurchase;
