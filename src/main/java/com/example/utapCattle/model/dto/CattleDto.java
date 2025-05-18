@@ -55,8 +55,8 @@ public class CattleDto {
 	private Integer tagId;
 	private String newTagReqd;
 	private String cattleGroupId;
-	private String conformationId;
-	private String fatCoverId;
+	private Long conformationId;
+	private Long fatCoverId;
 	private String weightAtPurchase;
 	private String numPrevMovements;
 	private Long totalTreatments;
