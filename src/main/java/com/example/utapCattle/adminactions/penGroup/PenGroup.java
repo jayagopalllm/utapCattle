@@ -1,10 +1,11 @@
-package com.example.utapCattle.model.entity;
+package com.example.utapCattle.adminactions.penGroup;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,20 +14,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "pen")
-public class Pen {
-
+@Table(name = "pen_group")
+public class PenGroup {
 	@Id
-	@Column(name = "penid")
-	private Long penId;
-
-	@Column(name = "penname")
-	private String penName;
-
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "pengroupid")
 	private Long penGroupId;
 
-	@Transient
+	@Column(name = "groupdesc")
 	private String groupDesc;
-
 }

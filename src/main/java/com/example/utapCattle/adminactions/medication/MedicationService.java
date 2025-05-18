@@ -60,10 +60,10 @@ public class MedicationService {
 
     private Medication populateTransientFields(Medication medication) {
         supplierRepository.findById(medication.getMedicationSupplierId())
-            .ifPresent(supplier -> medication.setSupplierName(supplier.getSupplierName()));
+                .ifPresent(supplier -> medication.setSupplierName(supplier.getSupplierName()));
 
         typeRepository.findById(medication.getMedicationTypeId())
-            .ifPresent(type -> medication.setMedicationTypeDesc(type.getMedicationTypeDesc()));
+                .ifPresent(type -> medication.setMedicationTypeDesc(type.getMedicationTypeDesc()));
 
         return medication;
     }
