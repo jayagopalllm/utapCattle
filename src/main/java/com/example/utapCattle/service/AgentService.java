@@ -13,4 +13,8 @@ public interface AgentService {
 
     AgentDto saveAgent(Agent agent);
 
+    AgentDto update(Long id, Agent condition);
+
+    void delete(Long id);
+
 }

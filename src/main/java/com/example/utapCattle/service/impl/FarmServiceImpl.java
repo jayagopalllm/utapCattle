@@ -52,8 +52,33 @@ public class FarmServiceImpl implements FarmService {
                 farm.getCounty(),
                 farm.getPostcode(),
                 farm.getFarmRef(),
-                farm.getCurrent()
-        );
+                farm.getCurrent());
+    }
+
+    @Override
+    public FarmDto update(Long id, Farm updatedFarm) {
+        return farmRepository.findById(id).map(farm -> {
+            farm.setFarmContact(updatedFarm.getFarmContact());
+            farm.setFarmName(updatedFarm.getFarmName());
+            farm.setAddress(updatedFarm.getAddress());
+            farm.setHoldingNumber(updatedFarm.getHoldingNumber());
+            farm.setAssuranceNumber(updatedFarm.getAssuranceNumber());
+            farm.setAssuranceExpiryDate(updatedFarm.getAssuranceExpiryDate());
+            farm.setCounty(updatedFarm.getCounty());
+            farm.setPostcode(updatedFarm.getPostcode());
+            farm.setFarmRef(updatedFarm.getFarmRef());
+            farm.setCurrent(updatedFarm.getCurrent());
+            return mapToDto(farmRepository.save(farm));
+        }).orElseThrow(() -> new RuntimeException("Farm not found"));
+    }
+
+    @Override
+    public void delete(Long id) {
+        if (farmRepository.existsById(id)) {
+            farmRepository.deleteById(id);
+        } else {
+            throw new RuntimeException("Farm not found");
+        }
     }
 
 }

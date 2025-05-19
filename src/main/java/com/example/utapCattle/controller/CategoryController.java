@@ -5,9 +5,11 @@ import com.example.utapCattle.model.entity.Category;
 import com.example.utapCattle.service.CategoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -58,11 +60,31 @@ public class CategoryController extends BaseController {
         logger.info("Saving new category: {}", category);
         try {
             CategoryDto savedCategoryDto = categoryService.saveCategory(category);
-            logger.info("Saved category with ID: {}", savedCategoryDto.getCategoryId()); // Assuming CategoryDto has getCategoryId()
+            logger.info("Saved category with ID: {}", savedCategoryDto.getCategoryId()); // Assuming CategoryDto has
+                                                                                         // getCategoryId()
             return new ResponseEntity<>(savedCategoryDto.getCategoryId(), HttpStatus.CREATED);
         } catch (Exception e) {
             logger.error("Exception occurred: Unable to save category", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CategoryDto> update(@PathVariable Long id, @RequestBody Category condition) {
+        try {
+            return ResponseEntity.ok(categoryService.update(id, condition));
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        try {
+            categoryService.delete(id);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
         }
     }
 

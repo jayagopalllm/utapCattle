@@ -30,4 +30,12 @@ public class FatcoverService {
             return repository.save(condition);
         }).orElseThrow(() -> new RuntimeException("Fat Cover not found"));
     }
+
+    public void delete(Long id) {
+        if (repository.existsById(id)) {
+            repository.deleteById(id);
+        } else {
+            throw new RuntimeException("Fat Cover not found");
+        }
+    }
 }

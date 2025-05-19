@@ -13,4 +13,8 @@ public interface FarmService {
 
     FarmDto saveFarm(Farm farm);
 
+    FarmDto update(Long id, Farm condition);
+
+    void delete(Long id);
+
 }

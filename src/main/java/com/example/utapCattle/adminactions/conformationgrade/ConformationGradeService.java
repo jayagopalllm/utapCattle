@@ -30,4 +30,12 @@ public class ConformationGradeService {
             return repository.save(condition);
         }).orElseThrow(() -> new RuntimeException("Conformation Grade not found"));
     }
+
+    public void delete(Long id) {
+        if (repository.existsById(id)) {
+            repository.deleteById(id);
+        } else {
+            throw new RuntimeException("Conformation Grade not found");
+        }
+    }
 }

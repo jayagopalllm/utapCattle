@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MarketDto {
 
-    private Integer marketId;
+    private Long marketId;
     private Integer sourceMarketId;
     private String marketName;
     private String holdingNumber;
-    private String current; 
+    private String current;
 
 }

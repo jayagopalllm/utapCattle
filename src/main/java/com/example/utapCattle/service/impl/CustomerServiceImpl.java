@@ -19,9 +19,10 @@ public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
     private final CattleRepository cattleRepository;
-    private final UserService userService ;
+    private final UserService userService;
 
-    public CustomerServiceImpl(CustomerRepository customerRepository, CattleRepository cattleRepository,UserService userService) {
+    public CustomerServiceImpl(CustomerRepository customerRepository, CattleRepository cattleRepository,
+            UserService userService) {
         this.customerRepository = customerRepository;
         this.cattleRepository = cattleRepository;
         this.userService = userService;
@@ -56,5 +57,23 @@ public class CustomerServiceImpl implements CustomerService {
         return new CustomerDto(
                 customer.getCustomerId(),
                 customer.getCustomerName());
+    }
+
+    @Override
+    public CustomerDto update(Long id, Customer condition) {
+        return customerRepository.findById(id).map(existingCondition -> {
+            existingCondition.setCustomerName(condition.getCustomerName());
+            customerRepository.save(existingCondition);
+            return mapToDto(existingCondition);
+        }).orElseThrow(() -> new RuntimeException("Customer not found"));
+    }
+
+    @Override
+    public void delete(Long id) {
+        if (customerRepository.existsById(id)) {
+            customerRepository.deleteById(id);
+        } else {
+            throw new RuntimeException("Customer not found");
+        }
     }
 }

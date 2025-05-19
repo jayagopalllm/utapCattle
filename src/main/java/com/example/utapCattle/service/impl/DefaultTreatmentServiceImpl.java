@@ -1,5 +1,6 @@
 package com.example.utapCattle.service.impl;
 
+import com.example.utapCattle.adminactions.conformationgrade.ConformationGrade;
 import com.example.utapCattle.model.dto.DefaultTreatmentDto;
 import com.example.utapCattle.model.entity.DefaultTreatment;
 import com.example.utapCattle.service.DefaultTreatmentService;
@@ -25,7 +26,7 @@ public class DefaultTreatmentServiceImpl implements DefaultTreatmentService {
     @Autowired
     private MedicalConditionRepository medicalConditionRepository;
 
-    public DefaultTreatmentServiceImpl( DefaultTreatmentRepository defaultTreatmentRepository) {
+    public DefaultTreatmentServiceImpl(DefaultTreatmentRepository defaultTreatmentRepository) {
         this.defaultTreatmentRepository = defaultTreatmentRepository;
     }
 
@@ -39,10 +40,10 @@ public class DefaultTreatmentServiceImpl implements DefaultTreatmentService {
 
     private DefaultTreatment populateTransientFields(DefaultTreatment defaultTreatment) {
         medicationRepository.findById(defaultTreatment.getMedicationId())
-            .ifPresent(supplier -> defaultTreatment.setMedicationDesc(supplier.getMedicationDesc()));
+                .ifPresent(supplier -> defaultTreatment.setMedicationDesc(supplier.getMedicationDesc()));
 
         medicalConditionRepository.findById(defaultTreatment.getMedicalConditionId())
-            .ifPresent(type -> defaultTreatment.setConditionDesc(type.getConditionDesc()));
+                .ifPresent(type -> defaultTreatment.setConditionDesc(type.getConditionDesc()));
 
         return defaultTreatment;
     }
@@ -68,8 +69,29 @@ public class DefaultTreatmentServiceImpl implements DefaultTreatmentService {
                 defaultTreatment.getMedicalConditionId(),
                 defaultTreatment.getMedicationId(),
                 defaultTreatment.getConditionDesc(),
-                defaultTreatment.getMedicationDesc()
-        );
+                defaultTreatment.getMedicationDesc());
+    }
+
+    @Override
+    public DefaultTreatmentDto update(Long id, DefaultTreatment condition) {
+
+        return defaultTreatmentRepository.findById(id).map(existingCondition -> {
+            existingCondition.setDescription(condition.getDescription());
+            existingCondition.setMedicalConditionId(condition.getMedicalConditionId());
+            existingCondition.setMedicationId(condition.getMedicationId());
+            defaultTreatmentRepository.save(existingCondition);
+            return mapToDto(populateTransientFields(existingCondition));
+        }).orElseThrow(() -> new RuntimeException("Compolsory Treatment not found"));
+
+    }
+
+    @Override
+    public void delete(Long id) {
+        if (defaultTreatmentRepository.existsById(id)) {
+            defaultTreatmentRepository.deleteById(id);
+        } else {
+            throw new RuntimeException("Compolsory Treatment not found");
+        }
     }
 
 }

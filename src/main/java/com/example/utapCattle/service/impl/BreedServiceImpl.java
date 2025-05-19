@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class BreedServiceImpl implements BreedService{
+public class BreedServiceImpl implements BreedService {
 
     private final BreedRepository breedRepository;
 
@@ -46,8 +46,29 @@ public class BreedServiceImpl implements BreedService{
                 breed.getBreedabbr(),
                 breed.getBreedfull(),
                 breed.getBreedcatego(),
-                breed.getBeefdairy()
-        );
+                breed.getBeefdairy());
+    }
+
+    @Override
+    public BreedDto update(Long id, Breed condition) {
+        return breedRepository.findById(id).map(existingCondition -> {
+            existingCondition.setBreeddesc(condition.getBreeddesc());
+            existingCondition.setBreedabbr(condition.getBreedabbr());
+            existingCondition.setBreedfull(condition.getBreedfull());
+            existingCondition.setBreedcatego(condition.getBreedcatego());
+            existingCondition.setBeefdairy(condition.getBeefdairy());
+            breedRepository.save(existingCondition);
+            return mapToDto(existingCondition);
+        }).orElseThrow(() -> new RuntimeException("Breed not found"));
+    }
+
+    @Override
+    public void delete(Long id) {
+        if (breedRepository.existsById(id)) {
+            breedRepository.deleteById(id);
+        } else {
+            throw new RuntimeException("Breed not found");
+        }
     }
 
 }
