@@ -26,7 +26,8 @@ public class MarketServiceImpl implements MarketService {
 
 	@Override
 	public List<MarketDto> findAllMarketsByUserId(Long userId) {
-		return marketRepository.findByUserFarmIdOrderByMarketNameAsc(userId).stream().map(this::mapToDto).collect(Collectors.toList());
+		return marketRepository.findByUserFarmIdOrderByMarketNameAsc(userId).stream().map(this::mapToDto)
+				.collect(Collectors.toList());
 	}
 
 	@Override
@@ -43,8 +44,27 @@ public class MarketServiceImpl implements MarketService {
 
 	// Helper method to map Market to MarketDto
 	private MarketDto mapToDto(Market market) {
-		return new MarketDto(market.getMarketId(),market.getMarketId()
-				, market.getMarketName(), market.getHoldingNumber(),
+		return new MarketDto(market.getMarketId(), null, market.getMarketName(),
+				market.getHoldingNumber(),
 				market.getCurrent());
+	}
+
+	@Override
+	public MarketDto update(Long id, Market updatedMarket) {
+		return marketRepository.findById(id).map(market -> {
+			market.setMarketName(updatedMarket.getMarketName());
+			market.setHoldingNumber(updatedMarket.getHoldingNumber());
+			market.setCurrent(updatedMarket.getCurrent());
+			return mapToDto(marketRepository.save(market));
+		}).orElse(null);
+	}
+
+	@Override
+	public void delete(Long id) {
+		if (marketRepository.existsById(id)) {
+			marketRepository.deleteById(id);
+		} else {
+			throw new RuntimeException("Market not found");
+		}
 	}
 }

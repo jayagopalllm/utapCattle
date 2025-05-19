@@ -13,8 +13,9 @@ import lombok.NoArgsConstructor;
 public class Market {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "marketid")
-    private Integer marketId;
+    private Long marketId;
 
     @Column(name = "marketname")
     private String marketName;

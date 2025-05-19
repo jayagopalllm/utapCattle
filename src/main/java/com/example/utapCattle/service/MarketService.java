@@ -14,4 +14,8 @@ public interface MarketService {
     MarketDto getMarketById(Long id);
 
     MarketDto saveMarket(Market market);
+
+    MarketDto update(Long id, Market condition);
+
+    void delete(Long id);
 }
