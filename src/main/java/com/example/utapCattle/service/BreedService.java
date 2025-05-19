@@ -12,5 +12,8 @@ public interface BreedService {
         BreedDto getBreedById(Long id);
 
         BreedDto saveBreed(Breed breed);
-}
 
+        BreedDto update(Long id, Breed condition);
+
+        void delete(Long id);
+}

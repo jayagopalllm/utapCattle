@@ -33,4 +33,12 @@ public class MedicalConditionService {
             return repository.save(condition);
         }).orElseThrow(() -> new RuntimeException("Condition not found"));
     }
+
+    public void delete(Long id) {
+        if (repository.existsById(id)) {
+            repository.deleteById(id);
+        } else {
+            throw new RuntimeException("Condition not found");
+        }
+    }
 }

@@ -19,8 +19,7 @@ public class CategoryServiceImpl implements CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
-
-        @Override
+    @Override
     public CategoryDto getCategoryById(Long id) {
         Optional<Category> category = categoryRepository.findById(id);
         return category.map(this::mapToDto).orElse(null);
@@ -44,10 +43,26 @@ public class CategoryServiceImpl implements CategoryService {
         return new CategoryDto(
                 category.getCategoryId(),
                 category.getCategoryDesc(),
-                category.getSex()
-        );
+                category.getSex());
     }
 
     // Add more methods for creating, updating, and deleting categories if needed
-}
+    @Override
+    public CategoryDto update(Long id, Category condition) {
+        return categoryRepository.findById(id).map(existingCondition -> {
+            existingCondition.setCategoryDesc(condition.getCategoryDesc());
+            existingCondition.setSex(condition.getSex());
+            categoryRepository.save(existingCondition);
+            return mapToDto(existingCondition);
+        }).orElseThrow(() -> new RuntimeException("Category not found"));
+    }
 
+    @Override
+    public void delete(Long id) {
+        if (categoryRepository.existsById(id)) {
+            categoryRepository.deleteById(id);
+        } else {
+            throw new RuntimeException("Category not found");
+        }
+    }
+}

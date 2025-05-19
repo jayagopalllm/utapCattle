@@ -2,12 +2,15 @@ package com.example.utapCattle.controller;
 
 import com.example.utapCattle.model.dto.AgentDto;
 import com.example.utapCattle.model.entity.Agent;
+import com.example.utapCattle.model.entity.Medication;
 import com.example.utapCattle.service.AgentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,14 +19,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/agent")
-public class AgentController extends BaseController{
+public class AgentController extends BaseController {
 
     private final AgentService agentService;
 
     public AgentController(AgentService agentService) {
         this.agentService = agentService;
     }
-
 
     @GetMapping("/{id}")
     public ResponseEntity<AgentDto> getAgentById(@PathVariable Long id) {
@@ -58,7 +60,7 @@ public class AgentController extends BaseController{
         }
     }
 
-    @PostMapping("/save") 
+    @PostMapping("/save")
     public ResponseEntity<Long> saveAgent(@RequestBody Agent agent) {
         logger.info("Saving new agent: {}", agent);
         try {
@@ -68,6 +70,25 @@ public class AgentController extends BaseController{
         } catch (Exception e) {
             logger.error("Exception occurred: Unable to save Agent", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<AgentDto> update(@PathVariable Long id, @RequestBody Agent condition) {
+        try {
+            return ResponseEntity.ok(agentService.update(id, condition));
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        try {
+            agentService.delete(id);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
         }
     }
 

@@ -30,4 +30,12 @@ public class PenGroupService {
             return repository.save(condition);
         }).orElseThrow(() -> new RuntimeException("Pen Group not found"));
     }
+
+    public void delete(Long id) {
+        if (repository.existsById(id)) {
+            repository.deleteById(id);
+        } else {
+            throw new RuntimeException("Pen Group not found");
+        }
+    }
 }

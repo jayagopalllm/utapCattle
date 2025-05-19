@@ -41,11 +41,31 @@ public class AgentServiceImpl implements AgentService {
         return mapToDto(savedAgent);
     }
 
-        // Helper method to map Agent to AgentDto
+    // Helper method to map Agent to AgentDto
     private AgentDto mapToDto(Agent agent) {
         return new AgentDto(
                 agent.getAgentId(),
-                agent.getAgentName()
-        );
+                agent.getAgentName());
     }
+
+    @Override
+    public AgentDto update(Long id, Agent condition) {
+
+        return agentRepository.findById(id).map(existingCondition -> {
+            existingCondition.setAgentName(condition.getAgentName());
+            agentRepository.save(existingCondition);
+            return mapToDto(existingCondition);
+        }).orElseThrow(() -> new RuntimeException("Compolsory Treatment not found"));
+
+    }
+
+    @Override
+    public void delete(Long id) {
+        if (agentRepository.existsById(id)) {
+            agentRepository.deleteById(id);
+        } else {
+            throw new RuntimeException("Compolsory Treatment not found");
+        }
+    }
+
 }

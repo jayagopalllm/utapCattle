@@ -15,4 +15,8 @@ public interface CustomerService {
 
     CustomerDto saveCustomer(Customer customer);
 
+    CustomerDto update(Long id, Customer condition);
+
+    void delete(Long id);
+
 }
