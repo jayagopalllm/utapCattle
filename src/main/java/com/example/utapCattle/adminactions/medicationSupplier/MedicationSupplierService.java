@@ -12,8 +12,8 @@ public class MedicationSupplierService {
     @Autowired
     private MedicationSupplierRepository repository;
 
-    public List<MedicationSupplier> getAll() {
-        return repository.findAll();
+    public List<MedicationSupplier> getAll(Long userFarmId) {
+        return repository.findByUserFarmId(userFarmId);
     }
 
     public Optional<MedicationSupplier> getById(Long id) {

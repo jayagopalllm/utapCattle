@@ -23,4 +23,10 @@ public class MedicationType {
 
 	@Column(name = "medicationtypedesc")
 	private String medicationTypeDesc;
+
+	@Column(name = "category")
+	private String category;
+
+	@Column(name = "userfarmid")
+	private Long userFarmId;
 }

@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.List;
 
 @RestController
@@ -14,8 +16,9 @@ public class MedicationTypeController {
     private MedicationTypeService service;
 
     @GetMapping
-    public List<MedicationType> getAll() {
-        return service.getAll();
+    public List<MedicationType> getAll(HttpServletRequest request) {
+        Long userFarmId = Long.parseLong(request.getHeader("Farm-ID"));
+        return service.getAll(userFarmId);
     }
 
     @GetMapping("/{id}")

@@ -38,10 +38,16 @@ public class Medication {
 	@Column(name = "batchnumber")
 	private String batchNumber;
 
+	@Column(name = "userfarmid")
+	private Long userFarmId;
+
 	@Transient
     private String supplierName;
 
     @Transient
     private String medicationTypeDesc;
+
+	@Transient
+    private String category;
 
 }

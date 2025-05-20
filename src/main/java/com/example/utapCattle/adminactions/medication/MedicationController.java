@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.utapCattle.model.entity.Medication;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.List;
 
 @RestController
@@ -16,8 +18,9 @@ public class MedicationController {
     private MedicationService service;
 
     @GetMapping
-    public List<Medication> getAll() {
-        return service.getAll();
+    public List<Medication> getAll(HttpServletRequest request) {
+        Long userFarmId = Long.parseLong(request.getHeader("Farm-ID"));
+        return service.getAll(userFarmId);
     }
 
     @GetMapping("/{id}")
@@ -28,7 +31,9 @@ public class MedicationController {
     }
 
     @PostMapping
-    public Medication create(@RequestBody Medication condition) {
+    public Medication create(@RequestBody Medication condition, HttpServletRequest request) {
+        Long userFarmId = Long.parseLong(request.getHeader("Farm-ID"));
+        condition.setUserFarmId(userFarmId);
         return service.create(condition);
     }
 
