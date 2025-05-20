@@ -12,8 +12,8 @@ public class MedicationTypeService {
     @Autowired
     private MedicationTypeRepository repository;
 
-    public List<MedicationType> getAll() {
-        return repository.findAll();
+    public List<MedicationType> getAll(Long userFarmId) {
+        return repository.findByUserFarmId(userFarmId);
     }
 
     public Optional<MedicationType> getById(Long id) {

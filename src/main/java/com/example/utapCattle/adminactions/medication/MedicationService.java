@@ -23,8 +23,8 @@ public class MedicationService {
     @Autowired
     private MedicationTypeRepository typeRepository;
 
-    public List<Medication> getAll() {
-        List<Medication> medications = repository.findAll();
+    public List<Medication> getAll(Long userFarmId) {
+        List<Medication> medications = repository.findByUserFarmId(userFarmId);
         medications.forEach(this::populateTransientFields);
         return medications;
     }
@@ -63,7 +63,10 @@ public class MedicationService {
                 .ifPresent(supplier -> medication.setSupplierName(supplier.getSupplierName()));
 
         typeRepository.findById(medication.getMedicationTypeId())
-                .ifPresent(type -> medication.setMedicationTypeDesc(type.getMedicationTypeDesc()));
+                .ifPresent(type -> {
+                    medication.setMedicationTypeDesc(type.getMedicationTypeDesc());
+                    medication.setCategory(type.getCategory());
+                });
 
         return medication;
     }

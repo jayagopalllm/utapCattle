@@ -23,4 +23,7 @@ public class MedicationSupplier {
 
 	@Column(name = "suppliername")
 	private String supplierName;
+
+	@Column(name = "userfarmid")
+	private Long userFarmId;
 }
