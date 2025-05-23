@@ -11,6 +11,7 @@ import com.example.utapCattle.service.CommentService;
 import com.example.utapCattle.service.MovementService;
 import com.example.utapCattle.service.TreatmentHistoryService;
 import com.example.utapCattle.service.WeightHistoryService;
+import com.example.utapCattle.service.repository.MedicationRepository;
 import com.example.utapCattle.service.repository.TreatmentHistoryRepository;
 import com.example.utapCattle.utils.DateUtils;
 
@@ -19,32 +20,35 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class TreatmentHistoryServiceImpl implements TreatmentHistoryService {
 
 	private final TreatmentHistoryRepository treatmentHistoryRepository;
+	private final MedicationRepository medicationRepository;
 	private final CommentService commentService;
 	private final WeightHistoryService weightHistoryService;
 	private final MovementService movementService;
 	private final CattleService cattleService;
 
 	public TreatmentHistoryServiceImpl(TreatmentHistoryRepository treatmentHistoryRepository,
-									   CommentService commentService,
-									   WeightHistoryService weightHistoryService,
-									   MovementService movementService,
-									   CattleService cattleService) {
+			MedicationRepository medicationRepository,
+			CommentService commentService,
+			WeightHistoryService weightHistoryService,
+			MovementService movementService,
+			CattleService cattleService) {
 		this.treatmentHistoryRepository = treatmentHistoryRepository;
+		this.medicationRepository = medicationRepository;
 		this.commentService = commentService;
 		this.weightHistoryService = weightHistoryService;
 		this.movementService = movementService;
@@ -76,9 +80,10 @@ public class TreatmentHistoryServiceImpl implements TreatmentHistoryService {
 
 		final List<Comment> commentList = new ArrayList<>();
 		final Long commentId = createTreatmentComment(treatmentHistoryMetadata.getComment(), cattleId, processId, null,
-				formattedDate, commentList,userId);
+				formattedDate, commentList, userId);
 
-		updateTreatmentHistories(treatmentHistories, formattedDate, cattleId, processId, commentId, commentList,userId);
+		updateTreatmentHistories(treatmentHistories, formattedDate, cattleId, processId, commentId, commentList,
+				userId);
 
 		final List<TreatmentHistory> savedTreatmentHistory = treatmentHistoryRepository.saveAll(treatmentHistories);
 
@@ -94,18 +99,18 @@ public class TreatmentHistoryServiceImpl implements TreatmentHistoryService {
 
 		if (Boolean.TRUE.equals(treatmentHistoryMetadata.getRecordWeight())) {
 			final WeightHistoryDto weightHistoryDto = saveWeightHistory(cattleId, formattedDate,
-					treatmentHistoryMetadata.getWeight(),userId);
+					treatmentHistoryMetadata.getWeight(), userId);
 			outputMap.put("weightHistories", weightHistoryDto);
 		}
 
 		if (Boolean.TRUE.equals(treatmentHistoryMetadata.getRecordMovement())) {
-			final MovementDto movementDto = saveMovement(cattleId, treatmentHistoryMetadata.getPen(), formattedDate,userId);
+			final MovementDto movementDto = saveMovement(cattleId, treatmentHistoryMetadata.getPen(), formattedDate,
+					userId);
 			outputMap.put("movements", movementDto);
 		}
 
 		return outputMap;
 	}
-
 
 	@Override
 	public Map<String, Object> getCattleDetailsAndAverageConditionScore(String earTagOrEId) throws Exception {
@@ -141,22 +146,36 @@ public class TreatmentHistoryServiceImpl implements TreatmentHistoryService {
 		return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 	}
 
-
 	private void updateTreatmentHistories(final List<TreatmentHistory> treatmentHistories, final String formattedDate,
-			final Long cattleId, final Long processId, final Long commentId, final List<Comment> commentList,final Long userId) {
+			final Long cattleId, final Long processId, final Long commentId, final List<Comment> commentList,
+			final Long userId) {
 		for (final TreatmentHistory treatmentHistory : treatmentHistories) {
 			final Long id = treatmentHistoryRepository.getNextSequenceValue();
 			treatmentHistory.setTreatmentHistoryId(id);
 			treatmentHistory.setTreatmentDate(formattedDate);
 			treatmentHistory.setCattleId(cattleId);
+			treatmentHistory.setWithdrawalDate(this.getWithdrawalDate(treatmentHistory.getMedicationId()));
 			treatmentHistory.setProcessId(processId);
 			treatmentHistory.setCommentId(commentId);
 			treatmentHistory.setUserId(userId);
 
 			final Long conditionCommentId = createTreatmentComment(treatmentHistory.getConditionComment(), cattleId,
-					processId, id, formattedDate, commentList,userId);
+					processId, id, formattedDate, commentList, userId);
 			treatmentHistory.setConditionCommentId(conditionCommentId);
 		}
+	}
+
+	private String getWithdrawalDate(final Long medicationId) {
+		Optional<Integer> withdrawalPeriod = medicationRepository.findWithdrawalPeriodByMedicationId(medicationId);
+		String formattedDate = withdrawalPeriod
+				.map(days -> {
+					LocalDate targetDate = LocalDate.now().plusDays(days);
+					LocalDateTime dateTime = LocalDateTime.of(targetDate, LocalTime.MIDNIGHT);
+					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+					return dateTime.format(formatter);
+				})
+				.orElse(null);
+		return formattedDate;
 	}
 
 	private Long createTreatmentComment(final String comment, final Long cattleId, final Long processId,
@@ -173,7 +192,8 @@ public class TreatmentHistoryServiceImpl implements TreatmentHistoryService {
 		return commentId;
 	}
 
-	private WeightHistoryDto saveWeightHistory(final Long cattleId, final String formattedDate, final Double weight ,final Long userId) {
+	private WeightHistoryDto saveWeightHistory(final Long cattleId, final String formattedDate, final Double weight,
+			final Long userId) {
 		final WeightHistory weightHistory = new WeightHistory();
 		weightHistory.setCattleId(cattleId);
 		weightHistory.setWeightDateTime(formattedDate);
@@ -183,7 +203,8 @@ public class TreatmentHistoryServiceImpl implements TreatmentHistoryService {
 		return weightHistoryService.saveWeightHistory(weightHistory);
 	}
 
-	private MovementDto saveMovement(final Long cattleId, final Integer penId, final String formattedDate, final Long userId) {
+	private MovementDto saveMovement(final Long cattleId, final Integer penId, final String formattedDate,
+			final Long userId) {
 		final Movement movement = new Movement();
 		movement.setCattleId(cattleId);
 		movement.setPenId(penId);
