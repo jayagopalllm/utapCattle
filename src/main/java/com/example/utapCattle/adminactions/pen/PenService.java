@@ -47,4 +47,12 @@ public class PenService {
 
         return pen;
     }
+
+    public void delete(Long id) {
+        if (repository.existsById(id)) {
+            repository.deleteById(id);
+        } else {
+            throw new RuntimeException("Pen not found");
+        }
+    }
 }
