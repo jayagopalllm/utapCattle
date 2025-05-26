@@ -7,7 +7,7 @@ import com.example.utapCattle.model.entity.Farm;
 
 public interface FarmService {
 
-    List<FarmDto> getAllFarms();
+    List<FarmDto> getAllFarms(Long userFarmId);
 
     FarmDto getFarmById(Long id);
 

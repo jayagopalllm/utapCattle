@@ -7,7 +7,7 @@ import com.example.utapCattle.model.entity.Customer;
 
 public interface CustomerService {
 
-    List<CustomerDto> getAllCustomers();
+    List<CustomerDto> getAllCustomers(Long userFarmId);
 
     List<Object[]> getCustomersApiData(final String id);
 

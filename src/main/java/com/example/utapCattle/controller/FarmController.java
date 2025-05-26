@@ -3,6 +3,9 @@ package com.example.utapCattle.controller;
 import com.example.utapCattle.model.dto.FarmDto;
 import com.example.utapCattle.model.entity.Farm;
 import com.example.utapCattle.service.FarmService;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -44,9 +47,10 @@ public class FarmController extends BaseController {
     }
 
     @GetMapping
-    public ResponseEntity<List<FarmDto>> getAllFarms() {
+    public ResponseEntity<List<FarmDto>> getAllFarms(HttpServletRequest request) {
         try {
-            List<FarmDto> farms = farmService.getAllFarms();
+            Long userFarmId = Long.parseLong(request.getHeader("Farm-ID"));
+            List<FarmDto> farms = farmService.getAllFarms(userFarmId);
             logger.info("Retrieved {} farms", farms.size());
             return ResponseEntity.ok(farms);
         } catch (Exception e) {

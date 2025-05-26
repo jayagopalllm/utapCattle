@@ -13,6 +13,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,7 +53,7 @@ public class SaleController extends BaseController {
 			return new ResponseEntity<>(saleList, HttpStatus.OK);
 		} catch (NumberFormatException e) {
 			logger.error("Invalid saleMarketId format: {}", saleMarketId, e);
-			return new ResponseEntity<>("Invalid saleMarketId.",HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>("Invalid saleMarketId.", HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -60,10 +61,10 @@ public class SaleController extends BaseController {
 	public ResponseEntity<Object> getSaleTotalStats(@PathVariable String saleId) {
 		try {
 			SaleTotalStats saleTotalStats = saleService.getSaleTotalStats(Long.parseLong(saleId));
-		return new ResponseEntity<>(saleTotalStats, HttpStatus.OK);
+			return new ResponseEntity<>(saleTotalStats, HttpStatus.OK);
 		} catch (NumberFormatException e) {
 			logger.error("Invalid saleId format: {}", saleId, e);
-			return new ResponseEntity<>("Invalid saleId.",HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>("Invalid saleId.", HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -73,10 +74,23 @@ public class SaleController extends BaseController {
 		return new ResponseEntity<>(isvalidSaleDate, HttpStatus.OK);
 	}
 
-
 	@GetMapping("/{saleId}/cattle-info")
 	public ResponseEntity<List<CattleDto>> getAllCattleBySaleId(@PathVariable String saleId) {
 		List<CattleDto> cattList = saleService.getAllCattleBySaleId(Long.parseLong(saleId));
 		return new ResponseEntity<>(cattList, HttpStatus.OK);
+	}
+
+	@DeleteMapping("/{id}")
+	public ResponseEntity<String> deleteSale(@PathVariable String id) {
+		try {
+			saleService.deleteSale(Long.parseLong(id));
+			return new ResponseEntity<>("Sale deleted successfully.", HttpStatus.OK);
+		} catch (NumberFormatException e) {
+			logger.error("Invalid saleId format: {}", id, e);
+			return new ResponseEntity<>("Invalid saleId.", HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			logger.error("Error deleting sale with id: {}", id, e);
+			return new ResponseEntity<>("Error deleting sale.", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 }

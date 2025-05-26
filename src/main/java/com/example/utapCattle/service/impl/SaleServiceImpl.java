@@ -30,14 +30,14 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SaleServiceImpl implements SaleService {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-
-     @Autowired
+    @Autowired
     private JdbcTemplate jdbcTemplate;
 
     private final SaleRepository saleRepository;
@@ -90,13 +90,13 @@ public class SaleServiceImpl implements SaleService {
         }
         final Movement movement = new Movement();
         movement.setCattleId(saleDto.getCattleId());
-        movement.setPenId(Integer.parseInt(saleDto.getPenId()+""));
+        movement.setPenId(Integer.parseInt(saleDto.getPenId() + ""));
         movement.setMovementDate(getCurrentFormattedDate());
         movement.setMovementId(userId);
         movement.setUserId(userId);
         movementService.saveMovement(movement);
         final Sale sale = new Sale();
-        if(saleDto.getSaleId() != null) {
+        if (saleDto.getSaleId() != null) {
             sale.setSaleId(saleDto.getSaleId());
         } else {
             sale.setSaleId(saleRepository.getNextSequenceValue());
@@ -111,8 +111,8 @@ public class SaleServiceImpl implements SaleService {
 
         cattle.setWeightAtSale(saleDto.getWeight());
         cattle.setSaleId(savedSale.getSaleId());
-        cattle  =cattleRepository.save(cattle);
-       String name = sellerMarketRepository.findById(sale.getSaleMarketId()).get().getSellerMarketName();
+        cattle = cattleRepository.save(cattle);
+        String name = sellerMarketRepository.findById(sale.getSaleMarketId()).get().getSellerMarketName();
         // Prepare response DTO
         final SaleDto responseDto = new SaleDto();
         responseDto.setSaleId(savedSale.getSaleId());
@@ -147,9 +147,9 @@ public class SaleServiceImpl implements SaleService {
     @Override
     public List<CattleDto> getAllCattleBySaleId(Long saleId) { // Return List<CattleDto>
 
-
         String query = """
                 SELECT
+                    cat.id,
                     cat.cattleid,
                     cat.eartag,
                     cat.categoryid,
@@ -188,6 +188,7 @@ public class SaleServiceImpl implements SaleService {
                 @Override
                 public CattleDto mapRow(ResultSet rs, int rowNum) throws SQLException {
                     CattleDto cattleData = new CattleDto();
+                    cattleData.setId(rs.getLong("id"));
                     cattleData.setCattleId(rs.getLong("cattleid"));
                     cattleData.setEarTag(rs.getString("eartag"));
                     cattleData.setCategoryId(rs.getInt("categoryid"));
@@ -203,31 +204,33 @@ public class SaleServiceImpl implements SaleService {
                     // customer.setCustomerName(rs.getString("customer_name"));
                     return cattleData;
                 }
-            },saleId);
+            }, saleId);
             return cattleData;
         } catch (Exception e) {
             logger.error("Exception while quering sale data: ", e);
             throw e;
         }
 
-        // return cattleRepository.findAllBySaleId(saleId).stream().map(this::mapToDto) // Map each Cattle to CattleDto
-        //         .collect(Collectors.toList());
+        // return cattleRepository.findAllBySaleId(saleId).stream().map(this::mapToDto)
+        // // Map each Cattle to CattleDto
+        // .collect(Collectors.toList());
     }
 
     @SuppressWarnings("deprecation")
     @Override
     public SaleTotalStats getSaleTotalStats(Long saleId) {
-        String query = "SELECT "+
-                        "    COUNT(eartag) AS totalCattle, "+
-                        "    sum(case when EXTRACT(MONTH FROM AGE(c.dateofbirth::date, CURRENT_DATE::date)) + "+
-                        "    EXTRACT(YEAR FROM AGE(c.dateofbirth::date, CURRENT_DATE::date)) * 12 >= 30 then 1 else 0 end )AS totalOTM, "+
-                        "    SUM(weightatsale) as totalWeight "+
-                        "FROM "+
-                        "    cattle c "+
-                        "WHERE "+
-                        "    saleid = ? ";
+        String query = "SELECT " +
+                "    COUNT(eartag) AS totalCattle, " +
+                "    sum(case when EXTRACT(MONTH FROM AGE(c.dateofbirth::date, CURRENT_DATE::date)) + " +
+                "    EXTRACT(YEAR FROM AGE(c.dateofbirth::date, CURRENT_DATE::date)) * 12 >= 30 then 1 else 0 end )AS totalOTM, "
+                +
+                "    SUM(weightatsale) as totalWeight " +
+                "FROM " +
+                "    cattle c " +
+                "WHERE " +
+                "    saleid = ? ";
 
-        return jdbcTemplate.queryForObject(query, new Object[]{saleId}, (rs, rowNum) -> {
+        return jdbcTemplate.queryForObject(query, new Object[] { saleId }, (rs, rowNum) -> {
             SaleTotalStats stats = new SaleTotalStats();
             stats.setTotalCattle(rs.getInt("totalCattle"));
             stats.setTotalWeight(rs.getInt("totalWeight"));
@@ -242,11 +245,11 @@ public class SaleServiceImpl implements SaleService {
      *
      * @return The formatted current date.
      */
-//    private static String getCurrentFormattedDate() {
-//        final Date currentDate = new Date();
-//        final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-//        return formatter.format(currentDate);
-//    }
+    // private static String getCurrentFormattedDate() {
+    // final Date currentDate = new Date();
+    // final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+    // return formatter.format(currentDate);
+    // }
     private String getCurrentFormattedDate() {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
@@ -262,7 +265,7 @@ public class SaleServiceImpl implements SaleService {
 
         Cattle cattle = cattleRepository.findByCattleId(saleDto.getCattleId())
                 .orElseThrow(() -> new RuntimeException("Cattle not found"));
-        /*  New Entry into weight history table */
+        /* New Entry into weight history table */
         if (saleDto.getWeight() != null) {
             final WeightHistory weightHistory = new WeightHistory();
             weightHistory.setCattleId(saleDto.getCattleId());
@@ -272,15 +275,27 @@ public class SaleServiceImpl implements SaleService {
             weightHistoryService.saveWeightHistory(weightHistory);
         }
 
-        /*  New Entry into Movement table */
+        /* New Entry into Movement table */
         final Movement movement = new Movement();
         movement.setCattleId(saleDto.getCattleId());
-        movement.setPenId(Integer.parseInt(saleDto.getPenId()+""));
+        movement.setPenId(Integer.parseInt(saleDto.getPenId() + ""));
         movement.setMovementDate(getCurrentFormattedDate());
         movement.setMovementId(userId);
         movement.setUserId(userId);
         movementService.saveMovement(movement);
 
         return saleDto;
+    }
+
+    @Override
+    public void deleteSale(Long id) {
+        Optional<Cattle> cattle = cattleRepository.findById(id);
+        if (cattle.isPresent()) {
+            // Delete the sale from cattle
+            cattle.get().setSaleId(null); // Clear the sale ID
+            cattleRepository.save(cattle.get());
+        } else {
+            throw new RuntimeException("Cattle not found");
+        }
     }
 }
