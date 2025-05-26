@@ -21,7 +21,7 @@ public class MarketServiceImpl implements MarketService {
 
 	@Override
 	public List<MarketDto> getAllMarkets(Long userFarmId) {
-		return marketRepository.findAllByUserFarmId(userFarmId).stream().map(this::mapToDto)
+		return marketRepository.findByUserFarmIdOrderByMarketNameAsc(userFarmId).stream().map(this::mapToDto)
 				.collect(Collectors.toList());
 	}
 

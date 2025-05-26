@@ -13,7 +13,8 @@ import com.example.utapCattle.model.entity.Medication;
 @Repository
 public interface MedicationRepository extends JpaRepository<Medication, Long> {
 
-    List<Medication> findByUserFarmId(Long userFarmId);
+    @Query("SELECT m FROM Medication m WHERE m.userFarmId = :userFarmId ORDER BY m.medicationDesc ASC")
+    List<Medication> findByUserFarmIdOrderByMedicationDescAsc(Long userFarmId);
 
     @Query("SELECT m.withdrawalPeriod FROM Medication m WHERE m.medicationId = :medicationId")
     Optional<Integer> findWithdrawalPeriodByMedicationId(@Param("medicationId") Long medicationId);

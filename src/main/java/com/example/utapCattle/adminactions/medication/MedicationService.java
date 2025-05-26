@@ -24,7 +24,7 @@ public class MedicationService {
     private MedicationTypeRepository typeRepository;
 
     public List<Medication> getAll(Long userFarmId) {
-        List<Medication> medications = repository.findByUserFarmId(userFarmId);
+        List<Medication> medications = repository.findByUserFarmIdOrderByMedicationDescAsc(userFarmId);
         medications.forEach(this::populateTransientFields);
         return medications;
     }

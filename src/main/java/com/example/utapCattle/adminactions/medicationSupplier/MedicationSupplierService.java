@@ -13,7 +13,7 @@ public class MedicationSupplierService {
     private MedicationSupplierRepository repository;
 
     public List<MedicationSupplier> getAll(Long userFarmId) {
-        return repository.findByUserFarmId(userFarmId);
+        return repository.findByUserFarmIdOrderBySupplierNameAsc(userFarmId);
     }
 
     public Optional<MedicationSupplier> getById(Long id) {

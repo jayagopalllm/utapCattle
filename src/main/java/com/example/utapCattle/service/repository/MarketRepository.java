@@ -12,6 +12,5 @@ public interface MarketRepository extends JpaRepository<Market, Long> {
 
     List<Market> findByUserFarmIdOrderByMarketNameAsc(Long userFarmId);
 
-    List<Market> findAllByUserFarmId(Long userFarmId);
 
 }
