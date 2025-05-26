@@ -19,8 +19,8 @@ public class PenService {
     @Autowired
     private PenGroupRepository penGroupRepository;
 
-    public List<Pen> getAll() {
-        List<Pen> pens = repository.findAll();
+    public List<Pen> getAll(Long userFarmId) {
+        List<Pen> pens = repository.findAllByUserFarmId(userFarmId);
         pens.forEach(this::populateTransientFields);
         return pens;
     }

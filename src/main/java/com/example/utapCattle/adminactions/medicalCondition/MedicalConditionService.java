@@ -15,8 +15,8 @@ public class MedicalConditionService {
     @Autowired
     private MedicalConditionRepository repository;
 
-    public List<MedicalCondition> getAll() {
-        return repository.findAll();
+    public List<MedicalCondition> getAll(Long userFarmId) {
+        return repository.findAllByUserFarmId(userFarmId);
     }
 
     public Optional<MedicalCondition> getById(Long id) {

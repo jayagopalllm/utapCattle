@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.utapCattle.model.entity.Pen;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.List;
 
 @RestController
@@ -16,8 +18,9 @@ public class PenController {
     private PenService service;
 
     @GetMapping
-    public List<Pen> getAll() {
-        return service.getAll();
+    public List<Pen> getAll(HttpServletRequest request) {
+        Long userFarmId = Long.parseLong(request.getHeader("Farm-ID"));
+        return service.getAll(userFarmId);
     }
 
     @GetMapping("/{id}")

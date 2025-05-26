@@ -21,8 +21,8 @@ public class FarmServiceImpl implements FarmService {
     }
 
     @Override
-    public List<FarmDto> getAllFarms() {
-        return farmRepository.findAll().stream()
+    public List<FarmDto> getAllFarms(Long userFarmId) {
+        return farmRepository.findAllByUserFarmId(userFarmId).stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
     }

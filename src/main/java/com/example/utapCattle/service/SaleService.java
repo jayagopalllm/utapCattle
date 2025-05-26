@@ -22,4 +22,7 @@ public interface SaleService {
     Boolean checkForValidSaleDate(SaleDateRequest request);
 
     List<CattleDto> getAllCattleBySaleId(Long saleId);
+
+    void deleteSale(Long id);
+
 }

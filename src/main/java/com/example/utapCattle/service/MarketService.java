@@ -7,7 +7,7 @@ import com.example.utapCattle.model.entity.Market;
 
 public interface MarketService {
 
-    List<MarketDto> getAllMarkets();
+    List<MarketDto> getAllMarkets(Long userFarmId);
 
     List<MarketDto> findAllMarketsByUserId(Long userId);
 

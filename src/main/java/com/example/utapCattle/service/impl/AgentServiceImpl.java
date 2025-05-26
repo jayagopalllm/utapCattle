@@ -23,8 +23,8 @@ public class AgentServiceImpl implements AgentService {
     }
 
     @Override
-    public List<AgentDto> getAllAgents() {
-        return agentRepository.findAll().stream()
+    public List<AgentDto> getAllAgents(Long userFarmId) {
+        return agentRepository.findAllByUserFarmId(userFarmId).stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
     }

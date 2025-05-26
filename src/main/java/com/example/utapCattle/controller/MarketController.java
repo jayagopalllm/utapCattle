@@ -5,6 +5,9 @@ import com.example.utapCattle.model.dto.MarketDto;
 import com.example.utapCattle.model.entity.DefaultTreatment;
 import com.example.utapCattle.model.entity.Market;
 import com.example.utapCattle.service.MarketService;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -46,9 +49,10 @@ public class MarketController extends BaseController {
     }
 
     @GetMapping
-    public ResponseEntity<List<MarketDto>> getAllMarkets() {
+    public ResponseEntity<List<MarketDto>> getAllMarkets(HttpServletRequest request) {
         try {
-            List<MarketDto> markets = marketService.getAllMarkets();
+            Long userFarmId = Long.parseLong(request.getHeader("Farm-ID"));
+            List<MarketDto> markets = marketService.getAllMarkets(userFarmId);
             logger.info("Retrieved {} markets", markets.size());
             return ResponseEntity.ok(markets);
         } catch (final Exception e) {
