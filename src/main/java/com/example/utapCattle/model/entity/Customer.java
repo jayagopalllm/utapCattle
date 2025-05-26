@@ -14,6 +14,7 @@ public class Customer {
 
     @Id
     @Column(name = "customerid")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long customerId;
 
     @Column(name = "customername")
@@ -41,4 +42,3 @@ public class Customer {
     // Add getters and setters for all the fields here
     // ...
 }
-
