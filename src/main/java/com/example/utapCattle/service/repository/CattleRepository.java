@@ -38,7 +38,6 @@ public interface CattleRepository extends JpaRepository<Cattle, Long> { // Use L
 	 * nativeQuery = true) Cattle findByEartag(@Param("tagId") Integer tagId);
 	 */
 
-
 	@Query(value = "SELECT * FROM cattle WHERE eartag = :earTagOrEid LIMIT 1", nativeQuery = true)
 	Optional<Cattle> findByEarTag(@Param("earTagOrEid") String earTagOrEid);
 
@@ -53,10 +52,11 @@ public interface CattleRepository extends JpaRepository<Cattle, Long> { // Use L
 	List<Object[]> findCattleDataById(@Param("id") String id);
 
 	@Query("SELECT c FROM Cattle c WHERE c.inductionDate = :inductionDate and c.userFarmId = :userFarmId")
-	List<Cattle> findByInductionDate(@Param("inductionDate") LocalDate inductionDate,@Param("userFarmId") Long userFarmId);
+	List<Cattle> findByInductionDate(@Param("inductionDate") LocalDate inductionDate,
+			@Param("userFarmId") Long userFarmId);
 
 	List<Cattle> findAllBySaleId(Long saleId);
 
-    boolean existsByCattleId(Long cattleId);
+	boolean existsByCattleId(Long cattleId);
 
 }

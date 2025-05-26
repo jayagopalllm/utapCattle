@@ -2,8 +2,12 @@ package com.example.utapCattle.controller;
 
 import com.example.utapCattle.adminactions.conformationgrade.ConformationGrade;
 import com.example.utapCattle.model.dto.CustomerDto;
+import com.example.utapCattle.model.dto.FarmDto;
 import com.example.utapCattle.model.entity.Customer;
 import com.example.utapCattle.service.CustomerService;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -45,9 +49,10 @@ public class CustomerController extends BaseController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CustomerDto>> getAllCustomers() {
+    public ResponseEntity<List<CustomerDto>> getAllCustomers(HttpServletRequest request) {
         try {
-            List<CustomerDto> customers = customerService.getAllCustomers();
+            Long userFarmId = Long.parseLong(request.getHeader("Farm-ID"));
+            List<CustomerDto> customers = customerService.getAllCustomers(userFarmId);
             logger.info("Retrieved {} customers", customers.size());
             return ResponseEntity.ok(customers);
         } catch (Exception e) {

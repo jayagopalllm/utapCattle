@@ -29,8 +29,8 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public List<CustomerDto> getAllCustomers() {
-        return customerRepository.findAll().stream()
+    public List<CustomerDto> getAllCustomers(Long userFarmId) {
+        return customerRepository.findAllByUserFarmId(userFarmId).stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
     }

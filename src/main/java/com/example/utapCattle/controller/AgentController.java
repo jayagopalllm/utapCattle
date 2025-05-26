@@ -4,6 +4,9 @@ import com.example.utapCattle.model.dto.AgentDto;
 import com.example.utapCattle.model.entity.Agent;
 import com.example.utapCattle.model.entity.Medication;
 import com.example.utapCattle.service.AgentService;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -45,9 +48,10 @@ public class AgentController extends BaseController {
     }
 
     @GetMapping
-    public ResponseEntity<List<AgentDto>> getAllAgents() {
+    public ResponseEntity<List<AgentDto>> getAllAgents(HttpServletRequest request) {
         try {
-            List<AgentDto> agents = agentService.getAllAgents();
+            Long userFarmId = Long.parseLong(request.getHeader("Farm-ID"));
+            List<AgentDto> agents = agentService.getAllAgents(userFarmId);
             if (!agents.isEmpty()) {
                 logger.info("Retrieved {} Agents", agents.size());
             } else {

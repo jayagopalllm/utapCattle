@@ -19,6 +19,7 @@ public class Agent {
 
     @Id
     @Column(name = "agentid")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long agentId;
 
     @Column(name = "agentname", nullable = false)

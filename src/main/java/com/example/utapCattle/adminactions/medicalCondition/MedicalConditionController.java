@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.utapCattle.model.entity.MedicalCondition;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.List;
 
 @RestController
@@ -16,8 +18,9 @@ public class MedicalConditionController {
     private MedicalConditionService service;
 
     @GetMapping
-    public List<MedicalCondition> getAll() {
-        return service.getAll();
+    public List<MedicalCondition> getAll(HttpServletRequest request) {
+        Long userFarmId = Long.parseLong(request.getHeader("Farm-ID"));
+        return service.getAll(userFarmId);
     }
 
     @GetMapping("/{id}")

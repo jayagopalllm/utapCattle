@@ -25,4 +25,7 @@ public class MedicalCondition {
 	@Column(name = "conditiondesc")
 	private String conditionDesc;
 
+	@Column(name = "userfarmid")
+	private Long userFarmId;
+
 }
