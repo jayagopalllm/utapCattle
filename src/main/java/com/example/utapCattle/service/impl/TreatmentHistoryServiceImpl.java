@@ -216,7 +216,7 @@ public class TreatmentHistoryServiceImpl implements TreatmentHistoryService {
 
 	private void validateInductionVO(List<TreatmentHistory> treatmentHistories) {
 		if (CollectionUtils.isEmpty(treatmentHistories)) {
-			throw new IllegalArgumentException("treatmentHistories is a mandatory field and cannot be null or empty.");
+			throw new IllegalArgumentException("Treatment cannot be null or empty.");
 		}
 		for (final TreatmentHistory treatmentHistory : treatmentHistories) {
 			if (treatmentHistory.getMedicalConditionId() == null) {

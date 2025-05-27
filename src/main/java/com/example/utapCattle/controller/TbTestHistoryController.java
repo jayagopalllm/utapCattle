@@ -4,6 +4,9 @@ import com.example.utapCattle.model.entity.TbTestHistory;
 import com.example.utapCattle.model.entity.TreatmentHistoryMetadata;
 import com.example.utapCattle.service.TbTestHistoryService;
 import com.example.utapCattle.service.TreatmentHistoryService;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
@@ -28,19 +31,20 @@ public class TbTestHistoryController extends BaseController {
 	}
 
 	@PostMapping("/save")
-	public ResponseEntity<?> saveTbTestHistory(@RequestBody final TreatmentHistoryMetadata treatmentHistoryMetadata) {
+	public ResponseEntity<?> saveTbTestHistory(@RequestBody final TreatmentHistoryMetadata treatmentHistoryMetadata,HttpServletRequest request) throws Exception {
 		logger.info("Saving tb test information: {}", treatmentHistoryMetadata);
 
     	try {
+			Long userId = Long.parseLong(request.getHeader("User-ID"));
+            treatmentHistoryMetadata.setUserId(userId);
 			treatmentHistoryMetadata.setProcessId(new SecureRandom().nextLong());
-			treatmentHistoryMetadata.setCattleId(treatmentHistoryMetadata.getCattleId());
-			final TbTestHistory savedTbTestHistory = tbTestHistoryService.saveTbTestHistory(treatmentHistoryMetadata.getTbTestHistory());
-			logger.info("Saved tb test information with ID: {}", savedTbTestHistory.getTbTestHistoryId());
-			treatmentHistoryService.saveTreatmentHistory(treatmentHistoryMetadata);
+			treatmentHistoryMetadata.setCattleId(treatmentHistoryMetadata.getTbTestHistory().getCattleId());
+			final TbTestHistory savedTbTestHistory = tbTestHistoryService.saveTBTestData(treatmentHistoryMetadata);
 			return ResponseEntity.ok(savedTbTestHistory);
 		} catch (final Exception e) {
+			//Log and rethrow exception , exception handled in GlobalExceptionHandler
 			logger.error("Exception occurred: Unable to save tb test information", e);
-        	return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        	throw e;
 		}
 	}
 
