@@ -30,7 +30,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public List<CustomerDto> getAllCustomers(Long userFarmId) {
-        return customerRepository.findAllByUserFarmId(userFarmId).stream()
+        return customerRepository.findByUserFarmIdOrderByCustomerNameAsc(userFarmId).stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
     }

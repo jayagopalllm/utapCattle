@@ -64,8 +64,7 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 		final Long userId= treatmentHistoryMetadata.getUserId();
 		final String formattedDate = getCurrentFormattedDate();
 
-		if (Boolean.TRUE.equals(treatmentHistoryMetadata.getRecordWeight())) {
-			final Double weight = treatmentHistoryMetadata.getWeight();
+		final Double weight = treatmentHistoryMetadata.getWeight();
 			if (weight == null) {
 				throw new IllegalArgumentException("Weight cannot be empty");
 			}
@@ -76,10 +75,8 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 			weightHistory.setUserId(userId);
 
 			saveWeightHistory(weightHistory);
-		}
 
-		if (Boolean.TRUE.equals(treatmentHistoryMetadata.getRecordMovement())) {
-			final Movement movement = new Movement();
+		final Movement movement = new Movement();
 			final Integer pen = treatmentHistoryMetadata.getPen();
 			if (pen == null) {
 				throw new IllegalArgumentException("Pen cannot be empty");
@@ -90,7 +87,6 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 			movement.setUserId(userId);
 
 			movementService.saveMovement(movement);
-		}
 	}
 
 	@Override

@@ -16,6 +16,5 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
     List<Customer> findByUserFarmIdOrderByCustomerNameAsc(Long userFarmId);
 
-    List<Customer> findAllByUserFarmId(Long userFarmId);
 
 }

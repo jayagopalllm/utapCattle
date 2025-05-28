@@ -22,7 +22,7 @@ public class FarmServiceImpl implements FarmService {
 
     @Override
     public List<FarmDto> getAllFarms(Long userFarmId) {
-        return farmRepository.findAllByUserFarmId(userFarmId).stream()
+        return farmRepository.findByUserFarmIdOrderByFarmNameAsc(userFarmId).stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
     }
