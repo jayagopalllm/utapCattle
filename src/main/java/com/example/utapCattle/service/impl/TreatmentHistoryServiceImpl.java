@@ -19,6 +19,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -67,6 +68,7 @@ public class TreatmentHistoryServiceImpl implements TreatmentHistoryService {
 	}
 
 	@Override
+	@Transactional
 	public Map<String, Object> saveTreatmentHistory(final TreatmentHistoryMetadata treatmentHistoryMetadata) {
 		final List<TreatmentHistory> treatmentHistories = treatmentHistoryMetadata.getTreatmentHistories();
 

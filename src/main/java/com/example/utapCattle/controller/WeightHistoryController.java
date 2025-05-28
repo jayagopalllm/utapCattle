@@ -66,7 +66,7 @@ public class WeightHistoryController extends BaseController {
 			return new ResponseEntity<>(treatmentHistoryMetadata, HttpStatus.CREATED);
 		} catch (final Exception e) {
 			logger.error("Exception occurred: Unable to save weight and movement data", e);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+			throw e;
 		}
 	}
 

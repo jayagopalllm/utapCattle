@@ -46,6 +46,9 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 	}
 
 	public WeightHistoryDto saveWeightHistory(final WeightHistory weightHistory) {
+		if (weightHistory==null || weightHistory.getWeight() == null) {
+			throw new IllegalArgumentException("Weight cannot be empty");
+		}
 		weightHistory.setWeightHistoryId(getNextSequenceValue());
 		final WeightHistory savedWeightHistory = weightHistoryRepository.save(weightHistory);
 
