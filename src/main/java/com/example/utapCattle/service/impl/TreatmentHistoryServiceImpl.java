@@ -97,17 +97,13 @@ public class TreatmentHistoryServiceImpl implements TreatmentHistoryService {
 			outputMap.put("comments", commentList);
 		}
 
-		if (Boolean.TRUE.equals(treatmentHistoryMetadata.getRecordWeight())) {
-			final WeightHistoryDto weightHistoryDto = saveWeightHistory(cattleId, formattedDate,
+		final WeightHistoryDto weightHistoryDto = saveWeightHistory(cattleId, formattedDate,
 					treatmentHistoryMetadata.getWeight(), userId);
 			outputMap.put("weightHistories", weightHistoryDto);
-		}
 
-		if (Boolean.TRUE.equals(treatmentHistoryMetadata.getRecordMovement())) {
-			final MovementDto movementDto = saveMovement(cattleId, treatmentHistoryMetadata.getPen(), formattedDate,
+		final MovementDto movementDto = saveMovement(cattleId, treatmentHistoryMetadata.getPen(), formattedDate,
 					userId);
 			outputMap.put("movements", movementDto);
-		}
 
 		return outputMap;
 	}
