@@ -47,7 +47,7 @@ public class TreatmentHistoryController extends BaseController {
 			return new ResponseEntity<>(savedTreatmentHistoryDto, HttpStatus.CREATED);
 		} catch (final Exception e) {
 			logger.error("Exception occurred: Unable to save treatment history information", e);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+			throw e; // Rethrow exception to be handled by GlobalExceptionHandler
 		}
 	}
 

@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -63,6 +64,7 @@ public class SaleServiceImpl implements SaleService {
     }
 
     @Override
+    @Transactional
     public SaleDto sellCattle(SaleDto saleDto, Long userId) {
 
         Cattle cattle = cattleRepository.findByCattleId(saleDto.getCattleId())
@@ -79,15 +81,13 @@ public class SaleServiceImpl implements SaleService {
             commentRepository.save(comment);
         }
 
-        // Persist weight history if present
-        if (saleDto.getWeight() != null) {
-            final WeightHistory weightHistory = new WeightHistory();
-            weightHistory.setCattleId(saleDto.getCattleId());
-            weightHistory.setWeightDateTime(getCurrentFormattedDate());
-            weightHistory.setWeight(saleDto.getWeight());
-            weightHistory.setUserId(userId);
-            weightHistoryService.saveWeightHistory(weightHistory);
-        }
+        final WeightHistory weightHistory = new WeightHistory();
+        weightHistory.setCattleId(saleDto.getCattleId());
+        weightHistory.setWeightDateTime(getCurrentFormattedDate());
+        weightHistory.setWeight(saleDto.getWeight());
+        weightHistory.setUserId(userId);
+        weightHistoryService.saveWeightHistory(weightHistory);
+
         final Movement movement = new Movement();
         movement.setCattleId(saleDto.getCattleId());
         movement.setPenId(Integer.parseInt(saleDto.getPenId() + ""));
@@ -261,19 +261,18 @@ public class SaleServiceImpl implements SaleService {
     }
 
     @Override
+    @Transactional
     public SaleDto keepCattle(SaleDto saleDto, Long userId) {
 
         Cattle cattle = cattleRepository.findByCattleId(saleDto.getCattleId())
                 .orElseThrow(() -> new RuntimeException("Cattle not found"));
-        /* New Entry into weight history table */
-        if (saleDto.getWeight() != null) {
-            final WeightHistory weightHistory = new WeightHistory();
-            weightHistory.setCattleId(saleDto.getCattleId());
-            weightHistory.setWeightDateTime(getCurrentFormattedDate());
-            weightHistory.setWeight(saleDto.getWeight());
-            weightHistory.setUserId(userId);
-            weightHistoryService.saveWeightHistory(weightHistory);
-        }
+
+        final WeightHistory weightHistory = new WeightHistory();
+        weightHistory.setCattleId(saleDto.getCattleId());
+        weightHistory.setWeightDateTime(getCurrentFormattedDate());
+        weightHistory.setWeight(saleDto.getWeight());
+        weightHistory.setUserId(userId);
+        weightHistoryService.saveWeightHistory(weightHistory);
 
         /* New Entry into Movement table */
         final Movement movement = new Movement();
