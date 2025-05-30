@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -41,9 +41,10 @@ public class MovementController extends BaseController {
     }
 
     @GetMapping
-    public ResponseEntity<List<MarketDto>> getAllMarkets() {
+    public ResponseEntity<List<MarketDto>> getAllMarkets(HttpServletRequest request) {
         try {
-            List<MarketDto> markets = marketService.getAllMarkets();
+            Long userFarmId = Long.parseLong(request.getHeader("Farm-ID"));
+            List<MarketDto> markets = marketService.getAllMarkets(userFarmId);
             logger.info("Retrieved {} markets", markets.size());
             return ResponseEntity.ok(markets);
         } catch (final Exception e) {
