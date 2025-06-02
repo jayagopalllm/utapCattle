@@ -21,5 +21,14 @@ public class DefaultTreatmentDto {
     private String conditionDesc;
 
     private String medicationDesc;
+    private String batchNumber;
+
+    public DefaultTreatmentDto(Long compulsoryTreatmentId, String description, Long medicalConditionId, Long medicationId, String batchNumber) {
+        this.compulsoryTreatmentId = compulsoryTreatmentId;
+        this.description = description;
+        this.medicalConditionId = medicalConditionId;
+        this.medicationId = medicationId;
+        this.batchNumber = batchNumber;
+    }
 
 }

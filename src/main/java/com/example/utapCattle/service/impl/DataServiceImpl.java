@@ -1,6 +1,7 @@
 package com.example.utapCattle.service.impl;
 
 import com.example.utapCattle.model.dto.AllDataDto;
+import com.example.utapCattle.model.dto.DefaultTreatmentDto;
 import com.example.utapCattle.model.dto.MarketDto;
 import com.example.utapCattle.model.entity.*;
 import com.example.utapCattle.service.DataService;
@@ -97,7 +98,7 @@ public class DataServiceImpl implements DataService {
     @Override
     public AllDataDto getMedicalConditionData(Long userId, Long userFarmId) {
         final AllDataDto conditionData = getInductionAndTreatmentData(userId,userFarmId);
-        final List<DefaultTreatment> defaultTreatments = defaultTreatmentRepository.findAll();
+        final List<DefaultTreatmentDto> defaultTreatments = defaultTreatmentRepository.findAllWithBatchNumber();
         conditionData.setDefaultTreatments(defaultTreatments);
         return conditionData;
     }
