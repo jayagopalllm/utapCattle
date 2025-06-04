@@ -18,16 +18,18 @@ public class DefaultTreatmentDto {
 
     private Long medicationId;
 
-    private String conditionDesc;
+    private String medicalConditionDesc;
 
     private String medicationDesc;
     private String batchNumber;
+    private Long userFarmId;
 
-    public DefaultTreatmentDto(Long compulsoryTreatmentId, String description, Long medicalConditionId, Long medicationId, String batchNumber) {
+
+    public DefaultTreatmentDto(Long compulsoryTreatmentId, String description, String conditionDesc, String medicationDesc, String batchNumber, Long userFarmId) {
         this.compulsoryTreatmentId = compulsoryTreatmentId;
         this.description = description;
-        this.medicalConditionId = medicalConditionId;
-        this.medicationId = medicationId;
+        this.medicalConditionDesc = conditionDesc;
+        this.medicationDesc = medicationDesc;
         this.batchNumber = batchNumber;
     }
 

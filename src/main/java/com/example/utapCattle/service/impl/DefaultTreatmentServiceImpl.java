@@ -69,7 +69,7 @@ public class DefaultTreatmentServiceImpl implements DefaultTreatmentService {
         dto.setDescription(defaultTreatment.getDescription());
         dto.setMedicalConditionId(defaultTreatment.getMedicalConditionId());
         dto.setMedicationId(defaultTreatment.getMedicationId());
-        dto.setConditionDesc(defaultTreatment.getConditionDesc());
+        dto.setMedicalConditionDesc(defaultTreatment.getConditionDesc());
         dto.setMedicationDesc(defaultTreatment.getMedicationDesc());
 
         return dto;
