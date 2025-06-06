@@ -63,13 +63,17 @@ public class DefaultTreatmentServiceImpl implements DefaultTreatmentService {
     }
 
     private DefaultTreatmentDto mapToDto(DefaultTreatment defaultTreatment) {
-        return new DefaultTreatmentDto(
-                defaultTreatment.getCompulsoryTreatmentId(),
-                defaultTreatment.getDescription(),
-                defaultTreatment.getMedicalConditionId(),
-                defaultTreatment.getMedicationId(),
-                defaultTreatment.getConditionDesc(),
-                defaultTreatment.getMedicationDesc());
+        DefaultTreatmentDto dto = new DefaultTreatmentDto();
+
+        dto.setCompulsoryTreatmentId(defaultTreatment.getCompulsoryTreatmentId());
+        dto.setDescription(defaultTreatment.getDescription());
+        dto.setMedicalConditionId(defaultTreatment.getMedicalConditionId());
+        dto.setMedicationId(defaultTreatment.getMedicationId());
+        dto.setMedicalConditionDesc(defaultTreatment.getConditionDesc());
+        dto.setMedicationDesc(defaultTreatment.getMedicationDesc());
+
+        return dto;
+
     }
 
     @Override

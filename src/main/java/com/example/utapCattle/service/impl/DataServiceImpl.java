@@ -1,6 +1,7 @@
 package com.example.utapCattle.service.impl;
 
 import com.example.utapCattle.model.dto.AllDataDto;
+import com.example.utapCattle.model.dto.DefaultTreatmentDto;
 import com.example.utapCattle.model.dto.MarketDto;
 import com.example.utapCattle.model.entity.*;
 import com.example.utapCattle.service.DataService;
@@ -97,8 +98,23 @@ public class DataServiceImpl implements DataService {
     @Override
     public AllDataDto getMedicalConditionData(Long userId, Long userFarmId) {
         final AllDataDto conditionData = getInductionAndTreatmentData(userId,userFarmId);
-        final List<DefaultTreatment> defaultTreatments = defaultTreatmentRepository.findAll();
-        conditionData.setDefaultTreatments(defaultTreatments);
+        final List<Object[]> defaultTreatments = defaultTreatmentRepository.findAllWithBatchNumber(userFarmId);
+        final List<DefaultTreatmentDto> defaultTreatmentsList = defaultTreatments.stream()
+    .map(treatment -> {
+        DefaultTreatmentDto dto = new DefaultTreatmentDto();
+        dto.setCompulsoryTreatmentId((Long) treatment[0]);
+        dto.setDescription((String) treatment[1]);
+        dto.setMedicalConditionId((Long) treatment[2]);
+        dto.setMedicationId((Long) treatment[3]);
+        dto.setMedicalConditionDesc((String) treatment[4]);
+        dto.setMedicationDesc((String) treatment[5]);
+        dto.setBatchNumber((String) treatment[6]);
+        dto.setUserFarmId((Long) treatment[7]);
+        return dto;
+    })
+    .toList();
+
+        conditionData.setDefaultTreatments(defaultTreatmentsList);
         return conditionData;
     }
 
