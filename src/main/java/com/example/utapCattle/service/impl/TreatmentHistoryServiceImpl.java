@@ -103,9 +103,11 @@ public class TreatmentHistoryServiceImpl implements TreatmentHistoryService {
 					treatmentHistoryMetadata.getWeight(), userId);
 			outputMap.put("weightHistories", weightHistoryDto);
 
-		final MovementDto movementDto = saveMovement(cattleId, treatmentHistoryMetadata.getPen(), formattedDate,
+		if(treatmentHistoryMetadata.getPen() != null) {
+			final MovementDto movementDto = saveMovement(cattleId, treatmentHistoryMetadata.getPen(), formattedDate,
 					userId);
 			outputMap.put("movements", movementDto);
+		}
 
 		return outputMap;
 	}
