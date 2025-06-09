@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -144,6 +146,7 @@ public class CattleServiceImpl implements CattleService {
         cattleData.setPrefix(cattle.getPrefix());
         cattleData.setEarTag(cattle.getEarTag());
         cattleData.setDateOfBirth(DateUtils.formatToReadableDate(cattle.getDateOfBirth(), "dd/MM/yyyy"));
+        cattleData.setAgeInMonths(calculateAgeInMonthsDays(cattle.getDateOfBirth()));
         cattleData.setMotherEarTag(cattle.getMotherEarTag());
         cattleData.setBreedId(cattle.getBreedId());
         cattleData.setCategoryId(cattle.getCategoryId());
@@ -192,6 +195,20 @@ public class CattleServiceImpl implements CattleService {
         cattleData.setLastWithdraw(lastTreatment);
         cattleData.setIsInductionCompleted(cattle.getIsInductionCompleted());
         return cattleData;
+    }
+
+    private String calculateAgeInMonthsDays(String dateOfBirth) {
+        if (StringUtils.isEmpty(dateOfBirth)) {
+            return "N/A";
+        }
+
+        LocalDate dob = DateUtils.parseToDate(dateOfBirth);
+        LocalDate today = LocalDate.now();
+
+        Period period = Period.between(dob, today);
+        int totalMonths = (period.getYears() * 12) + period.getMonths();
+        int days = period.getDays();
+        return String.format("%dm %dd", totalMonths, days);
     }
 
     public String getLastWithdrawalDate(Long cattleId) {
