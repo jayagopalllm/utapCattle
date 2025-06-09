@@ -62,4 +62,5 @@ public class CattleDto {
 	private Long totalTreatments;
 	private String lastWithdraw;
 	private Boolean isInductionCompleted;
+	private String ageInMonths;
 }
