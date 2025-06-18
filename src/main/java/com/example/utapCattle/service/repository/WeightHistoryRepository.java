@@ -52,6 +52,7 @@ public interface WeightHistoryRepository extends JpaRepository<WeightHistory, Lo
             left join WeightRanked w_max on	c.cattleid = w_max.cattleid	and w_max.max_rank = 1
             where
             TO_DATE(w_max.date_weighted, 'YYYY-MM-DD') = TO_DATE(:date, 'YYYY-MM-DD')
+            AND c.saleid IS NULL
             AND  c.ownerfarmid= :userFarmId
             ORDER BY w_max.date_weighted::timestamp DESC
       """, nativeQuery = true)
