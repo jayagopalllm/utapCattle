@@ -57,7 +57,7 @@ public class InductionServiceImpl implements InductionService {
                   coalesce(lw.weight,0) AS bodyweight
                 FROM cattle c
                 LEFT JOIN latest_weights lw ON lw.cattleid = c.cattleid
-                WHERE c.inductiondate = ? AND c.ownerfarmid = ?
+                WHERE c.inductiondate = ? AND c.ownerfarmid = ? and c.isinductioncompleted = true
                 ORDER BY c.updatedon DESC
                               """;
         List<CattleDto> cattleData = jdbcTemplate.query(query, new RowMapper<CattleDto>() {
