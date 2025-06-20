@@ -1,5 +1,8 @@
 package com.example.utapCattle.model.entity;
 
+
+import java.time.LocalDate;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -40,6 +43,9 @@ public class Medication {
 
 	@Column(name = "userfarmid")
 	private Long userFarmId;
+
+	@Column(name = "expirydate")
+	private LocalDate  expiryDate;
 
 	@Transient
     private String supplierName;

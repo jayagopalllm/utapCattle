@@ -52,6 +52,9 @@ public class TreatmentHistory {
 	@Column(name = "withdrawaldate")
 	private String withdrawalDate;
 
+	@Column(name = "quantity")
+	private Double quantity;
+
 	@Transient
 	private String conditionComment;
 

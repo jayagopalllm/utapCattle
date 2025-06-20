@@ -11,10 +11,10 @@ public interface DefaultTreatmentService {
 
     DefaultTreatmentDto saveDefaultTreatment(final DefaultTreatment defaultTreatment) throws Exception;
 
-    List<DefaultTreatmentDto> getAllDefaultTreatment();
-
     DefaultTreatmentDto update(Long id, DefaultTreatment condition);
 
     void delete(Long id);
+
+    List<DefaultTreatmentDto> getAllDefaultTreatment(Long userFarmId);
 
 }

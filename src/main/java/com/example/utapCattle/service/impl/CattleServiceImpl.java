@@ -91,6 +91,7 @@ public class CattleServiceImpl implements CattleService {
             cattle1.setCategoryId(cattle.getCategoryId());
             cattle1.setSourceMarketId(cattle.getSourceMarketId());
             cattle1.setDateOfBirth(cattle.getDateOfBirth());
+            cattle1.setDatePurchased(cattle.getDatePurchased());
             final Cattle savedCattle = cattleRepository.save(cattle1);
             return mapToDto(savedCattle); // Map the saved Cattle to DTO
         }
