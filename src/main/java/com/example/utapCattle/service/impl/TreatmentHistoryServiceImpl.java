@@ -240,11 +240,18 @@ public class TreatmentHistoryServiceImpl implements TreatmentHistoryService {
 	}
 
 	private TreatmentHistoryDto mapToDto(TreatmentHistory treatmentHistory) {
-		return new TreatmentHistoryDto(treatmentHistory.getTreatmentHistoryId(), treatmentHistory.getCattleId(),
-				treatmentHistory.getUserId(), treatmentHistory.getMedicalConditionId(),
-				treatmentHistory.getMedicationId(), treatmentHistory.getBatchNumber(),
-				treatmentHistory.getTreatmentDate(), treatmentHistory.getCommentId(),
-				treatmentHistory.getConditionCommentId());
+		TreatmentHistoryDto treatmentHistoryDto = new TreatmentHistoryDto();
+		treatmentHistoryDto.setTreatmentHistoryId(treatmentHistory.getTreatmentHistoryId());
+		treatmentHistoryDto.setCattleId(treatmentHistory.getCattleId());
+		treatmentHistoryDto.setUserId(treatmentHistory.getUserId());
+		treatmentHistoryDto.setMedicalConditionId(treatmentHistory.getMedicalConditionId());
+		treatmentHistoryDto.setMedicationId(treatmentHistory.getMedicationId());
+		treatmentHistoryDto.setBatchNumber(treatmentHistory.getBatchNumber());
+		treatmentHistoryDto.setTreatmentDate(treatmentHistory.getTreatmentDate());
+		treatmentHistoryDto.setCommentId(treatmentHistory.getCommentId());
+		treatmentHistoryDto.setConditionCommentId(treatmentHistory.getConditionCommentId());
+		treatmentHistoryDto.setQuantity(treatmentHistory.getQuantity());
+		return treatmentHistoryDto;
 	}
 
 }

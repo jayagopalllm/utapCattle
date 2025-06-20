@@ -15,6 +15,7 @@ public class TreatmentHistoryDto {
 	private Long medicalConditionId;
 	private Long medicationId;
 	private String batchNumber;
+	private Double quantity;
 	private String treatmentDate;
 	private Long commentId;
 	private Long conditionCommentId;
