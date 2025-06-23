@@ -117,13 +117,10 @@ public class Cattle {
 	private String residencies;
 
 	@Column(name = "newtagreq")
-	private Boolean newtagreq;
+	private Boolean newTagReq;
 
 	@Column(name = "tagid")
 	private Integer tagId; // Consider making this a foreign key if applicable
-
-	@Column(name = "newtagreqd")
-	private String newTagReqd; // Consider using a boolean or enum
 
 	@Column(name = "cattlegroupid")
 	private String cattleGroupId;
@@ -182,7 +179,7 @@ public class Cattle {
 				+ ", poundPerKgGain='" + poundPerKgGain + '\'' + ", hdDayFeeders='" + hdDayFeeders + '\''
 				+ ", tagOrdered='" + tagOrdered + '\'' + ", tagHere='" + tagHere + '\'' + ", coopOpening='"
 				+ coopOpening + '\'' + ", coopClosing='" + coopClosing + '\'' + ", residencies='" + residencies + '\''
-				+ ", newtagreq=" + newtagreq + ", tagId=" + tagId + ", newTagReqd='" + newTagReqd + '\''
+				+ ", newTagReq=" + newTagReq + ", tagId=" + tagId + '\''
 				+ ", cattleGroupId='" + cattleGroupId + '\'' + ", conformationId='" + conformationId + '\''
 				+ ", fatCoverId='" + fatCoverId + '\'' + ", weightAtPurchase='" + weightAtPurchase + '\''
 				+ ", isInductionCompleted='" + isInductionCompleted + ", numPrevMovements='" + numPrevMovements + '\''

@@ -4,6 +4,9 @@ import com.example.utapCattle.adminactions.conformationgrade.ConformationGrade;
 import com.example.utapCattle.model.dto.DefaultTreatmentDto;
 import com.example.utapCattle.model.entity.DefaultTreatment;
 import com.example.utapCattle.service.DefaultTreatmentService;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -45,9 +48,11 @@ public class DefaultTreatmentController extends BaseController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<Long> saveDefaultTreatment(@RequestBody final DefaultTreatment defaultTreatment) {
+    public ResponseEntity<Long> saveDefaultTreatment(@RequestBody final DefaultTreatment defaultTreatment,HttpServletRequest request) {
         logger.info("Saving new retrieve default treatment: {}", defaultTreatment);
         try {
+            Long userFarmId = Long.parseLong(request.getHeader("Farm-ID"));
+            defaultTreatment.setUserFarmId(userFarmId);
             final DefaultTreatmentDto defaultTreatmentDto = defaultTreatmentService.saveDefaultTreatment(
                     defaultTreatment);
             logger.info("Saved retrieve default treatment with ID: {}",
@@ -60,9 +65,10 @@ public class DefaultTreatmentController extends BaseController {
     }
 
     @GetMapping
-    public ResponseEntity<List<DefaultTreatmentDto>> getAllCategories() {
+    public ResponseEntity<List<DefaultTreatmentDto>> getAllCategories(HttpServletRequest request) {
         try {
-            List<DefaultTreatmentDto> defaultTreatmentDto = defaultTreatmentService.getAllDefaultTreatment();
+            Long userFarmId = Long.parseLong(request.getHeader("Farm-ID"));
+            List<DefaultTreatmentDto> defaultTreatmentDto = defaultTreatmentService.getAllDefaultTreatment(userFarmId);
             logger.info("Retrieved {} categories", defaultTreatmentDto.size());
             return ResponseEntity.ok(defaultTreatmentDto);
         } catch (Exception e) {

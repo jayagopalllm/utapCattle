@@ -51,9 +51,8 @@ public class CattleDto {
 	private String coopOpening;
 	private String coopClosing;
 	private String residencies;
-	private Boolean newtagreq;
+	private Boolean newTagReq;
 	private Integer tagId;
-	private String newTagReqd;
 	private String cattleGroupId;
 	private Long conformationId;
 	private Long fatCoverId;

@@ -91,6 +91,7 @@ public class CattleServiceImpl implements CattleService {
             cattle1.setCategoryId(cattle.getCategoryId());
             cattle1.setSourceMarketId(cattle.getSourceMarketId());
             cattle1.setDateOfBirth(cattle.getDateOfBirth());
+            cattle1.setDatePurchased(cattle.getDatePurchased());
             final Cattle savedCattle = cattleRepository.save(cattle1);
             return mapToDto(savedCattle); // Map the saved Cattle to DTO
         }
@@ -183,9 +184,8 @@ public class CattleServiceImpl implements CattleService {
         cattleData.setCoopOpening(cattle.getCoopOpening());
         cattleData.setCoopClosing(cattle.getCoopClosing());
         cattleData.setResidencies(cattle.getResidencies());
-        cattleData.setNewtagreq(cattle.getNewtagreq());
+        cattleData.setNewTagReq(cattle.getNewTagReq());
         cattleData.setTagId(cattle.getTagId());
-        cattleData.setNewTagReqd(cattle.getNewTagReqd());
         cattleData.setCattleGroupId(cattle.getCattleGroupId());
         cattleData.setConformationId(cattle.getConformationId());
         cattleData.setFatCoverId(cattle.getFatCoverId());

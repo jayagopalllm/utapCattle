@@ -111,6 +111,7 @@ public class SaleServiceImpl implements SaleService {
 
         cattle.setWeightAtSale(saleDto.getWeight());
         cattle.setSaleId(savedSale.getSaleId());
+        cattle.setNewTagReq(false);
         cattle = cattleRepository.save(cattle);
         String name = sellerMarketRepository.findById(sale.getSaleMarketId()).get().getSellerMarketName();
         // Prepare response DTO
@@ -282,6 +283,9 @@ public class SaleServiceImpl implements SaleService {
         movement.setMovementId(userId);
         movement.setUserId(userId);
         movementService.saveMovement(movement);
+
+        // Update the cattle data
+        cattle.setNewTagReq(saleDto.getNewTagReq()); // Clear the new tag request on sale
 
         return saleDto;
     }

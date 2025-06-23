@@ -29,6 +29,9 @@ public class DefaultTreatment {
 	@Column(name = "medicationid")
 	private Long medicationId;
 
+	@Column(name = "userfarmid")
+	private Long userFarmId;
+
 	@Transient
     private String conditionDesc;
 

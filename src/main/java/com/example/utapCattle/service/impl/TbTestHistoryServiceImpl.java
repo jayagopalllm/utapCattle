@@ -44,11 +44,15 @@ public class TbTestHistoryServiceImpl implements TbTestHistoryService {
 		TbTestHistory tbTestHistory = treatmentHistoryMetadata.getTbTestHistory();
 		Long userId = treatmentHistoryMetadata.getUserId();
 
-		validateCattle(tbTestHistory.getEarTag());
+		Cattle cattle = validateCattle(tbTestHistory.getEarTag());
 
 		treatmentHistoryService.saveTreatmentHistory(treatmentHistoryMetadata);
 
-		return this.saveTBTestHistory(tbTestHistory, userId);
+		tbTestHistory=this.saveTBTestHistory(tbTestHistory, userId);
+
+		cattle.setNewTagReq(treatmentHistoryMetadata.getNewTagReq());
+
+		return tbTestHistory;
 
 	}
 
@@ -109,17 +113,15 @@ public class TbTestHistoryServiceImpl implements TbTestHistoryService {
 		return tbTestHistoryRepository.getNextSequenceValue();
 	}
 
-	private void validateCattle(final String earTag) {
+	private Cattle validateCattle(final String earTag) {
 		try {
-			final Optional<Cattle> existingCattle = cattleRepository.findByEarTag(earTag);
-			if (existingCattle.isEmpty()) {
-				throw new IllegalArgumentException("No Cattle record found with the given EarTag: " + earTag);
-			}
+			return cattleRepository.findByEarTag(earTag).orElseThrow(() -> new IllegalArgumentException("No Cattle record found with the given EarTag: " + earTag));
 		} catch (final NumberFormatException e) {
 			throw new IllegalArgumentException("No Cattle record found with the given EarTag: " + earTag);
 		} catch (final Exception e) {
 			throw e;
 		}
+
 
 	}
 

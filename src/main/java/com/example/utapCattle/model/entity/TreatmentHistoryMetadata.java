@@ -33,4 +33,6 @@ public class TreatmentHistoryMetadata {
 
 	private Long userId;
 
+	private Boolean newTagReq;
+
 }

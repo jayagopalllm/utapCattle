@@ -61,35 +61,38 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 
 	@Override
 	public void saveWeightAndMovement(final TreatmentHistoryMetadata treatmentHistoryMetadata) {
-		validateCattle(treatmentHistoryMetadata.getEarTag());
+		Cattle cattle = validateCattle(treatmentHistoryMetadata.getEarTag());
 
-		final Long cattleId = treatmentHistoryMetadata.getCattleId();
-		final Long userId= treatmentHistoryMetadata.getUserId();
+		final Long cattleId = cattle.getCattleId();
+		final Long userId = treatmentHistoryMetadata.getUserId();
 		final String formattedDate = getCurrentFormattedDate();
 
 		final Double weight = treatmentHistoryMetadata.getWeight();
-			if (weight == null) {
-				throw new IllegalArgumentException("Weight cannot be empty");
-			}
-			final WeightHistory weightHistory = new WeightHistory();
-			weightHistory.setCattleId(cattleId);
-			weightHistory.setWeightDateTime(formattedDate);
-			weightHistory.setWeight(weight);
-			weightHistory.setUserId(userId);
+		if (weight == null) {
+			throw new IllegalArgumentException("Weight cannot be empty");
+		}
+		final WeightHistory weightHistory = new WeightHistory();
+		weightHistory.setCattleId(cattleId);
+		weightHistory.setWeightDateTime(formattedDate);
+		weightHistory.setWeight(weight);
+		weightHistory.setUserId(userId);
 
-			saveWeightHistory(weightHistory);
+		saveWeightHistory(weightHistory);
 
 		final Movement movement = new Movement();
-			final Integer pen = treatmentHistoryMetadata.getPen();
-			if (pen == null) {
-				throw new IllegalArgumentException("Pen cannot be empty");
-			}
-			movement.setCattleId(cattleId);
-			movement.setPenId(pen);
-			movement.setMovementDate(formattedDate);
-			movement.setUserId(userId);
+		final Integer pen = treatmentHistoryMetadata.getPen();
+		if (pen == null) {
+			throw new IllegalArgumentException("Pen cannot be empty");
+		}
+		movement.setCattleId(cattleId);
+		movement.setPenId(pen);
+		movement.setMovementDate(formattedDate);
+		movement.setUserId(userId);
+		movementService.saveMovement(movement);
 
-			movementService.saveMovement(movement);
+		// Update cattle details
+		cattle.setNewTagReq(treatmentHistoryMetadata.getNewTagReq());
+		cattle = cattleRepository.save(cattle);
 	}
 
 	@Override
@@ -235,12 +238,9 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 	}
 
 
-	private void validateCattle(final String earTag) {
+	private Cattle validateCattle(final String earTag) {
 		try {
-			final Optional<Cattle> existingCattle = cattleRepository.findByEarTag(earTag);
-			if (existingCattle.isEmpty()) {
-				throw new IllegalArgumentException("No Cattle record found with the given EarTag: " + earTag);
-			}
+			return cattleRepository.findByEarTag(earTag).orElseThrow(() -> new IllegalArgumentException("No Cattle record found with the given EarTag: " + earTag));
 		} catch (final NumberFormatException e) {
 			throw new IllegalArgumentException("No Cattle record found with the given EarTag: " + earTag);
 		} catch (final Exception e) {

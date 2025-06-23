@@ -45,6 +45,7 @@ public class MedicationService {
             condition.setWithdrawalPeriod(updatedCondition.getWithdrawalPeriod());
             condition.setMedicationTypeId(updatedCondition.getMedicationTypeId());
             condition.setBatchNumber(updatedCondition.getBatchNumber());
+            condition.setExpiryDate(updatedCondition.getExpiryDate());
             Medication updated = repository.save(condition);
             return populateTransientFields(updated);
         }).orElseThrow(() -> new RuntimeException("Medication not found"));

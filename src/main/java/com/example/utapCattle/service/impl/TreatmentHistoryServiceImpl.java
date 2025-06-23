@@ -1,6 +1,7 @@
 package com.example.utapCattle.service.impl;
 
 import com.example.utapCattle.model.dto.*;
+import com.example.utapCattle.model.entity.Cattle;
 import com.example.utapCattle.model.entity.Comment;
 import com.example.utapCattle.model.entity.Movement;
 import com.example.utapCattle.model.entity.TreatmentHistory;
@@ -11,6 +12,7 @@ import com.example.utapCattle.service.CommentService;
 import com.example.utapCattle.service.MovementService;
 import com.example.utapCattle.service.TreatmentHistoryService;
 import com.example.utapCattle.service.WeightHistoryService;
+import com.example.utapCattle.service.repository.CattleRepository;
 import com.example.utapCattle.service.repository.MedicationRepository;
 import com.example.utapCattle.service.repository.TreatmentHistoryRepository;
 import com.example.utapCattle.utils.DateUtils;
@@ -41,19 +43,22 @@ public class TreatmentHistoryServiceImpl implements TreatmentHistoryService {
 	private final WeightHistoryService weightHistoryService;
 	private final MovementService movementService;
 	private final CattleService cattleService;
+	private final CattleRepository cattleRepository;
 
 	public TreatmentHistoryServiceImpl(TreatmentHistoryRepository treatmentHistoryRepository,
 			MedicationRepository medicationRepository,
 			CommentService commentService,
 			WeightHistoryService weightHistoryService,
 			MovementService movementService,
-			CattleService cattleService) {
+			CattleService cattleService,
+			CattleRepository cattleRepository) {
 		this.treatmentHistoryRepository = treatmentHistoryRepository;
 		this.medicationRepository = medicationRepository;
 		this.commentService = commentService;
 		this.weightHistoryService = weightHistoryService;
 		this.movementService = movementService;
 		this.cattleService = cattleService;
+		this.cattleRepository = cattleRepository;
 	}
 
 	@Override
@@ -71,6 +76,9 @@ public class TreatmentHistoryServiceImpl implements TreatmentHistoryService {
 	@Transactional
 	public Map<String, Object> saveTreatmentHistory(final TreatmentHistoryMetadata treatmentHistoryMetadata) {
 		final List<TreatmentHistory> treatmentHistories = treatmentHistoryMetadata.getTreatmentHistories();
+
+		Cattle cattle = cattleRepository.findByCattleId(treatmentHistoryMetadata.getCattleId())
+                .orElseThrow(() -> new IllegalArgumentException("Cattle not found"));
 
 		validateInductionVO(treatmentHistories);
 
@@ -108,6 +116,10 @@ public class TreatmentHistoryServiceImpl implements TreatmentHistoryService {
 					userId);
 			outputMap.put("movements", movementDto);
 		}
+
+		// Update cattle details
+		cattle.setNewTagReq(treatmentHistoryMetadata.getNewTagReq());
+		cattle = cattleRepository.save(cattle);
 
 		return outputMap;
 	}
@@ -240,11 +252,18 @@ public class TreatmentHistoryServiceImpl implements TreatmentHistoryService {
 	}
 
 	private TreatmentHistoryDto mapToDto(TreatmentHistory treatmentHistory) {
-		return new TreatmentHistoryDto(treatmentHistory.getTreatmentHistoryId(), treatmentHistory.getCattleId(),
-				treatmentHistory.getUserId(), treatmentHistory.getMedicalConditionId(),
-				treatmentHistory.getMedicationId(), treatmentHistory.getBatchNumber(),
-				treatmentHistory.getTreatmentDate(), treatmentHistory.getCommentId(),
-				treatmentHistory.getConditionCommentId());
+		TreatmentHistoryDto treatmentHistoryDto = new TreatmentHistoryDto();
+		treatmentHistoryDto.setTreatmentHistoryId(treatmentHistory.getTreatmentHistoryId());
+		treatmentHistoryDto.setCattleId(treatmentHistory.getCattleId());
+		treatmentHistoryDto.setUserId(treatmentHistory.getUserId());
+		treatmentHistoryDto.setMedicalConditionId(treatmentHistory.getMedicalConditionId());
+		treatmentHistoryDto.setMedicationId(treatmentHistory.getMedicationId());
+		treatmentHistoryDto.setBatchNumber(treatmentHistory.getBatchNumber());
+		treatmentHistoryDto.setTreatmentDate(treatmentHistory.getTreatmentDate());
+		treatmentHistoryDto.setCommentId(treatmentHistory.getCommentId());
+		treatmentHistoryDto.setConditionCommentId(treatmentHistory.getConditionCommentId());
+		treatmentHistoryDto.setQuantity(treatmentHistory.getQuantity());
+		return treatmentHistoryDto;
 	}
 
 }
