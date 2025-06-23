@@ -184,9 +184,8 @@ public class CattleServiceImpl implements CattleService {
         cattleData.setCoopOpening(cattle.getCoopOpening());
         cattleData.setCoopClosing(cattle.getCoopClosing());
         cattleData.setResidencies(cattle.getResidencies());
-        cattleData.setNewtagreq(cattle.getNewtagreq());
+        cattleData.setNewTagReq(cattle.getNewTagReq());
         cattleData.setTagId(cattle.getTagId());
-        cattleData.setNewTagReqd(cattle.getNewTagReqd());
         cattleData.setCattleGroupId(cattle.getCattleGroupId());
         cattleData.setConformationId(cattle.getConformationId());
         cattleData.setFatCoverId(cattle.getFatCoverId());

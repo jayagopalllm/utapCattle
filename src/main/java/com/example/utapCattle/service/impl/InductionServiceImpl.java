@@ -113,6 +113,7 @@ public class InductionServiceImpl implements InductionService {
             cattle.setCattleId(cattleId);
             cattle.setIsInductionCompleted(true);
             cattle.setInductionDate(LocalDate.now());
+            cattle.setNewTagReq(treatmentHistoryMetadata.getNewTagReq());
             cattle.setUserId(treatmentHistoryMetadata.getUserId());
             cattleRepository.save(cattle);
         } else {

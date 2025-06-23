@@ -14,7 +14,8 @@ public class SaleDto {
 	private String saleMarketName;
 	private Long cattleId;
 	private Long penId;
-	private String comment; 
-	private Double weight; 
+	private String comment;
+	private Double weight;
+    public Boolean newTagReq;
 
 }
