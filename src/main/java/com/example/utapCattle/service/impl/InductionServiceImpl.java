@@ -7,6 +7,9 @@ import com.example.utapCattle.model.entity.TreatmentHistoryMetadata;
 import com.example.utapCattle.service.InductionService;
 import com.example.utapCattle.service.TreatmentHistoryService;
 import com.example.utapCattle.service.repository.CattleRepository;
+
+import org.springframework.transaction.annotation.Transactional;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
@@ -27,19 +30,19 @@ import java.util.Optional;
 @Service
 public class InductionServiceImpl implements InductionService {
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
     private final CattleRepository cattleRepository;
     private final TreatmentHistoryService treatmentHistoryService;
+    private final JdbcTemplate jdbcTemplate;
 
-    public InductionServiceImpl(CattleRepository cattleRepository, TreatmentHistoryService treatmentHistoryService) {
+    public InductionServiceImpl(CattleRepository cattleRepository, TreatmentHistoryService treatmentHistoryService, JdbcTemplate jdbcTemplate) {
         this.cattleRepository = cattleRepository;
+        this.jdbcTemplate = jdbcTemplate;
         this.treatmentHistoryService = treatmentHistoryService;
+
     }
 
     @Override
-    public final List<CattleDto> getInductionList(final LocalDate date, final Long userFarmId) {
+    public List<CattleDto> getInductionList(final LocalDate date, final Long userFarmId) {
 
         String query = """
                 WITH latest_weights AS (
@@ -78,7 +81,8 @@ public class InductionServiceImpl implements InductionService {
     }
 
     @Override
-    public final Map<String, Object> saveInduction(final TreatmentHistoryMetadata treatmentHistoryMetadata) {
+    @Transactional
+    public Map<String, Object> saveInduction(final TreatmentHistoryMetadata treatmentHistoryMetadata) {
 
         validateInduction(treatmentHistoryMetadata);
 
@@ -115,6 +119,7 @@ public class InductionServiceImpl implements InductionService {
             cattle.setInductionDate(LocalDate.now());
             cattle.setNewTagReq(treatmentHistoryMetadata.getNewTagReq());
             cattle.setUserId(treatmentHistoryMetadata.getUserId());
+            cattle.setConditionScore(treatmentHistoryMetadata.getConditionScore());
             cattleRepository.save(cattle);
         } else {
             throw new IllegalArgumentException("No Cattle record found with the given EarTag: " + earTag);

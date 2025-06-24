@@ -69,32 +69,38 @@ public class SaleServiceImpl implements SaleService {
 
         Cattle cattle = cattleRepository.findByCattleId(saleDto.getCattleId())
                 .orElseThrow(() -> new RuntimeException("Cattle not found"));
+
+        Long cattleId = cattle.getCattleId();
         // Persist comment if present
         if (saleDto.getComment() != null) {
             final Comment comment = new Comment();
             final Long commentId = commentRepository.getNextSequenceValue();
             comment.setProcessId(4L);
             comment.setId(commentId);
-            comment.setCattleId(saleDto.getCattleId());
+            comment.setCattleId(cattleId);
             comment.setComment(saleDto.getComment());
             comment.setCommentDate(getCurrentFormattedDate());
             commentRepository.save(comment);
         }
 
         final WeightHistory weightHistory = new WeightHistory();
-        weightHistory.setCattleId(saleDto.getCattleId());
+        weightHistory.setCattleId(cattleId);
         weightHistory.setWeightDateTime(getCurrentFormattedDate());
         weightHistory.setWeight(saleDto.getWeight());
         weightHistory.setUserId(userId);
         weightHistoryService.saveWeightHistory(weightHistory);
 
-        final Movement movement = new Movement();
-        movement.setCattleId(saleDto.getCattleId());
-        movement.setPenId(Integer.parseInt(saleDto.getPenId() + ""));
-        movement.setMovementDate(getCurrentFormattedDate());
-        movement.setMovementId(userId);
-        movement.setUserId(userId);
-        movementService.saveMovement(movement);
+        if(saleDto.getPenId() != null) {
+            final Movement movement = new Movement();
+            movement.setCattleId(cattleId);
+            movement.setPenId(Integer.parseInt(saleDto.getPenId() + ""));
+            movement.setMovementDate(getCurrentFormattedDate());
+            movement.setMovementId(userId);
+            movement.setUserId(userId);
+            movementService.saveMovement(movement);
+        }
+
+
         final Sale sale = new Sale();
         if (saleDto.getSaleId() != null) {
             sale.setSaleId(saleDto.getSaleId());
@@ -122,7 +128,7 @@ public class SaleServiceImpl implements SaleService {
         responseDto.setSaleMarketName(name);
         responseDto.setWeight(cattle.getWeightAtSale());
 
-        responseDto.setCattleId(cattle.getCattleId());
+        responseDto.setCattleId(cattleId);
         responseDto.setPenId(saleDto.getPenId());
 
         return responseDto;
@@ -268,8 +274,10 @@ public class SaleServiceImpl implements SaleService {
         Cattle cattle = cattleRepository.findByCattleId(saleDto.getCattleId())
                 .orElseThrow(() -> new RuntimeException("Cattle not found"));
 
+        Long cattleId = cattle.getCattleId();
+
         final WeightHistory weightHistory = new WeightHistory();
-        weightHistory.setCattleId(saleDto.getCattleId());
+        weightHistory.setCattleId(cattleId);
         weightHistory.setWeightDateTime(getCurrentFormattedDate());
         weightHistory.setWeight(saleDto.getWeight());
         weightHistory.setUserId(userId);
@@ -277,7 +285,7 @@ public class SaleServiceImpl implements SaleService {
 
         /* New Entry into Movement table */
         final Movement movement = new Movement();
-        movement.setCattleId(saleDto.getCattleId());
+        movement.setCattleId(cattleId);
         movement.setPenId(Integer.parseInt(saleDto.getPenId() + ""));
         movement.setMovementDate(getCurrentFormattedDate());
         movement.setMovementId(userId);
