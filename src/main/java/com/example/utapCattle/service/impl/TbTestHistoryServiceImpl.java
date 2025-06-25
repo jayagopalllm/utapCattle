@@ -50,8 +50,6 @@ public class TbTestHistoryServiceImpl implements TbTestHistoryService {
 
 		tbTestHistory=this.saveTBTestHistory(tbTestHistory, userId);
 
-		cattle.setNewTagReq(treatmentHistoryMetadata.getNewTagReq());
-
 		return tbTestHistory;
 
 	}

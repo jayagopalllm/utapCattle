@@ -69,32 +69,38 @@ public class SaleServiceImpl implements SaleService {
 
         Cattle cattle = cattleRepository.findByCattleId(saleDto.getCattleId())
                 .orElseThrow(() -> new RuntimeException("Cattle not found"));
+
+        Long cattleId = cattle.getCattleId();
         // Persist comment if present
         if (saleDto.getComment() != null) {
             final Comment comment = new Comment();
             final Long commentId = commentRepository.getNextSequenceValue();
             comment.setProcessId(4L);
             comment.setId(commentId);
-            comment.setCattleId(saleDto.getCattleId());
+            comment.setCattleId(cattleId);
             comment.setComment(saleDto.getComment());
             comment.setCommentDate(getCurrentFormattedDate());
             commentRepository.save(comment);
         }
 
         final WeightHistory weightHistory = new WeightHistory();
-        weightHistory.setCattleId(saleDto.getCattleId());
+        weightHistory.setCattleId(cattleId);
         weightHistory.setWeightDateTime(getCurrentFormattedDate());
         weightHistory.setWeight(saleDto.getWeight());
         weightHistory.setUserId(userId);
         weightHistoryService.saveWeightHistory(weightHistory);
 
-        final Movement movement = new Movement();
-        movement.setCattleId(saleDto.getCattleId());
-        movement.setPenId(Integer.parseInt(saleDto.getPenId() + ""));
-        movement.setMovementDate(getCurrentFormattedDate());
-        movement.setMovementId(userId);
-        movement.setUserId(userId);
-        movementService.saveMovement(movement);
+        if(saleDto.getPenId() != null) {
+            final Movement movement = new Movement();
+            movement.setCattleId(cattleId);
+            movement.setPenId(Integer.parseInt(saleDto.getPenId() + ""));
+            movement.setMovementDate(getCurrentFormattedDate());
+            movement.setMovementId(userId);
+            movement.setUserId(userId);
+            movementService.saveMovement(movement);
+        }
+
+
         final Sale sale = new Sale();
         if (saleDto.getSaleId() != null) {
             sale.setSaleId(saleDto.getSaleId());
@@ -122,7 +128,7 @@ public class SaleServiceImpl implements SaleService {
         responseDto.setSaleMarketName(name);
         responseDto.setWeight(cattle.getWeightAtSale());
 
-        responseDto.setCattleId(cattle.getCattleId());
+        responseDto.setCattleId(cattleId);
         responseDto.setPenId(saleDto.getPenId());
 
         return responseDto;
@@ -168,15 +174,15 @@ public class SaleServiceImpl implements SaleService {
                 inner join sale s on s.saleid = cat.saleid
                 LEFT JOIN (
                     SELECT cattleid, weight,
-                           TO_DATE(weightdatetime, 'YYYY-MM-DD HH24:MI:SS') AS date_weighted,
-                           ROW_NUMBER() OVER (PARTITION BY cattleid ORDER BY TO_DATE(weightdatetime, 'YYYY-MM-DD HH24:MI:SS') ASC) AS rank
+                           weightdatetime::date AS date_weighted,
+                           ROW_NUMBER() OVER (PARTITION BY cattleid ORDER BY weightdatetime::date ASC) AS rank
                     FROM weighthistory
                     WHERE weight > 25
                 ) w_min ON cat.cattleid = w_min.cattleid AND w_min.rank = 1
                 LEFT JOIN (
                     SELECT cattleid, weight,
-                           TO_DATE(weightdatetime, 'YYYY-MM-DD HH24:MI:SS') AS date_weighted,
-                           ROW_NUMBER() OVER (PARTITION BY cattleid ORDER BY TO_DATE(weightdatetime, 'YYYY-MM-DD HH24:MI:SS') DESC) AS rank
+                           weightdatetime::date AS date_weighted,
+                           ROW_NUMBER() OVER (PARTITION BY cattleid ORDER BY weightdatetime::date DESC) AS rank
                     FROM weighthistory
                     WHERE weight > 25
                 ) w_max ON cat.cattleid = w_max.cattleid AND w_max.rank = 1
@@ -220,22 +226,48 @@ public class SaleServiceImpl implements SaleService {
     @SuppressWarnings("deprecation")
     @Override
     public SaleTotalStats getSaleTotalStats(Long saleId) {
-        String query = "SELECT " +
-                "    COUNT(eartag) AS totalCattle, " +
-                "    sum(case when EXTRACT(MONTH FROM AGE(c.dateofbirth::date, CURRENT_DATE::date)) + " +
-                "    EXTRACT(YEAR FROM AGE(c.dateofbirth::date, CURRENT_DATE::date)) * 12 >= 30 then 1 else 0 end )AS totalOTM, "
-                +
-                "    SUM(weightatsale) as totalWeight " +
-                "FROM " +
-                "    cattle c " +
-                "WHERE " +
-                "    saleid = ? ";
+        String query = """
+                WITH weightranked AS (
+                  SELECT
+                    w.cattleid, w.weight,
+                    w.weightdatetime AS date_weighted,
+                    ROW_NUMBER() OVER (PARTITION BY w.cattleid ORDER BY w.weightdatetime::timestamp ) AS min_rank,
+                    ROW_NUMBER() OVER (PARTITION BY w.cattleid ORDER BY w.weightdatetime::timestamp DESC) AS max_rank
+                  FROM weighthistory w
+                  WHERE w.weight > 25
+                ),
+                cattle_with_dlwg AS (
+                  SELECT
+                    c.cattleid,
+                    c.eartag,
+                    c.weightatsale,
+                    c.dateofbirth,
+                    (w_max.weight - w_min.weight) / NULLIF(w_max.date_weighted::date - w_min.date_weighted::date, 0) AS dlwg_farm
+                  FROM
+                    cattle c
+                    LEFT JOIN weightranked w_min ON c.cattleid = w_min.cattleid AND w_min.min_rank = 1
+                    LEFT JOIN weightranked w_max ON c.cattleid = w_max.cattleid AND w_max.max_rank = 1
+                  WHERE
+                    c.saleid = ?
+                )
+                SELECT
+                	COUNT(eartag) AS totalCattle,
+                	SUM(weightatsale) AS totalWeight,
+                	sum(case when EXTRACT(MONTH FROM AGE(dateofbirth::date, CURRENT_DATE::date)) +
+                	EXTRACT(YEAR FROM AGE(dateofbirth::date, CURRENT_DATE::date)) * 12 >= 30 then 1 else 0 end )AS totalOTM,
+                	AVG(weightatsale) AS avgWeight,
+                	ROUND(AVG(dlwg_farm)::numeric, 2) AS avgDlwg
+                FROM cattle_with_dlwg;
+
+                                """;
 
         return jdbcTemplate.queryForObject(query, new Object[] { saleId }, (rs, rowNum) -> {
             SaleTotalStats stats = new SaleTotalStats();
             stats.setTotalCattle(rs.getInt("totalCattle"));
             stats.setTotalWeight(rs.getInt("totalWeight"));
             stats.setTotalOTM(rs.getInt("totalOTM"));
+            stats.setAvgWeight(rs.getDouble("avgWeight"));
+            stats.setAvgDlwg(rs.getDouble("avgDlwg"));
             return stats;
         });
 
@@ -268,8 +300,10 @@ public class SaleServiceImpl implements SaleService {
         Cattle cattle = cattleRepository.findByCattleId(saleDto.getCattleId())
                 .orElseThrow(() -> new RuntimeException("Cattle not found"));
 
+        Long cattleId = cattle.getCattleId();
+
         final WeightHistory weightHistory = new WeightHistory();
-        weightHistory.setCattleId(saleDto.getCattleId());
+        weightHistory.setCattleId(cattleId);
         weightHistory.setWeightDateTime(getCurrentFormattedDate());
         weightHistory.setWeight(saleDto.getWeight());
         weightHistory.setUserId(userId);
@@ -277,7 +311,7 @@ public class SaleServiceImpl implements SaleService {
 
         /* New Entry into Movement table */
         final Movement movement = new Movement();
-        movement.setCattleId(saleDto.getCattleId());
+        movement.setCattleId(cattleId);
         movement.setPenId(Integer.parseInt(saleDto.getPenId() + ""));
         movement.setMovementDate(getCurrentFormattedDate());
         movement.setMovementId(userId);

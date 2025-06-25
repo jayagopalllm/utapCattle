@@ -10,8 +10,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SaleTotalStats {
     private Integer totalCattle;
-    
+
     private Integer totalWeight;
 
-    private Integer totalOTM;    
+    private Integer totalOTM;
+
+    private Double avgWeight;
+
+    private Double avgDlwg;
 }

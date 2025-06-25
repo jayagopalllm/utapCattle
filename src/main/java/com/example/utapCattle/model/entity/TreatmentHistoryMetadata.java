@@ -35,4 +35,6 @@ public class TreatmentHistoryMetadata {
 
 	private Boolean newTagReq;
 
+	private String conditionScore;
+
 }

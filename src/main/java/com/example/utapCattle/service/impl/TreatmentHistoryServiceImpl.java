@@ -84,7 +84,7 @@ public class TreatmentHistoryServiceImpl implements TreatmentHistoryService {
 
 		final String formattedDate = getCurrentFormattedDate();
 
-		final Long cattleId = treatmentHistoryMetadata.getCattleId();
+		final Long cattleId = cattle.getCattleId();
 		final Long processId = treatmentHistoryMetadata.getProcessId();
 		final Long userId = treatmentHistoryMetadata.getUserId();
 
@@ -119,6 +119,7 @@ public class TreatmentHistoryServiceImpl implements TreatmentHistoryService {
 
 		// Update cattle details
 		cattle.setNewTagReq(treatmentHistoryMetadata.getNewTagReq());
+		cattle.setConditionScore(treatmentHistoryMetadata.getConditionScore());
 		cattle = cattleRepository.save(cattle);
 
 		return outputMap;
