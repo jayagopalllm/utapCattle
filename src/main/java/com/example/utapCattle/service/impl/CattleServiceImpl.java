@@ -160,6 +160,8 @@ public class CattleServiceImpl implements CattleService {
         cattleData.setSourceMarketName(cattleName);
         cattleData.setDatePurchased(cattle.getDatePurchased());
         cattleData.setPurchasePrice(cattle.getPurchasePrice());
+        cattleData.setRatePerKg(cattle.getRatePerKg());
+        cattleData.setRatePerDay(cattle.getRatePerDay());
         cattleData.setSaleId(cattle.getSaleId());
         cattleData.setSalePrice(cattle.getSalePrice());
         cattleData.setComments(cattle.getComments());
