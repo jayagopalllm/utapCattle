@@ -155,6 +155,12 @@ public class Cattle {
 	@Column(name = "userid")
 	private Long userId;
 
+	@Column(name = "rate_per_kg")
+	private BigDecimal ratePerKg;
+
+	@Column(name = "rate_per_day")
+	private BigDecimal ratePerDay;
+
 	@PrePersist
 	protected void onCreate() {
 		createdOn = LocalDateTime.now(); // Store only the current date

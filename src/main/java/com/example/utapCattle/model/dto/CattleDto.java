@@ -62,4 +62,6 @@ public class CattleDto {
 	private String lastWithdraw;
 	private Boolean isInductionCompleted;
 	private String ageInMonths;
+	private BigDecimal ratePerKg;
+	private BigDecimal ratePerDay;
 }
