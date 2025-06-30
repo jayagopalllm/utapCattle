@@ -17,8 +17,7 @@ public class MedicationTypeController {
 
     @GetMapping
     public List<MedicationType> getAll(HttpServletRequest request) {
-        Long userFarmId = Long.parseLong(request.getHeader("Farm-ID"));
-        return service.getAll(userFarmId);
+        return service.getAll();
     }
 
     @GetMapping("/{id}")
