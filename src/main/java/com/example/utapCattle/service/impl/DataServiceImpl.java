@@ -79,7 +79,7 @@ public class DataServiceImpl implements DataService {
         final List<Category> categories = categoryRepository.findAll();
         final List<Agent> agents = agentRepository.findByUserFarmIdOrderByAgentNameAsc(userFarmId);
         final List<Customer> customers = customerRepository.findByUserFarmIdOrderByCustomerNameAsc(userFarmId);
-        final List<Pen> pens = penRepository.findAll();
+        final List<Pen> pens = penRepository.findAllByUserFarmId(userFarmId);
         final Map<Long, String> eIdEarTagMap = getEidEarTagMapping(userFarmId);
 
         final AllDataDto allData = new AllDataDto();
@@ -132,7 +132,7 @@ public class DataServiceImpl implements DataService {
         final Map<Long, String> eIdEarTagMap = getEidEarTagMapping(userFarmId);
         tbTestData.setEIdEarTagMap(eIdEarTagMap);
 
-        final List<Pen> pens = penRepository.findAll();
+        final List<Pen> pens = penRepository.findAllByUserFarmId(userFarmId);
         tbTestData.setPens(pens);
         return tbTestData;
     }
@@ -144,7 +144,7 @@ public class DataServiceImpl implements DataService {
         final Map<Long, String> eIdEarTagMap = getEidEarTagMapping(userFarmId);
         salesData.setEIdEarTagMap(eIdEarTagMap);
         // Pens
-        final List<Pen> pens = penRepository.findAll();
+        final List<Pen> pens = penRepository.findAllByUserFarmId(userFarmId);
         salesData.setPens(pens);
         // Market
         final List<SellerMarket> sellerMarkets = sellerMarketRepository.findByUserFarmIdOrderBySellerMarketNameAsc(userFarmId);
@@ -206,8 +206,8 @@ public class DataServiceImpl implements DataService {
 
     private AllDataDto getInductionAndTreatmentData(Long userId, Long userFarmId) {
         final List<MedicalCondition> medicalConditions = medicalConditionRepository.findAll();
-        final List<Medication> medications = medicationRepository.findAll();
-        final List<Pen> pens = penRepository.findAll(); // should pick pen based on the select criteria filter
+        final List<Medication> medications = medicationRepository.findByUserFarmIdOrderByMedicationDescAsc(userFarmId);
+        final List<Pen> pens = penRepository.findAllByUserFarmId(userFarmId); // should pick pen based on the select criteria filter
         final List<String> earTagList = cattleRepository.findEarTagsWithIncompleteInduction(userFarmId);
         final List<String> eIdList = cattleRepository.findEIdsWithIncompleteInduction(userFarmId);
 

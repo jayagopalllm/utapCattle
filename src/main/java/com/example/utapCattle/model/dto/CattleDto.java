@@ -1,6 +1,7 @@
 package com.example.utapCattle.model.dto;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -62,4 +63,7 @@ public class CattleDto {
 	private String lastWithdraw;
 	private Boolean isInductionCompleted;
 	private String ageInMonths;
+	private BigDecimal ratePerKg;
+	private BigDecimal ratePerDay;
+	private List<CommentDto> commentsList;
 }

@@ -1,10 +1,14 @@
 package com.example.utapCattle.service.impl;
 
 import com.example.utapCattle.model.dto.CattleDto;
+import com.example.utapCattle.model.dto.CommentDto;
 import com.example.utapCattle.model.entity.Cattle;
+import com.example.utapCattle.model.entity.Comment;
 import com.example.utapCattle.model.entity.WeightHistory;
+import com.example.utapCattle.model.mapper.CommentMapper;
 import com.example.utapCattle.service.*;
 import com.example.utapCattle.service.repository.CattleRepository;
+import com.example.utapCattle.service.repository.CommentRepository;
 import com.example.utapCattle.service.repository.SellerMarketRepository;
 import com.example.utapCattle.service.repository.TreatmentHistoryRepository;
 import com.example.utapCattle.utils.DateUtils;
@@ -44,12 +48,14 @@ public class CattleServiceImpl implements CattleService {
     private final TreatmentHistoryRepository treatmentHistoryRepository;
     private final WeightHistoryService weightHistoryService;
     private final SaleService saleService;
+    private final CommentRepository commentRepository;
+    private final CommentMapper commentMapper;
 
     public CattleServiceImpl(CattleRepository cattleRepository, BreedService breedService,
             CategoryService categoryService, FarmService farmService, MarketService marketService,
             CustomerService customerService, AgentService agentService,
             TreatmentHistoryRepository treatmentHistoryRepository, WeightHistoryService weightHistoryService,
-            SaleService saleService) {
+            SaleService saleService, CommentRepository commentRepository, CommentMapper commentMapper) {
         this.cattleRepository = cattleRepository;
         this.breedService = breedService;
         this.categoryService = categoryService;
@@ -60,6 +66,8 @@ public class CattleServiceImpl implements CattleService {
         this.treatmentHistoryRepository = treatmentHistoryRepository;
         this.weightHistoryService = weightHistoryService;
         this.saleService = saleService;
+        this.commentRepository = commentRepository;
+        this.commentMapper = commentMapper;
     }
 
     @Override
@@ -92,6 +100,8 @@ public class CattleServiceImpl implements CattleService {
             cattle1.setSourceMarketId(cattle.getSourceMarketId());
             cattle1.setDateOfBirth(cattle.getDateOfBirth());
             cattle1.setDatePurchased(cattle.getDatePurchased());
+            cattle1.setSireName(cattle.getSireName());
+            cattle1.setSireEarTag(cattle.getSireEarTag());
             final Cattle savedCattle = cattleRepository.save(cattle1);
             return mapToDto(savedCattle); // Map the saved Cattle to DTO
         }
@@ -141,6 +151,8 @@ public class CattleServiceImpl implements CattleService {
         String fatteningForName = getFatteningFor(cattle.getFatteningFor());
         String lastTreatment = getLastWithdrawalDate(cattle.getCattleId());
         Double dlwgFarm = getDlwgFarm(cattle.getCattleId());
+        List<CommentDto> commentsList = getCommentsForCattle(cattle.getCattleId());
+
         CattleDto cattleData = new CattleDto();
         cattleData.setId(cattle.getId());
         cattleData.setCattleId(cattle.getCattleId());
@@ -160,9 +172,12 @@ public class CattleServiceImpl implements CattleService {
         cattleData.setSourceMarketName(cattleName);
         cattleData.setDatePurchased(cattle.getDatePurchased());
         cattleData.setPurchasePrice(cattle.getPurchasePrice());
+        cattleData.setRatePerKg(cattle.getRatePerKg());
+        cattleData.setRatePerDay(cattle.getRatePerDay());
         cattleData.setSaleId(cattle.getSaleId());
         cattleData.setSalePrice(cattle.getSalePrice());
         cattleData.setComments(cattle.getComments());
+        cattleData.setCommentsList(commentsList);
         cattleData.setVersion(cattle.getVersion());
         cattleData.setPreviousHolding(cattle.getPreviousHolding());
         cattleData.setFatteningFor(cattle.getFatteningFor());
@@ -195,6 +210,13 @@ public class CattleServiceImpl implements CattleService {
         cattleData.setLastWithdraw(lastTreatment);
         cattleData.setIsInductionCompleted(cattle.getIsInductionCompleted());
         return cattleData;
+    }
+
+    private List<CommentDto> getCommentsForCattle(Long cattleId) {
+        List<Comment> comments = commentRepository.findValidCommentsByCattleId(cattleId);
+        return comments.stream()
+                   .map(commentMapper::toDto)
+                   .collect(Collectors.toList());
     }
 
     private String calculateAgeInMonthsDays(String dateOfBirth) {
