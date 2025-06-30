@@ -2,17 +2,20 @@ package com.example.utapCattle.service.impl;
 
 import com.example.utapCattle.model.dto.*;
 import com.example.utapCattle.model.entity.Cattle;
+import com.example.utapCattle.model.entity.Comment;
 import com.example.utapCattle.model.entity.Movement;
 import com.example.utapCattle.model.entity.TreatmentHistoryMetadata;
 import com.example.utapCattle.model.entity.WeightHistory;
 import com.example.utapCattle.service.MovementService;
 import com.example.utapCattle.service.WeightHistoryService;
 import com.example.utapCattle.service.repository.CattleRepository;
+import com.example.utapCattle.service.repository.CommentRepository;
 import com.example.utapCattle.service.repository.WeightHistoryRepository;
 import com.example.utapCattle.utils.DateUtils;
 
 import jakarta.persistence.Tuple;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -36,13 +39,16 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 	private final WeightHistoryRepository weightHistoryRepository;
 	private final MovementService movementService;
 	private final CattleRepository cattleRepository;
+    private final CommentRepository commentRepository;
+
 
 	public WeightHistoryServiceImpl(WeightHistoryRepository weightHistoryRepository,
 									MovementService movementService,
-									CattleRepository cattleRepository) {
+									CattleRepository cattleRepository,CommentRepository commentRepository) {
 		this.weightHistoryRepository = weightHistoryRepository;
 		this.movementService = movementService;
 		this.cattleRepository = cattleRepository;
+		this.commentRepository = commentRepository;
 	}
 
 	public WeightHistoryDto saveWeightHistory(final WeightHistory weightHistory) {
@@ -89,6 +95,18 @@ public class WeightHistoryServiceImpl implements WeightHistoryService {
 		movement.setMovementDate(formattedDate);
 		movement.setUserId(userId);
 		movementService.saveMovement(movement);
+
+		//insert comment
+		if(!StringUtils.isEmpty(treatmentHistoryMetadata.getComment())){
+			final Comment comment = new Comment();
+			final Long commentId = commentRepository.getNextSequenceValue();
+            comment.setId(commentId);
+            comment.setCattleId(cattleId);
+            comment.setComment(treatmentHistoryMetadata.getComment());
+			comment.setUserId(userId);
+            comment.setCommentDate(getCurrentFormattedDate());
+            commentRepository.save(comment);
+		}
 
 		// Update cattle details
 		cattle.setNewTagReq(treatmentHistoryMetadata.getNewTagReq());

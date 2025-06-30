@@ -18,6 +18,7 @@ import com.example.utapCattle.service.repository.SaleRepository;
 import com.example.utapCattle.service.repository.SellerMarketRepository;
 import com.example.utapCattle.utils.DateUtils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,13 +73,14 @@ public class SaleServiceImpl implements SaleService {
 
         Long cattleId = cattle.getCattleId();
         // Persist comment if present
-        if (saleDto.getComment() != null) {
+        if (!StringUtils.isEmpty(saleDto.getComment())) {
             final Comment comment = new Comment();
             final Long commentId = commentRepository.getNextSequenceValue();
             comment.setProcessId(4L);
             comment.setId(commentId);
             comment.setCattleId(cattleId);
             comment.setComment(saleDto.getComment());
+            comment.setUserId(userId);
             comment.setCommentDate(getCurrentFormattedDate());
             commentRepository.save(comment);
         }
@@ -310,13 +312,29 @@ public class SaleServiceImpl implements SaleService {
         weightHistoryService.saveWeightHistory(weightHistory);
 
         /* New Entry into Movement table */
-        final Movement movement = new Movement();
-        movement.setCattleId(cattleId);
-        movement.setPenId(Integer.parseInt(saleDto.getPenId() + ""));
-        movement.setMovementDate(getCurrentFormattedDate());
-        movement.setMovementId(userId);
-        movement.setUserId(userId);
-        movementService.saveMovement(movement);
+        if(saleDto.getPenId() != null){
+            final Movement movement = new Movement();
+            movement.setCattleId(cattleId);
+            movement.setPenId(Integer.parseInt(saleDto.getPenId() + ""));
+            movement.setMovementDate(getCurrentFormattedDate());
+            movement.setMovementId(userId);
+            movement.setUserId(userId);
+            movementService.saveMovement(movement);
+
+        }
+
+        // Persist comment if present
+        if (!StringUtils.isEmpty(saleDto.getComment())) {
+            final Comment comment = new Comment();
+            final Long commentId = commentRepository.getNextSequenceValue();
+            comment.setProcessId(4L);
+            comment.setId(commentId);
+            comment.setCattleId(cattleId);
+            comment.setComment(saleDto.getComment());
+            comment.setCommentDate(getCurrentFormattedDate());
+            comment.setUserId(userId);
+            commentRepository.save(comment);
+        }
 
         // Update the cattle data
         cattle.setNewTagReq(saleDto.getNewTagReq()); // Clear the new tag request on sale
