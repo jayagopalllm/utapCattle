@@ -161,6 +161,9 @@ public class Cattle {
 	@Column(name = "rate_per_day")
 	private BigDecimal ratePerDay;
 
+	@Column(name = "health_status")
+	private String healthStatus;
+
 	@PrePersist
 	protected void onCreate() {
 		createdOn = LocalDateTime.now(); // Store only the current date

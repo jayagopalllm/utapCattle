@@ -66,4 +66,5 @@ public class CattleDto {
 	private BigDecimal ratePerKg;
 	private BigDecimal ratePerDay;
 	private List<CommentDto> commentsList;
+	private String healthStatus;
 }
