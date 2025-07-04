@@ -51,7 +51,7 @@ public class DeathService {
                 Cattle cattle = cattleOptional.get();
 
                 // Update health status
-                cattle.setHealthStatus("Died");
+                cattle.setHealthStatus("DIED");
                 cattle.setSaleId(9999999L);
                 cattleRepository.save(cattle);
 

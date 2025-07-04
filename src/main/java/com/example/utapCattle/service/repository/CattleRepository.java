@@ -51,7 +51,7 @@ public interface CattleRepository extends JpaRepository<Cattle, Long> { // Use L
 	@Query("""
 			SELECT c.earTag FROM Cattle c
 			     WHERE c.userFarmId = :userFarmId AND c.saleId is NULL
-			     AND c.cattleId IS NOT NULL AND c.isInductionCompleted = TRUE AND (c.healthStatus != 'Died' OR c.healthStatus IS NULL)
+			     AND c.cattleId IS NOT NULL AND c.isInductionCompleted = TRUE AND (c.healthStatus != 'DIED' OR c.healthStatus IS NULL)
 				""")
 	List<String> getOnFarmCattleEarTags(@Param("userFarmId") Long userFarmId);
 
