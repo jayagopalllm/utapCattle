@@ -1,6 +1,7 @@
 package com.example.utapCattle.controller;
 
 import com.example.utapCattle.model.dto.TreatmentHistoryDto;
+import com.example.utapCattle.model.dto.TreatmentHistoryResponseDto;
 import com.example.utapCattle.model.entity.TreatmentHistoryMetadata;
 import com.example.utapCattle.service.TreatmentHistoryService;
 
@@ -103,6 +104,15 @@ public class TreatmentHistoryController extends BaseController {
 			logger.error("Exception occurred: Unable to retrieve treatment history", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
+	}
+
+	@GetMapping("/history/{cattleId}")
+	public ResponseEntity<List<TreatmentHistoryResponseDto>> getTreatmentHistoryByCattleId(
+			@PathVariable("cattleId") final Long cattleId) {
+				System.out.println("Fetching treatment history for cattleId: " + cattleId);
+		final List<TreatmentHistoryResponseDto> treatmentHistoryResponseDto = treatmentHistoryService
+				.getTreatmentHistoriesByCattleId(cattleId);
+		return ResponseEntity.ok(treatmentHistoryResponseDto);
 	}
 
 }
