@@ -267,4 +267,20 @@ public class TreatmentHistoryServiceImpl implements TreatmentHistoryService {
 		return treatmentHistoryDto;
 	}
 
+	@Override
+	public List<TreatmentHistoryResponseDto> getTreatmentHistoriesByCattleId(Long cattleId) {
+		final List<TreatmentHistoryResponseDto> treatmentHistoryDtoList = treatmentHistoryRepository
+				.findTreatmentHistoryByCattleId(cattleId);
+
+		treatmentHistoryDtoList.forEach(dto -> {
+			if (dto.getTreatmentDate() != null) {
+				dto.setTreatmentDate(DateUtils.formatToReadableDate(dto.getTreatmentDate()));
+			}
+			if (dto.getWithdrawalDate() != null) {
+				dto.setWithdrawalDate(DateUtils.formatToReadableDate(dto.getWithdrawalDate()));
+			}
+		});
+		return treatmentHistoryDtoList;
+	}
+
 }

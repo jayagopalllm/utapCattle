@@ -48,6 +48,13 @@ public interface CattleRepository extends JpaRepository<Cattle, Long> { // Use L
 				""")
 	Optional<List<Cattle>> getEIdEartagMap(@Param("userFarmId") Long userFarmId);
 
+	@Query("""
+			SELECT c.earTag FROM Cattle c
+			     WHERE c.userFarmId = :userFarmId AND c.saleId is NULL
+			     AND c.cattleId IS NOT NULL AND c.isInductionCompleted = TRUE AND (c.healthStatus != 'DIED' OR c.healthStatus IS NULL)
+				""")
+	List<String> getOnFarmCattleEarTags(@Param("userFarmId") Long userFarmId);
+
 	@Query(value = "SELECT * FROM cattle_API WHERE customer = :id", nativeQuery = true)
 	List<Object[]> findCattleDataById(@Param("id") String id);
 

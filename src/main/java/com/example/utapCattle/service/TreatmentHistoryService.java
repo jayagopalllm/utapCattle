@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.example.utapCattle.model.dto.MovementDto;
 import com.example.utapCattle.model.dto.TreatmentHistoryDto;
+import com.example.utapCattle.model.dto.TreatmentHistoryResponseDto;
 import com.example.utapCattle.model.dto.WeightHistoryDto;
 import com.example.utapCattle.model.entity.Comment;
 import com.example.utapCattle.model.entity.TreatmentHistoryMetadata;
@@ -17,7 +18,7 @@ public interface TreatmentHistoryService {
 
 	/**
 	 * Saves the treatment history records and related information.
-	 * 
+	 *
 	 * @param treatmentHistoryMetadata The metadata containing treatment history
 	 *                                 records and additional information.
 	 * @return A map that contains {@link TreatmentHistoryDto}, {@link Comment},
@@ -29,5 +30,7 @@ public interface TreatmentHistoryService {
 	public Map<String, Object> saveTreatmentHistory(final TreatmentHistoryMetadata treatmentHistoryMetadata);
 
 	public Map<String, Object> getCattleDetailsAndAverageConditionScore(final String earTagOrEId) throws Exception;
+
+    List<TreatmentHistoryResponseDto> getTreatmentHistoriesByCattleId(Long cattleId);
 
 }

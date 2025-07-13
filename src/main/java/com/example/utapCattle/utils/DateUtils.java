@@ -135,4 +135,12 @@ public class DateUtils {
         }
     }
 
+    public static String formatLocalDate(LocalDate date) {
+        if (date == null) {
+            return "";
+        }
+
+        return date.format(DEFAULT_OUTPUT_FORMATTER);
+    }
+
 }

@@ -7,15 +7,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.utapCattle.logging.GlobalRequestLogger;
 
-@RestControllerAdvice(basePackages = "com.example.utapCattle.controller")
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<String> handleMissingParams(MissingServletRequestParameterException ex) {
+        return ResponseEntity
+                .badRequest()
+                .body("Missing required parameter: " + ex.getParameterName());
+    }
 
     @ExceptionHandler(DuplicateCattleException.class)
     public ResponseEntity<Map<String, String>> handleDuplicateCattleId(DuplicateCattleException ex) {
