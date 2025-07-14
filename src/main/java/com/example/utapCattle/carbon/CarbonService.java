@@ -7,7 +7,6 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 
-
 @Service
 public class CarbonService {
 
@@ -59,7 +58,6 @@ public class CarbonService {
                             cattle c
                             left outer join sale s on s.saleid = c.saleid
                             left outer join death_record dr on c.eartag = dr.eartag
-                            left outer join sellermarket s2 on s2.sellermarketid = s.salemarketid
                             left join weightranked w_min on c.cattleid = w_min.cattleid and w_min.min_rank = 1
                             left join weightranked w_max on c.cattleid = w_max.cattleid and w_max.max_rank = 1
                             left join breed b on b.breedid = c.breedid
@@ -77,8 +75,8 @@ public class CarbonService {
                         cp.sex,
                         cp.last_weight,
                         cp.start_weight,
-                        cp.dlwg_farm,
-                        cp.start_age_months,
+                        round(cp.dlwg_farm::numeric,2) as dlwg_farm,
+                        round(cp.start_age_months::numeric,2) as start_age_months,
                         cp.end_date-cp.start_date as days_on_farm,
                         case
                             when start_age_months <= 2 then 'Birth'
@@ -98,7 +96,6 @@ public class CarbonService {
                         cp.start_date <= cp.end_date
                 """;
 
-
         MapSqlParameterSource params = new MapSqlParameterSource()
                 .addValue("startDate", startDate)
                 .addValue("endDate", endDate)
@@ -106,21 +103,88 @@ public class CarbonService {
 
         return namedJdbcTemplate.query(sql, params, (rs, rowNum) -> {
             AnimalGroupDto dto = new AnimalGroupDto();
-                dto.setEartag(rs.getString("eartag"));
-                dto.setCattleid(rs.getLong("cattleid"));
-                dto.setProductionType(rs.getString("production_type"));
-                dto.setManagementSystem(rs.getString("management_system"));
-                dto.setBreedAbbr(rs.getString("breed_abbr"));
-                dto.setSex(rs.getString("sex"));
-                dto.setLastWeight(rs.getDouble("last_weight"));
-                dto.setStartWeight(rs.getDouble("start_weight"));
-                dto.setDlwgFarm(rs.getDouble("dlwg_farm"));
-                dto.setStartAgeMonths(rs.getDouble("start_age_months"));
-                dto.setDaysOnFarm(rs.getLong("days_on_farm"));
-                dto.setLifecycleStage(rs.getString("lifecycle_stage"));
-                dto.setAgeClass(rs.getString("age_class"));
+            dto.setEartag(rs.getString("eartag"));
+            dto.setCattleid(rs.getLong("cattleid"));
+            dto.setProductionType(rs.getString("production_type"));
+            dto.setManagementSystem(rs.getString("management_system"));
+            dto.setBreedAbbr(rs.getString("breed_abbr"));
+            dto.setSex(rs.getString("sex"));
+            dto.setLastWeight(rs.getDouble("last_weight"));
+            dto.setStartWeight(rs.getDouble("start_weight"));
+            dto.setDlwgFarm(rs.getDouble("dlwg_farm"));
+            dto.setStartAgeMonths(rs.getDouble("start_age_months"));
+            dto.setDaysOnFarm(rs.getLong("days_on_farm"));
+            dto.setLifecycleStage(rs.getString("lifecycle_stage"));
+            dto.setAgeClass(rs.getString("age_class"));
             return dto;
         });
+    }
+
+    public HerdInfoDto getHerdInfo(LocalDate startDate, LocalDate endDate, String holdingNo) {
+
+        String sql = """
+                with
+                weightranked as (
+                	select
+                		w.cattleid,w.weight,
+                		w.weightdatetime::date as date_weighted,
+                		ROW_NUMBER() OVER (PARTITION BY w.cattleid ORDER BY w.weightdatetime::timestamp ) AS min_rank,
+                	    ROW_NUMBER() OVER (PARTITION BY w.cattleid ORDER BY w.weightdatetime::timestamp DESC) AS max_rank
+                	from
+                		weighthistory w
+                	where
+                		w.weight>25 and
+                	  w.weightdatetime::date between (:startDate - interval '3 months') and (:endDate + interval '3 months')
+                	),
+                cattle_present as (
+                	select
+                		c.eartag,
+                		greatest(c.datepurchased::date, :startDate) as start_date,
+                		least(
+                	    s.saledate::date,
+                	    case when c.health_status = 'DIED' then coalesce(s.saledate::date, dr.death_date) else null end,
+                	    :endDate
+                	  ) as end_date,
+                		s.saledate::date,
+                		w_max.weight as last_weight,
+                		w_min.weight as start_weight,
+                		(w_max.weight - w_min.weight) / nullif(w_max.date_weighted::date - w_min.date_weighted::date, 0) as dlwg_farm,
+                		( greatest(c.datepurchased::date, :startDate) - c.dateofbirth::date) / 30.4375 as start_age_months,
+                		c.ownerfarmid
+                	from
+                		cattle c
+                		left outer join sale s on s.saleid = c.saleid
+                		left outer join death_record dr on c.eartag = dr.eartag
+                		left join weightranked w_min on c.cattleid = w_min.cattleid and w_min.min_rank = 1
+                		left join weightranked w_max on c.cattleid = w_max.cattleid and w_max.max_rank = 1
+                		inner join user_farm uf on uf.id = c.ownerfarmid
+                	where uf.cph_number = :holdingNo
+                	)
+
+                select
+                	count(cp.eartag) as total_count,
+                	ROUND(AVG(cp.last_weight - cp.start_weight)::numeric, 2) AS avg_weight,
+                	ROUND(AVG(cp.dlwg_farm::numeric), 2) AS avg_dlwg_farm
+                from
+                	cattle_present cp
+                where
+                	cp.start_date <= cp.end_date
+                                """;
+
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("startDate", startDate)
+                .addValue("endDate", endDate)
+                .addValue("holdingNo", holdingNo);
+
+        HerdInfoDto herdInfo = namedJdbcTemplate.queryForObject(sql, params,
+            (rs, rowNum) -> {
+                HerdInfoDto dto = new HerdInfoDto();
+                dto.setTotalCount(rs.getInt("total_count"));
+                dto.setAvgWeight(rs.getDouble("avg_weight"));
+                dto.setAvgDlwgFarm(rs.getDouble("avg_dlwg_farm"));
+                return dto;
+            });
+        return herdInfo;
     }
 
 }

@@ -29,4 +29,14 @@ public class CarbonController {
         return ResponseEntity.ok(stats);
     }
 
+    @GetMapping("/herd-info")
+    public ResponseEntity<HerdInfoDto> getHerdInfo(
+        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+        @RequestParam String holdingNo
+    ) {
+        HerdInfoDto herdInfo = service.getHerdInfo(startDate, endDate, holdingNo);
+        return ResponseEntity.ok(herdInfo);
+    }
+
 }
