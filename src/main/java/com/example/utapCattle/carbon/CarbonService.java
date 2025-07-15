@@ -1,7 +1,9 @@
 package com.example.utapCattle.carbon;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -185,6 +187,45 @@ public class CarbonService {
                 return dto;
             });
         return herdInfo;
+    }
+
+    public Map<String, Map<String, Double>> getFeedInfo(LocalDate startDate, LocalDate endDate, String holdingNo) {
+
+        String sql = """
+                SELECT
+                    feed_state,
+                    ingredient,
+                    ROUND(SUM(quantity)::numeric, 2) AS total_quantity
+                FROM
+                    farm_feed_daily ffd
+                    inner join user_farm uf on uf.id = ffd.user_farmid
+                WHERE
+                    feed_date BETWEEN :startDate AND :endDate
+                    and uf.cph_number = :holdingNo
+                GROUP BY
+                    feed_state,ingredient
+                ORDER BY
+                    feed_state;
+                                """;
+
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("startDate", startDate)
+                .addValue("endDate", endDate)
+                .addValue("holdingNo", holdingNo);
+
+        Map<String, Map<String, Double>> result = new HashMap<>();
+
+        namedJdbcTemplate.query(sql, params, rs -> {
+            String feedState = rs.getString("feed_state");
+            String ingredient = rs.getString("ingredient");
+            Double totalQuantity = rs.getDouble("total_quantity");
+
+            result.computeIfAbsent(feedState, k -> new HashMap<>())
+                  .put(ingredient, totalQuantity);
+        });
+
+        return result;
+
     }
 
 }

@@ -2,6 +2,7 @@ package com.example.utapCattle.carbon;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +38,16 @@ public class CarbonController {
     ) {
         HerdInfoDto herdInfo = service.getHerdInfo(startDate, endDate, holdingNo);
         return ResponseEntity.ok(herdInfo);
+    }
+
+    @GetMapping("/feed-info")
+    public ResponseEntity<Map<String, Map<String, Double>>> getFeedInfo(
+        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+        @RequestParam String holdingNo
+    ) {
+        Map<String, Map<String, Double>> feedInfo = service.getFeedInfo(startDate, endDate, holdingNo);
+        return ResponseEntity.ok(feedInfo);
     }
 
 }
