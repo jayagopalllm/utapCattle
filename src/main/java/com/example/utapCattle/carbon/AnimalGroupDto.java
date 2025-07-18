@@ -9,19 +9,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AnimalGroupDto {
 
-    private String eartag;
-    private Long cattleid;
+    private Integer cattleCount;
     private String productionType;
     private String managementSystem;
-    private String breedAbbr;
-    private String sex;
     private Double lastWeight;
     private Double startWeight;
     private Double dlwgFarm;
-    private Double startAgeMonths;
+    private Long startAgeMonths;
     private Long daysOnFarm;
-    private String lifecycleStage;
-    private String ageClass;
+    private String animalGroup;
 
 
 }
